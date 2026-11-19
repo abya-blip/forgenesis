@@ -1,0 +1,2573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FORGENESIS Rev 2.2 — Interactive 3D CAD &amp; Hydraulic Prototype Render</title>
+  <style>
+    :root {
+      --bg-canvas: #070b12;
+      --bg-panel: rgba(11, 17, 29, 0.84);
+      --bg-panel-solid: #0c1321;
+      --bg-card: rgba(20, 30, 48, 0.72);
+      --border: rgba(148, 163, 184, 0.18);
+      --border-strong: rgba(56, 189, 248, 0.42);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent: #38bdf8;
+      --accent-2: #06b6d4;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --orange: #f97316;
+      --danger: #ef4444;
+      --shadow: 0 18px 44px rgba(0, 0, 0, 0.55);
+      --badge-bg: rgba(9, 14, 24, 0.86);
+      --badge-text: #e2e8f0;
+    }
+
+    body.light-theme {
+      --bg-canvas: #e8eef5;
+      --bg-panel: rgba(255, 255, 255, 0.88);
+      --bg-panel-solid: #ffffff;
+      --bg-card: rgba(241, 245, 249, 0.92);
+      --border: rgba(15, 23, 42, 0.12);
+      --border-strong: rgba(2, 132, 199, 0.48);
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #64748b;
+      --accent: #0284c7;
+      --accent-2: #0891b2;
+      --shadow: 0 14px 36px rgba(15, 23, 42, 0.14);
+      --badge-bg: rgba(255, 255, 255, 0.92);
+      --badge-text: #0f172a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg-canvas);
+      color: var(--text-main);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 13px;
+      user-select: none;
+    }
+
+    #viewport {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    #labels-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+      overflow: hidden;
+    }
+
+    .callout-badge {
+      position: absolute;
+      transform: translate(-50%, -100%);
+      pointer-events: auto;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: var(--badge-bg);
+      color: var(--badge-text);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+      transition: transform 0.14s ease, border-color 0.14s ease, background 0.14s ease;
+      white-space: nowrap;
+    }
+
+    .callout-badge:hover, .callout-badge.active {
+      border-color: var(--accent);
+      transform: translate(-50%, -108%) scale(1.06);
+      z-index: 10;
+    }
+
+    .callout-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dim-badge {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(15, 23, 42, 0.85);
+      color: #fde68a;
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 10.5px;
+      font-weight: 600;
+      white-space: nowrap;
+      backdrop-filter: blur(4px);
+    }
+
+    .panel {
+      position: fixed;
+      z-index: 20;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow);
+    }
+
+    /* Top Header */
+    #topbar {
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, #0284c7, #06b6d4 55%, #10b981);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 14px;
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(6, 182, 212, 0.35);
+      flex-shrink: 0;
+    }
+
+    .brand h1 {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .rev-pill {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.16);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      text-transform: uppercase;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .camera-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-main);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-1px);
+    }
+
+    .btn.active {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, #0284c7, #0891b2);
+      border-color: transparent;
+      color: #fff;
+    }
+
+    .btn.primary:hover {
+      filter: brightness(1.1);
+    }
+
+    .btn.warning {
+      background: rgba(245, 158, 11, 0.16);
+      border-color: rgba(245, 158, 11, 0.45);
+      color: #fbbf24;
+    }
+
+    /* Left Control Sidebar */
+    #controls-panel {
+      top: 82px;
+      left: 14px;
+      width: 306px;
+      max-height: calc(100vh - 102px);
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    #controls-panel::-webkit-scrollbar,
+    #right-panel::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    #controls-panel::-webkit-scrollbar-thumb,
+    #right-panel::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.25);
+      border-radius: 999px;
+    }
+
+    .section-title {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .state-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .state-grid .btn {
+      justify-content: center;
+      padding: 7px 6px;
+      font-size: 11px;
+    }
+
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 11px;
+    }
+
+    .slider-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11.5px;
+      font-weight: 600;
+    }
+
+    .slider-val {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color: var(--accent);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .toggle-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .toggle-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      font-size: 11.5px;
+      font-weight: 500;
+    }
+
+    .toggle-item input {
+      accent-color: var(--accent);
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+    }
+
+    .zone-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .zone-pill {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .zone-pill.active {
+      background: rgba(16, 185, 129, 0.16);
+      border-color: rgba(16, 185, 129, 0.5);
+      color: #34d399;
+    }
+
+    /* Right Telemetry + Inspector Panel */
+    #right-panel {
+      top: 82px;
+      right: 14px;
+      width: 318px;
+      max-height: calc(100vh - 102px);
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .telemetry-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .status-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 9px;
+      border-radius: 999px;
+      letter-spacing: 0.04em;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+
+    .metric {
+      padding: 7px 8px;
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.35);
+      border: 1px solid var(--border);
+    }
+
+    body.light-theme .metric {
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .metric-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .metric-val {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12.5px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .uart-box {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      padding: 7px 9px;
+      border-radius: 7px;
+      background: rgba(2, 6, 23, 0.65);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      color: #7dd3fc;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    body.light-theme .uart-box {
+      background: #0f172a;
+      color: #38bdf8;
+    }
+
+    #inspector-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      padding: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .inspector-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .inspector-id {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .inspector-title {
+      font-size: 13px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 6px;
+      width: 22px;
+      height: 22px;
+      cursor: pointer;
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    .spec-table {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 11.5px;
+    }
+
+    .spec-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px dashed var(--border);
+      padding-bottom: 4px;
+    }
+
+    .spec-row span:first-child {
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .spec-row span:last-child {
+      text-align: right;
+      font-weight: 600;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+    }
+
+    .spec-notes {
+      font-size: 11.5px;
+      line-height: 1.45;
+      color: var(--text-muted);
+    }
+
+    /* Bottom hint */
+    #bottom-hint {
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      white-space: nowrap;
+    }
+
+    .kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      padding: 1px 5px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-size: 10px;
+    }
+
+    #error-banner {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(7, 11, 18, 0.94);
+      display: none;
+      place-items: center;
+      padding: 24px;
+    }
+
+    #error-banner .err-card {
+      max-width: 540px;
+      background: #0f172a;
+      border: 1px solid rgba(239, 68, 68, 0.45);
+      border-radius: 14px;
+      padding: 20px;
+      color: #f8fafc;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 1080px) {
+      #controls-panel { width: 260px; }
+      #right-panel { width: 270px; }
+      #bottom-hint { display: none; }
+    }
+  </style>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="viewport"></div>
+  <div id="labels-layer"></div>
+
+  <!-- Top Bar -->
+  <header id="topbar" class="panel">
+    <div class="brand">
+      <div class="brand-mark">FG</div>
+      <div>
+        <h1>FORGENESIS 3D Prototype <span class="rev-pill">Rev 2.2 • 1:1 CAD</span></h1>
+        <div class="brand-sub">900×300×300 mm Flume • DYP-L08B50TW-V3.0 Sonar • EPDM Bubble Barrier • Option 2A 3-Slot Weir</div>
+      </div>
+    </div>
+
+    <div class="camera-bar">
+      <button class="btn active" data-cam="hero">3/4 Hero</button>
+      <button class="btn" data-cam="top">Top Plan (XY)</button>
+      <button class="btn" data-cam="side">Side Elevation (XZ)</button>
+      <button class="btn" data-cam="clearance">Zero-Clash Gap</button>
+      <button class="btn" data-cam="sonar">Sonar Gate</button>
+      <button class="btn" data-cam="weir">3-Slot Weir</button>
+      <button class="btn" data-cam="electronics">Electronics Bay</button>
+      <button class="btn" id="btn-theme">Light Lab</button>
+      <button class="btn" id="btn-pause">Pause</button>
+    </div>
+  </header>
+
+  <!-- Left Control Sidebar -->
+  <aside id="controls-panel" class="panel">
+    <div>
+      <div class="section-title">
+        <span>Firmware State Machine</span>
+        <span style="color: var(--accent)">ESP32-WROVER-E</span>
+      </div>
+      <div class="state-grid">
+        <button class="btn" data-mode="DRY_CAD">Dry CAD</button>
+        <button class="btn active" data-mode="AUTO">Auto Loop</button>
+        <button class="btn" data-mode="IDLE">Idle (35%)</button>
+        <button class="btn" data-mode="SURGE">Surge (100%)</button>
+      </div>
+      <div style="display:flex; gap:6px; margin-top:6px;">
+        <button class="btn primary" id="btn-inject" style="flex:1; justify-content:center;">+ Inject Debris</button>
+        <button class="btn warning" id="btn-override" style="flex:1; justify-content:center;">Override (GPIO32)</button>
+      </div>
+    </div>
+
+    <div class="slider-group">
+      <div class="slider-row">
+        <div class="slider-header">
+          <span>Exploded Assembly</span>
+          <span class="slider-val" id="val-explode">0%</span>
+        </div>
+        <input type="range" id="slider-explode" min="0" max="100" value="0" />
+      </div>
+      <div class="slider-row">
+        <div class="slider-header">
+          <span>Basket Lift (B-01)</span>
+          <span class="slider-val" id="val-lift">0 mm</span>
+        </div>
+        <input type="range" id="slider-lift" min="0" max="140" value="0" />
+      </div>
+    </div>
+
+    <div>
+      <div class="section-title"><span>Inspection Layers</span></div>
+      <div class="toggle-list">
+        <label class="toggle-item">
+          <span>Water &amp; 3-Slot Waterfall</span>
+          <input type="checkbox" id="chk-water" checked />
+        </label>
+        <label class="toggle-item">
+          <span>Front Glass Cutaway (Y=-150)</span>
+          <input type="checkbox" id="chk-cutaway" />
+        </label>
+        <label class="toggle-item">
+          <span>Sonar 50° Beam &amp; Blind Zone</span>
+          <input type="checkbox" id="chk-beam" checked />
+        </label>
+        <label class="toggle-item">
+          <span>3D Callout Badges</span>
+          <input type="checkbox" id="chk-labels" checked />
+        </label>
+        <label class="toggle-item">
+          <span>Key CAD Dimensions</span>
+          <input type="checkbox" id="chk-dims" />
+        </label>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-title"><span>Zone Visibility</span></div>
+      <div class="zone-pills">
+        <button class="zone-pill active" data-zone="tank">T-01 Tank</button>
+        <button class="zone-pill active" data-zone="plumbing">R-01/R-02</button>
+        <button class="zone-pill active" data-zone="funnel">F-01/F-02</button>
+        <button class="zone-pill active" data-zone="sonar">S-01/S-05</button>
+        <button class="zone-pill active" data-zone="diffuser">D-01/A-01</button>
+        <button class="zone-pill active" data-zone="weir">W-01/B-01</button>
+        <button class="zone-pill active" data-zone="electronics">E-01 Box</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Right Telemetry & Part Inspector -->
+  <aside id="right-panel" class="panel">
+    <div class="telemetry-card">
+      <div class="section-title" style="margin-bottom:2px;">
+        <span>Live Hydraulic &amp; Sensor Telemetry</span>
+      </div>
+      <div class="status-banner">
+        <span class="status-chip" id="state-chip" style="background:rgba(56,189,248,0.16); color:#38bdf8;">
+          <span class="status-dot" id="state-dot" style="background:#38bdf8;"></span>
+          <span id="state-label">IDLE_MONITORING</span>
+        </span>
+        <span id="surge-timer" style="font-family:monospace; font-size:11px; color:var(--text-muted);">T_surge: --</span>
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric">
+          <div class="metric-label">Pump P-01 (GPIO27)</div>
+          <div class="metric-val" id="tel-pump">35% • 280 L/h</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Channel Flow</div>
+          <div class="metric-val" id="tel-flow">8.0 cm/s</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Air A-01 (GPIO14)</div>
+          <div class="metric-val" id="tel-air">OFF (EPDM Shut)</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Sonar D_cal</div>
+          <div class="metric-val" id="tel-sonar">248 mm (Clear)</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Weir Drop (Z)</div>
+          <div class="metric-val">200 → 165 mm</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Captured Plastics</div>
+          <div class="metric-val" id="tel-captured">0 pcs</div>
+        </div>
+      </div>
+
+      <div class="uart-box">
+        <span>UART 9600:</span>
+        <span id="tel-uart">FF 00 F8 F7 (OK)</span>
+      </div>
+    </div>
+
+    <div id="inspector-card">
+      <div class="inspector-head">
+        <div>
+          <div class="inspector-id" id="insp-id">SYSTEM • REV 2.2</div>
+          <div class="inspector-title" id="insp-name">Click Any Part or Badge to Inspect</div>
+        </div>
+        <button class="close-btn" id="btn-clear-insp" title="Reset selection">×</button>
+      </div>
+      <div class="spec-table" id="insp-specs">
+        <div class="spec-row"><span>Flume Envelope</span><span>900 × 300 × 300 mm</span></div>
+        <div class="spec-row"><span>Static Waterline</span><span>Z = 200.0 mm (81 L max)</span></div>
+        <div class="spec-row"><span>Zero-Clash Gap</span><span>11.0 mm net (R-01 / D-01)</span></div>
+        <div class="spec-row"><span>Sonar Gate</span><span>X = 380 mm, Z = 180 mm</span></div>
+      </div>
+      <div class="spec-notes" id="insp-notes">
+        Orbit with left-drag, pan with right-drag, scroll to zoom. Click any component mesh or floating BOM badge to inspect exact Rev 2.2 coordinates, materials, and plumbing clearances.
+      </div>
+    </div>
+  </aside>
+
+  <div id="bottom-hint" class="panel">
+    <span><span class="kbd">Left Drag</span> Orbit</span>
+    <span><span class="kbd">Right Drag</span> Pan</span>
+    <span><span class="kbd">Scroll</span> Zoom</span>
+    <span><span class="kbd">Click Part</span> BOM Spec</span>
+    <span><span class="kbd">Space</span> Pause / Resume</span>
+  </div>
+
+  <div id="error-banner">
+    <div class="err-card">
+      <h2 style="margin-bottom:8px; color:#f87171;">3D Engine Load Error</h2>
+      <p id="error-message">Unable to initialize WebGL / Three.js ESM modules.</p>
+      <p style="margin-top:10px; font-size:12px; color:#94a3b8;">
+        Ensure you have internet access to load <code>three@0.168.0</code> from jsDelivr CDN and a WebGL2-capable browser.
+      </p>
+    </div>
+  </div>
+
+  <script type="module">
+    let THREE, OrbitControls, RoomEnvironment;
+    try {
+      THREE = await import('three');
+      ({ OrbitControls } = await import('three/addons/controls/OrbitControls.js'));
+      ({ RoomEnvironment } = await import('three/addons/environments/RoomEnvironment.js'));
+    } catch (err) {
+      document.getElementById('error-banner').style.display = 'grid';
+      document.getElementById('error-message').textContent = `Failed to load Three.js modules: ${err.message}`;
+      throw err;
+    }
+
+    // =========================================================================
+    // 1. EXACT REVISION 2.2 CAD PARAMETERS & BOM METADATA
+    // =========================================================================
+    const CFG = {
+      L: 900.0,
+      W: 300.0,
+      H: 300.0,
+      tGlass: 6.0,
+      tAcrylic: 3.0,
+      waterZ: 200.0,
+      sumpWaterZ: 165.0,
+      spargerX: 25.0,
+      spargerZ: 175.0,
+      funnelStartX: 80.0,
+      funnelEndX: 305.5,
+      funnelThroatY: 70.0,
+      funnelH: 220.0,
+      sonarX: 380.0,
+      sonarZ: 180.0,
+      diffuserX: 520.0,
+      diffuserZ: 12.0,
+      weirX: 670.0,
+      weirY: -147.0,
+      weirL: 96.0,
+      weirW: 294.0,
+      weirInnerW: 288.0,
+      weirCrestZ: 185.0,
+      weirToothTopZ: 212.0,
+      sumpWallH: 220.0,
+      railZ: 120.0,
+      basketL: 86.0,
+      basketW: 282.0,
+      basketH: 40.0
+    };
+
+    const PART_SPECS = {
+      'T-01': {
+        name: 'Rimless Tempered Glass Flume Tank',
+        material: '6.0 mm Low-Iron Float Glass (UNS 90L)',
+        coords: 'X=[0, 900] Y=[-150, 150] Z=[0, 300] mm',
+        spec: '81 L gross volume, zero glass drilling',
+        notes: 'All brackets clip onto the top 6 mm rim. Static waterline Z=200 mm (54 L main operating volume).'
+      },
+      'R-02': {
+        name: 'Upstream Flow-Maker Sparger Bar',
+        material: 'Ø20 mm Blue Sch-40 PVC + EPDM Caps',
+        coords: 'X=25.0, Y=[-140, 140], Z=175.0 mm',
+        spec: '16 × Ø3.0 mm horizontal forward jets',
+        notes: 'Uniformly distributes recirculated pump return across the channel width to establish ~8.0 cm/s idle flow.'
+      },
+      'R-01': {
+        name: 'Closed-Loop Elevated Return Pipe',
+        material: 'Ø16 mm Blue Sch-40 PVC + 90° Elbows',
+        coords: 'Y=-140.0, Z=32.0 mm (X=25 → 786 mm)',
+        spec: '11.0 mm net air gap to D-01 diffuser',
+        notes: 'Elevated along the near wall on C-05/C-06 standoffs so it clears the D-01 diffuser (25 mm lateral / 20 mm vertical offset).'
+      },
+      'C-05': {
+        name: 'Return Pipe Standoff Clips (C-05 / C-06)',
+        material: '3.0 mm Clear Cast Acrylic',
+        coords: 'X=220 & 620 mm, Y=-140, Z=32 mm',
+        spec: 'Laser-cut snap cradle + floor bond',
+        notes: 'Holds R-01 rigid at Z=32 mm along the near wall.'
+      },
+      'F-01': {
+        name: 'V-Funnel Debris Concentrator (F-01 / F-02)',
+        material: '3.0 mm Clear Cast Acrylic + C-07/C-08 Clamps',
+        coords: 'X=80.0 → 305.5 mm, Z=[0, 220] mm',
+        spec: '25° convergence → 140.0 mm throat (Y=±70)',
+        notes: 'Funnels floating & suspended plastics >80 mm away from the sonar face (outside the DYP-L08B50TW-V3.0 near-field blind zone). Near vane includes notch clearance for R-01.'
+      },
+      'S-01': {
+        name: 'DYP-L08B50TW-V3.0 Underwater Sonar',
+        material: 'Gray ASA/PVC Body (IP68), M19×1.5 Thread',
+        coords: 'X=380.0, Y=115..149, Z=180.0 mm',
+        spec: '9600 bps Controlled-UART (0xFF trigger), 50° beam',
+        notes: '8–800 cm water range, 80 mm blind zone, dual Ø28 mm 18-tooth gear locknuts + Ø23×1.5 mm white silicone sealing washer.'
+      },
+      'C-01': {
+        name: 'No-Drill Sonar Rim Drop Bracket',
+        material: '3.0 mm Clear Cast Acrylic + M4 Nylon Screw',
+        coords: 'X=[344, 416], Y=133.5..162, Z=[158, 304] mm',
+        spec: 'Ø19.5 mm precision M19 bulkhead bore',
+        notes: 'Clamps over the 6 mm far glass rim without drilling and holds the sonar submerged 20 mm below the Z=200 mm waterline.'
+      },
+      'S-05': {
+        name: '30 PPI Acoustic Absorber Baffle Stop',
+        material: '30 PPI Reticulated PU Foam + 3 mm Acrylic',
+        coords: 'X=380.0 (325..435), Y=-125..-107, Z=[0, 215] mm',
+        spec: '110 × 215 × 18 mm open-cell acoustic pad',
+        notes: 'Absorbs acoustic backscatter opposite S-01, locking baseline clear-channel range at ~245–250 mm and clearing R-01.'
+      },
+      'D-01': {
+        name: '90° Transverse EPDM Bubble Diffuser',
+        material: 'Ø20 × 250 mm Micro-Slit EPDM + Saddle Feet',
+        coords: 'X=520.0, Y=[-115, 140], Z=12.0 mm',
+        spec: 'Cracking pressure ~2.0 kPa (1.84 kPa hydrostatic)',
+        notes: 'Laser-punched elastic micro-slits snap shut automatically when A-01 turns OFF, preventing water ingress. Zero-clash with R-01.'
+      },
+      'D-02': {
+        name: 'Anti-Siphon Silicone Airline & Check Valve',
+        material: 'Ø4–5 mm Silicone Tube + Inline 1-Way Valve',
+        coords: 'X=520.0, Y=142 → 225, Z=12 → 315 mm',
+        spec: 'Rim-crested anti-siphon loop at Z=315 mm',
+        notes: 'Routes air over the tank rim above water level through a 1-way check valve down to external compressor A-01.'
+      },
+      'A-01': {
+        name: '12V Micro Diaphragm Air Compressor',
+        material: '370-Frame 12V DC Diaphragm Pump (≥50 kPa)',
+        coords: 'External Bench: X=520, Y=225, Z=0 mm',
+        spec: 'Switched ON/OFF via IRLZ44PBF MOSFET (GPIO14)',
+        notes: 'Drives D-01 bubble curtain during SURGE_INTERCEPT to lift neutrally buoyant submerged plastics toward the weir crest.'
+      },
+      'W-01': {
+        name: 'Option 2A 3-Slot Castellated Weir & Sump',
+        material: '3.0 mm Cyan & Clear Cast Acrylic (Weld-On #4)',
+        coords: 'X=[670, 766], Y=[-147, 147], Z=[0, 223] mm',
+        spec: '3 slots (55 / 54 / 55 mm) @ Z=185 mm, 4 teeth @ Z=212',
+        notes: '164 mm total open intake crest. Pulls 45.2 cm/s waterfall nappe velocity at 100% surge into the Z=165 mm drawdown sump.'
+      },
+      'W-06': {
+        name: 'Basket Guide Rails & Center Anti-Sag Rib',
+        material: '3.0 mm Clear Cast Acrylic (W-06 / W-07 / W-08)',
+        coords: 'X=[673, 763], Z=120.0..123.0 mm',
+        spec: '8 mm side rails + center support rib',
+        notes: 'Supports the full-width SS304 basket 65 mm above the submersible pump intake and anti-vortex plate.'
+      },
+      'B-01': {
+        name: 'Removable SS304 Mesh Basket',
+        material: 'Folded SS304 Perforated/Woven Mesh (2.0 mm)',
+        coords: 'X=[675, 761], Y=[-141, 141], Z=[123, 163] mm',
+        spec: '282 × 86 × 40 mm resting on W-06/W-07/W-08 rails',
+        notes: 'Captures intercepted plastics cleanly 60 mm above pump P-01 and its anti-vortex baffle. Use the Basket Lift slider to inspect removal clearance.'
+      },
+      'B-02': {
+        name: 'Dual Anodized Basket Pull Handles',
+        material: 'Yellow-Anodized Aluminum T-Grips',
+        coords: 'X=718, Y=±76, Z=163 → 235 mm',
+        spec: '30 mm T-grip crossbars rising above Z=200 waterline',
+        notes: 'Allows dry tool-free removal of the SS304 debris basket above the castellated weir teeth.'
+      },
+      'P-01': {
+        name: 'Submersible Brushless Pump + Anti-Vortex Plate',
+        material: '12V DC 800 L/h Pump (JT-550) + 40×40 mm Baffle',
+        coords: 'X=[692, 744], Y=[-18, 18], Z=[3, 55] mm (Plate Z=61)',
+        spec: '280 L/h @ 35% PWM (Idle) / 800 L/h @ 100% (Surge)',
+        notes: 'Mounted at sump floor under a 40×40 mm perforated anti-vortex baffle at Z=61 mm; discharges through W-02 into R-01.'
+      },
+      'E-01': {
+        name: 'External IP65 Control & Power Electronics Box',
+        material: 'ABS IP65 Box + Clear Polycarbonate Lid + 3× PG7',
+        coords: 'X=[300, 460], Y=[156, 220], Z=[170, 260] mm',
+        spec: 'ESP32-WROVER-E, LM2596, TXS0108E, 2× IRLZ44PBF',
+        notes: 'Safe GPIOs: 25/26 UART (avoids 16/17 PSRAM), 27 Pump PWM (250–500 Hz), 14 Air, 32 Button, 33 Red LED, 1000 µF bulk cap.'
+      }
+    };
+
+    // =========================================================================
+    // 2. PROCEDURAL CANVAS TEXTURES
+    // =========================================================================
+    function createSS304MeshTexture() {
+      const c = document.createElement('canvas');
+      c.width = 256; c.height = 256;
+      const ctx = c.getContext('2d');
+      ctx.clearRect(0, 0, 256, 256);
+
+      ctx.fillStyle = '#d1d5db';
+      const step = 16;
+      // Woven SS304 wire bars with 2 mm aperture look
+      for (let i = 0; i < 256; i += step) {
+        ctx.fillStyle = '#e5e7eb';
+        ctx.fillRect(0, i, 256, 4);
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillRect(i, 0, 4, 256);
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillRect(0, i + 3, 256, 1);
+        ctx.fillRect(i + 3, 0, 1, 256);
+      }
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(16, 5);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    }
+
+    function createFoamTextures() {
+      const col = document.createElement('canvas');
+      const bmp = document.createElement('canvas');
+      col.width = bmp.width = 256;
+      col.height = bmp.height = 256;
+      const cctx = col.getContext('2d');
+      const bctx = bmp.getContext('2d');
+
+      cctx.fillStyle = '#18202c';
+      cctx.fillRect(0, 0, 256, 256);
+      bctx.fillStyle = '#808080';
+      bctx.fillRect(0, 0, 256, 256);
+
+      // Deterministic pseudo-random pores for 30 PPI polyurethane foam
+      let seed = 42;
+      const rand = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+      for (let i = 0; i < 2400; i++) {
+        const x = rand() * 256;
+        const y = rand() * 256;
+        const r = 1.1 + rand() * 2.3;
+        cctx.fillStyle = rand() > 0.4 ? '#0b0f17' : '#2b3648';
+        cctx.beginPath(); cctx.arc(x, y, r, 0, Math.PI * 2); cctx.fill();
+
+        bctx.fillStyle = rand() > 0.5 ? '#202020' : '#d8d8d8';
+        bctx.beginPath(); bctx.arc(x, y, r, 0, Math.PI * 2); bctx.fill();
+      }
+      const map = new THREE.CanvasTexture(col);
+      const bumpMap = new THREE.CanvasTexture(bmp);
+      map.wrapS = map.wrapT = bumpMap.wrapS = bumpMap.wrapT = THREE.RepeatWrapping;
+      map.repeat.set(3, 5);
+      bumpMap.repeat.set(3, 5);
+      map.colorSpace = THREE.SRGBColorSpace;
+      return { map, bumpMap };
+    }
+
+    function createEpdmSlitTexture() {
+      const c = document.createElement('canvas');
+      c.width = 256; c.height = 128;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#1a1f27';
+      ctx.fillRect(0, 0, 256, 128);
+      ctx.fillStyle = '#0b0d12';
+      for (let y = 10; y < 128; y += 12) {
+        for (let x = 6; x < 256; x += 14) {
+          ctx.fillRect(x, y, 5, 2);
+        }
+      }
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(6, 2);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    }
+
+    function createWaterfallTexture() {
+      const c = document.createElement('canvas');
+      c.width = 128; c.height = 256;
+      const ctx = c.getContext('2d');
+      const grad = ctx.createLinearGradient(0, 0, 0, 256);
+      grad.addColorStop(0.0, 'rgba(186, 230, 253, 0.72)');
+      grad.addColorStop(0.55, 'rgba(224, 242, 254, 0.85)');
+      grad.addColorStop(1.0, 'rgba(255, 255, 255, 0.92)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 128, 256);
+
+      for (let i = 0; i < 42; i++) {
+        const x = (i * 19) % 128;
+        ctx.fillStyle = i % 3 === 0 ? 'rgba(255,255,255,0.45)' : 'rgba(125,211,252,0.35)';
+        ctx.fillRect(x, (i * 23) % 256, 3, 44);
+      }
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    }
+
+    function createPcbTexture() {
+      const c = document.createElement('canvas');
+      c.width = 256; c.height = 128;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#0b4f32';
+      ctx.fillRect(0, 0, 256, 128);
+      ctx.strokeStyle = 'rgba(110, 231, 183, 0.22)';
+      ctx.lineWidth = 1.5;
+      for (let x = 16; x < 248; x += 20) {
+        ctx.beginPath(); ctx.moveTo(x, 12); ctx.lineTo(x + 12, 116); ctx.stroke();
+      }
+      ctx.fillStyle = '#eab308';
+      for (let y = 10; y < 120; y += 10) {
+        for (let x = 10; x < 248; x += 10) {
+          ctx.beginPath(); ctx.arc(x, y, 1.4, 0, Math.PI * 2); ctx.fill();
+        }
+      }
+      const tex = new THREE.CanvasTexture(c);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    }
+
+    function createBenchRulerTexture(isLight) {
+      const c = document.createElement('canvas');
+      c.width = 2048; c.height = 256;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = isLight ? '#d8e2ee' : '#0b1220';
+      ctx.fillRect(0, 0, 2048, 256);
+
+      ctx.strokeStyle = isLight ? 'rgba(15,23,42,0.16)' : 'rgba(148,163,184,0.16)';
+      ctx.fillStyle = isLight ? '#334155' : '#94a3b8';
+      ctx.font = 'bold 28px ui-monospace, monospace';
+      ctx.textAlign = 'center';
+
+      // Map X=0..900 mm across center portion of bench (scale 1100 mm wide bench texture)
+      const xStart = 2048 * (100 / 1100);
+      const xSpan = 2048 * (900 / 1100);
+      for (let mm = 0; mm <= 900; mm += 20) {
+        const px = xStart + (mm / 900) * xSpan;
+        const major = mm % 100 === 0;
+        ctx.lineWidth = major ? 3 : 1.5;
+        ctx.beginPath();
+        ctx.moveTo(px, 28);
+        ctx.lineTo(px, major ? 80 : 54);
+        ctx.stroke();
+        if (major) {
+          ctx.fillText(`${mm}`, px, 115);
+        }
+      }
+      ctx.font = '600 22px Inter, sans-serif';
+      ctx.fillText('FORGENESIS REV 2.2  •  FLUME X-AXIS DATUM (mm)', 1024, 185);
+      const tex = new THREE.CanvasTexture(c);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    }
+
+    // =========================================================================
+    // 3. RENDERER, SCENE, CAMERA & STUDIO LIGHTING
+    // =========================================================================
+    const viewport = document.getElementById('viewport');
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.08;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    viewport.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color('#070b12');
+    scene.fog = new THREE.FogExp2('#070b12', 0.018);
+
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+    const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.05, 120);
+    camera.position.set(5.6, 5.2, 8.6);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.065;
+    controls.minDistance = 1.2;
+    controls.maxDistance = 24;
+    controls.maxPolarAngle = Math.PI * 0.495;
+    controls.target.set(0.2, 1.35, 0.0);
+    controls.update();
+
+    // Studio 3-point lighting
+    const hemiLight = new THREE.HemisphereLight('#d8f3ff', '#1e293b', 0.55);
+    scene.add(hemiLight);
+
+    const keyLight = new THREE.DirectionalLight('#ffffff', 2.1);
+    keyLight.position.set(6.5, 11.0, 8.5);
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.set(2048, 2048);
+    keyLight.shadow.camera.near = 1;
+    keyLight.shadow.camera.far = 30;
+    keyLight.shadow.camera.left = -7;
+    keyLight.shadow.camera.right = 7;
+    keyLight.shadow.camera.top = 5;
+    keyLight.shadow.camera.bottom = -5;
+    keyLight.shadow.bias = -0.0005;
+    scene.add(keyLight);
+
+    const rimLight = new THREE.DirectionalLight('#7dd3fc', 0.85);
+    rimLight.position.set(-7.5, 5.0, -6.0);
+    scene.add(rimLight);
+
+    const fillLight = new THREE.DirectionalLight('#fef3c7', 0.45);
+    fillLight.position.set(0.0, 3.5, 9.0);
+    scene.add(fillLight);
+
+    // Studio Bench & Ruler Strip
+    const benchGeo = new THREE.BoxGeometry(14.5, 0.24, 7.6);
+    const benchMat = new THREE.MeshStandardMaterial({ color: '#0d1422', roughness: 0.85, metalness: 0.08 });
+    const benchMesh = new THREE.Mesh(benchGeo, benchMat);
+    benchMesh.position.set(0, -0.18, 0.35);
+    benchMesh.receiveShadow = true;
+    scene.add(benchMesh);
+
+    const gridHelper = new THREE.GridHelper(14.5, 29, 0x1e293b, 0x151e2e);
+    gridHelper.position.set(0, -0.059, 0.35);
+    scene.add(gridHelper);
+
+    const rulerMat = new THREE.MeshStandardMaterial({ map: createBenchRulerTexture(false), roughness: 0.7 });
+    const rulerStrip = new THREE.Mesh(new THREE.PlaneGeometry(11.0, 1.38), rulerMat);
+    rulerStrip.rotation.x = -Math.PI / 2;
+    rulerStrip.position.set(0, -0.058, 2.35);
+    rulerStrip.receiveShadow = true;
+    scene.add(rulerStrip);
+
+    // =========================================================================
+    // 4. MASTER CAD COORDINATE ROOT (1 mm = 0.01 Three.js units)
+    // =========================================================================
+    // Rotation X = -90° maps CAD (X, Y, Z) -> World (0.01*X - 4.5, 0.01*Z, -0.01*Y)
+    // Near glass wall Y=-150 sits at World Z=+1.50 facing the viewer!
+    const cadRoot = new THREE.Group();
+    cadRoot.scale.setScalar(0.01);
+    cadRoot.rotation.x = -Math.PI / 2;
+    cadRoot.position.set(-4.5, 0, 0);
+    scene.add(cadRoot);
+
+    // Materials Library
+    const ss304Tex = createSS304MeshTexture();
+    const foamTex = createFoamTextures();
+    const epdmTex = createEpdmSlitTexture();
+    const waterfallTex = createWaterfallTexture();
+    const pcbTex = createPcbTexture();
+
+    const MATS = {
+      glass: new THREE.MeshPhysicalMaterial({
+        color: '#dff6ff', roughness: 0.06, metalness: 0.0,
+        transparent: true, opacity: 0.22, depthWrite: false,
+        reflectivity: 0.9, clearcoat: 1.0, side: THREE.DoubleSide
+      }),
+      glassFloor: new THREE.MeshPhysicalMaterial({
+        color: '#cbe9f5', roughness: 0.1, metalness: 0.0,
+        transparent: true, opacity: 0.72, depthWrite: true,
+        clearcoat: 0.8
+      }),
+      acrylicClear: new THREE.MeshPhysicalMaterial({
+        color: '#e0f4ff', roughness: 0.12, metalness: 0.02,
+        transparent: true, opacity: 0.42, depthWrite: false,
+        side: THREE.DoubleSide, clearcoat: 0.6
+      }),
+      acrylicCyan: new THREE.MeshPhysicalMaterial({
+        color: '#06b6d4', roughness: 0.15, metalness: 0.05,
+        transparent: true, opacity: 0.72, depthWrite: false,
+        side: THREE.DoubleSide, clearcoat: 0.5
+      }),
+      pvcBlue: new THREE.MeshStandardMaterial({ color: '#0284c7', roughness: 0.34, metalness: 0.06 }),
+      pvcOrange: new THREE.MeshStandardMaterial({ color: '#f97316', roughness: 0.36, metalness: 0.05 }),
+      epdm: new THREE.MeshStandardMaterial({ color: '#1b2028', map: epdmTex, roughness: 0.85, metalness: 0.05 }),
+      rubberBlack: new THREE.MeshStandardMaterial({ color: '#161a21', roughness: 0.82, metalness: 0.08 }),
+      sonarBody: new THREE.MeshStandardMaterial({ color: '#9aa4b2', roughness: 0.45, metalness: 0.12 }),
+      sonarNut: new THREE.MeshStandardMaterial({ color: '#58667a', roughness: 0.42, metalness: 0.2 }),
+      whiteSilicone: new THREE.MeshStandardMaterial({ color: '#f8fafc', roughness: 0.52, metalness: 0.0 }),
+      siliconeTube: new THREE.MeshPhysicalMaterial({
+        color: '#fff7ed', roughness: 0.25, transparent: true, opacity: 0.65, depthWrite: false
+      }),
+      foam: new THREE.MeshStandardMaterial({
+        color: '#323f54', map: foamTex.map, bumpMap: foamTex.bumpMap, bumpScale: 2.5, roughness: 0.96, metalness: 0.02
+      }),
+      ss304Mesh: new THREE.MeshStandardMaterial({
+        color: '#e2e8f0', map: ss304Tex, alphaMap: ss304Tex, alphaTest: 0.38,
+        roughness: 0.32, metalness: 0.85, side: THREE.DoubleSide
+      }),
+      ss304Solid: new THREE.MeshStandardMaterial({ color: '#cbd5e1', roughness: 0.28, metalness: 0.88 }),
+      alumGold: new THREE.MeshStandardMaterial({ color: '#eab308', roughness: 0.28, metalness: 0.82 }),
+      absDark: new THREE.MeshStandardMaterial({ color: '#334155', roughness: 0.55, metalness: 0.15 }),
+      pcb: new THREE.MeshStandardMaterial({ map: pcbTex, roughness: 0.48, metalness: 0.22 }),
+      pcbBlue: new THREE.MeshStandardMaterial({ color: '#1d4ed8', roughness: 0.45, metalness: 0.15 }),
+      copper: new THREE.MeshStandardMaterial({ color: '#d97706', roughness: 0.3, metalness: 0.85 }),
+      redBtn: new THREE.MeshStandardMaterial({ color: '#dc2626', roughness: 0.35, metalness: 0.1 }),
+      statusLed: new THREE.MeshStandardMaterial({
+        color: '#ef4444', emissive: '#ef4444', emissiveIntensity: 1.5, roughness: 0.2
+      })
+    };
+
+    // Interactive Mesh Registry
+    const clickableMeshes = [];
+    const zoneGroups = {};
+    const explodeSpecs = [];
+    let selectedPartId = null;
+    const origEmissive = new Map();
+
+    function registerPartMesh(mesh, partId, renderOrder = 0) {
+      mesh.renderOrder = renderOrder;
+      if (partId) {
+        mesh.userData.partId = partId;
+        clickableMeshes.push(mesh);
+      }
+      if (renderOrder === 0) {
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+      }
+      return mesh;
+    }
+
+    function addEdgeOutline(mesh, color = 0x7dd3fc, opacity = 0.5, renderOrder = 3) {
+      const edges = new THREE.EdgesGeometry(mesh.geometry, 25);
+      const line = new THREE.LineSegments(
+        edges,
+        new THREE.LineBasicMaterial({ color, transparent: true, opacity })
+      );
+      line.renderOrder = renderOrder;
+      mesh.add(line);
+      return line;
+    }
+
+    function addBox(parent, x, y, z, dx, dy, dz, mat, partId, opts = {}) {
+      const geo = new THREE.BoxGeometry(dx, dy, dz);
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.set(x + dx * 0.5, y + dy * 0.5, z + dz * 0.5);
+      registerPartMesh(mesh, partId, opts.renderOrder ?? 0);
+      if (opts.edges) {
+        addEdgeOutline(mesh, opts.edgeColor ?? 0x93c5fd, opts.edgeOpacity ?? 0.48, (opts.renderOrder ?? 0) + 1);
+      }
+      parent.add(mesh);
+      return mesh;
+    }
+
+    function addCyl(parent, p1, p2, rTop, rBot, mat, partId, opts = {}) {
+      const a = new THREE.Vector3(...p1);
+      const b = new THREE.Vector3(...p2);
+      const dir = new THREE.Vector3().subVectors(b, a);
+      const len = dir.length();
+      if (len < 1e-4) return null;
+      const geo = new THREE.CylinderGeometry(rTop, rBot, len, opts.segs || 28);
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.addVectors(a, b).multiplyScalar(0.5);
+      mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
+      registerPartMesh(mesh, partId, opts.renderOrder ?? 0);
+      parent.add(mesh);
+      return mesh;
+    }
+
+    function addPipePath(parent, pts, radius, mat, partId, opts = {}) {
+      const path = new THREE.CurvePath();
+      const vectors = pts.map(p => new THREE.Vector3(...p));
+      const bendR = opts.bendRadius ?? radius * 1.9;
+      let prevEnd = vectors[0];
+
+      for (let i = 1; i < vectors.length - 1; i++) {
+        const pPrev = vectors[i - 1];
+        const pCurr = vectors[i];
+        const pNext = vectors[i + 1];
+        const v1 = new THREE.Vector3().subVectors(pCurr, pPrev);
+        const v2 = new THREE.Vector3().subVectors(pNext, pCurr);
+        const r = Math.min(bendR, v1.length() * 0.4, v2.length() * 0.4);
+        const bStart = pCurr.clone().addScaledVector(v1.normalize(), -r);
+        const bEnd = pCurr.clone().addScaledVector(v2.normalize(), r);
+
+        if (prevEnd.distanceTo(bStart) > 0.1) {
+          path.add(new THREE.LineCurve3(prevEnd, bStart));
+        }
+        path.add(new THREE.QuadraticBezierCurve3(bStart, pCurr, bEnd));
+        prevEnd = bEnd;
+      }
+      const last = vectors[vectors.length - 1];
+      if (prevEnd.distanceTo(last) > 0.1) {
+        path.add(new THREE.LineCurve3(prevEnd, last));
+      }
+
+      const geo = new THREE.TubeGeometry(path, opts.tubularSegs || 72, radius, opts.radialSegs || 20, false);
+      const mesh = new THREE.Mesh(geo, mat);
+      registerPartMesh(mesh, partId, opts.renderOrder ?? 0);
+      parent.add(mesh);
+      return mesh;
+    }
+
+    function createZoneGroup(key, explodeOffset = [0, 0, 0]) {
+      const g = new THREE.Group();
+      cadRoot.add(g);
+      zoneGroups[key] = g;
+      explodeSpecs.push({ group: g, base: new THREE.Vector3(0, 0, 0), delta: new THREE.Vector3(...explodeOffset) });
+      return g;
+    }
+
+    // =========================================================================
+    // 5. BUILD ALL 6 PROTOTYPE ZONES (EXACT REV 2.2 GEOMETRY)
+    // =========================================================================
+
+    // --- ZONE 0A: Glass Flume Tank (T-01) ---
+    const zoneTank = createZoneGroup('tank', [0, 0, -45]);
+    const tG = CFG.tGlass;
+    addBox(zoneTank, 0, -150 - tG, -tG, CFG.L, CFG.W + 2 * tG, tG, MATS.glassFloor, 'T-01', { edges: true, edgeColor: 0x38bdf8, edgeOpacity: 0.4, renderOrder: 1 });
+    const nearGlassWall = addBox(zoneTank, 0, -150 - tG, 0, CFG.L, tG, CFG.H, MATS.glass, 'T-01', { edges: true, edgeColor: 0x67e8f9, edgeOpacity: 0.65, renderOrder: 8 });
+    addBox(zoneTank, 0, 150, 0, CFG.L, tG, CFG.H, MATS.glass, 'T-01', { edges: true, edgeColor: 0x67e8f9, edgeOpacity: 0.5, renderOrder: 8 });
+    addBox(zoneTank, -tG, -150, 0, tG, CFG.W, CFG.H, MATS.glass, 'T-01', { edges: true, edgeColor: 0x67e8f9, edgeOpacity: 0.55, renderOrder: 8 });
+    addBox(zoneTank, CFG.L, -150, 0, tG, CFG.W, CFG.H, MATS.glass, 'T-01', { edges: true, edgeColor: 0x67e8f9, edgeOpacity: 0.55, renderOrder: 8 });
+
+    // --- ZONE 0B: Closed-Loop Recirculation Plumbing (R-01, R-02, C-05, C-06) ---
+    const zonePlumbing = createZoneGroup('plumbing', [-55, -80, 45]);
+    // R-02 Upstream Flow-Maker Sparger Bar (OD 20 mm)
+    addCyl(zonePlumbing, [25, -140, 175], [25, 140, 175], 10, 10, MATS.pvcBlue, 'R-02');
+    addCyl(zonePlumbing, [25, 140, 175], [25, 146, 175], 11.8, 11.8, MATS.epdm, 'R-02');
+    addCyl(zonePlumbing, [25, -146, 175], [25, -140, 175], 11.8, 11.8, MATS.epdm, 'R-02');
+    // 16 x Ø3 mm horizontal forward-facing jet nozzles
+    for (let i = 0; i < 16; i++) {
+      const ny = -120 + (240 / 15) * i;
+      addCyl(zonePlumbing, [25, ny, 175], [39, ny, 175], 1.6, 1.6, MATS.ss304Solid, 'R-02', { segs: 12 });
+    }
+    // Sparger top-rim acrylic hanger clip at far end
+    addBox(zonePlumbing, 15, 134, 165, 20, 6, 137, MATS.acrylicClear, 'R-02', { edges: true, renderOrder: 2 });
+    addBox(zonePlumbing, 15, 134, 300, 20, 26, 4, MATS.acrylicClear, 'R-02', { edges: true, renderOrder: 2 });
+    addBox(zonePlumbing, 15, 156, 274, 20, 5, 28, MATS.acrylicClear, 'R-02', { edges: true, renderOrder: 2 });
+
+    // R-01 Closed-Loop Return Pipe (OD 16 mm) from Pump Outlet (746,0,33) -> (786,0,33) -> (786,-140,32) -> (25,-140,32) -> (25,-140,175)
+    addPipePath(zonePlumbing, [
+      [744, 0, 33],
+      [786, 0, 33],
+      [786, -140, 32],
+      [25, -140, 32],
+      [25, -140, 175]
+    ], 8.0, MATS.pvcBlue, 'R-01', { bendRadius: 15, tubularSegs: 96 });
+    // Elbow fitting collars & bulkhead ring on W-02
+    addCyl(zonePlumbing, [759, 0, 33], [770, 0, 33], 11.5, 11.5, MATS.rubberBlack, 'R-01');
+    addCyl(zonePlumbing, [25, -140, 162], [25, -140, 175], 10.5, 10.5, MATS.pvcBlue, 'R-01');
+
+    // C-05 (X=220) & C-06 (X=620) Standoff Clips supporting R-01 at Y=-140, Z=32
+    for (const cx of [220, 620]) {
+      addBox(zonePlumbing, cx - 12, -149.5, 0, 24, 18, 25, MATS.acrylicClear, 'C-05', { edges: true, renderOrder: 2 });
+      addBox(zonePlumbing, cx - 12, -149.5, 25, 24, 3, 18, MATS.acrylicClear, 'C-05', { edges: true, renderOrder: 2 });
+      addBox(zonePlumbing, cx - 12, -134.5, 25, 24, 3, 18, MATS.acrylicClear, 'C-05', { edges: true, renderOrder: 2 });
+    }
+
+    // --- ZONE 1: V-Funnel Debris Concentrator (F-01, F-02, C-07, C-08) ---
+    const zoneFunnel = createZoneGroup('funnel', [-45, 0, 95]);
+    function createFunnelVane(ptsXY, z0, z1, hasPipeNotch = false) {
+      if (!hasPipeNotch) {
+        const shape = new THREE.Shape();
+        shape.moveTo(ptsXY[0][0], ptsXY[0][1]);
+        for (let i = 1; i < ptsXY.length; i++) shape.lineTo(ptsXY[i][0], ptsXY[i][1]);
+        shape.closePath();
+        const geo = new THREE.ExtrudeGeometry(shape, { depth: z1 - z0, bevelEnabled: false });
+        geo.translate(0, 0, z0);
+        const mesh = new THREE.Mesh(geo, MATS.acrylicClear);
+        registerPartMesh(mesh, 'F-01', 2);
+        addEdgeOutline(mesh, 0x93c5fd, 0.55, 3);
+        zoneFunnel.add(mesh);
+      } else {
+        // Near vane F-02 split cleanly around R-01 pipe pass-through (Z=18..46 near X=80..145)
+        const [p0, p1, p2, p3] = ptsXY;
+        const tFrac = 0.27; // covers X=80..141 where R-01 crosses Y=-140
+        const midOuter = [p0[0] + (p1[0] - p0[0]) * tFrac, p0[1] + (p1[1] - p0[1]) * tFrac];
+        const midInner = [p3[0] + (p2[0] - p3[0]) * tFrac, p3[1] + (p2[1] - p3[1]) * tFrac];
+
+        const makePoly = (arr, zb, zt) => {
+          const s = new THREE.Shape();
+          s.moveTo(arr[0][0], arr[0][1]);
+          for (let i = 1; i < arr.length; i++) s.lineTo(arr[i][0], arr[i][1]);
+          s.closePath();
+          const g = new THREE.ExtrudeGeometry(s, { depth: zt - zb, bevelEnabled: false });
+          g.translate(0, 0, zb);
+          const m = new THREE.Mesh(g, MATS.acrylicClear);
+          registerPartMesh(m, 'F-01', 2);
+          addEdgeOutline(m, 0x93c5fd, 0.55, 3);
+          zoneFunnel.add(m);
+        };
+        // Bottom tab (Z=0..18), Top span (Z=46..220), and downstream solid section (Z=0..220)
+        makePoly([p0, midOuter, midInner, p3], 0, 18);
+        makePoly([p0, midOuter, midInner, p3], 46, z1);
+        makePoly([midOuter, p1, p2, midInner], 0, z1);
+      }
+    }
+
+    createFunnelVane([[80, 150], [305.5, 70], [305.5, 67], [80, 147]], 0, 220, false);
+    createFunnelVane([[80, -147], [305.5, -67], [305.5, -70], [80, -150]], 0, 220, true);
+
+    // Top-rim clamps C-07 (Far) & C-08 (Near) + M4 Nylon Thumbscrews
+    for (const sign of [1, -1]) {
+      const yInner = sign > 0 ? 146 : -150;
+      const yOuter = sign > 0 ? 156 : -160;
+      addBox(zoneFunnel, 70, yInner, 218, 28, 4, 84, MATS.acrylicClear, 'F-01', { edges: true, renderOrder: 2 });
+      addBox(zoneFunnel, 70, sign > 0 ? 146 : -160, 300, 28, 14, 4, MATS.acrylicClear, 'F-01', { edges: true, renderOrder: 2 });
+      addBox(zoneFunnel, 70, yOuter, 272, 28, 4, 28, MATS.acrylicClear, 'F-01', { edges: true, renderOrder: 2 });
+      addCyl(zoneFunnel, [84, sign * 160, 286], [84, sign * 167, 286], 5, 5, MATS.whiteSilicone, 'F-01');
+    }
+
+    // --- ZONE 2: Exact 1:1 DYP-L08B50TW-V3.0 Sonar Gate (S-01, C-01, S-05) ---
+    const zoneSonar = createZoneGroup('sonar', [0, 85, 110]);
+    const sx = CFG.sonarX;
+    const sz = CFG.sonarZ;
+
+    // Sonar 1:1 cylindrical assembly
+    addCyl(zoneSonar, [sx, 115.0, sz], [sx, 115.8, sz], 8.6, 8.2, MATS.sonarBody, 'S-01');
+    addCyl(zoneSonar, [sx, 115.8, sz], [sx, 125.5, sz], 9.0, 9.0, MATS.sonarBody, 'S-01');
+    addCyl(zoneSonar, [sx, 125.5, sz], [sx, 142.0, sz], 8.8, 8.8, MATS.sonarBody, 'S-01');
+    for (let k = 0; k < 10; k++) {
+      const ty = 126.2 + 1.5 * k;
+      addCyl(zoneSonar, [sx, ty, sz], [sx, ty + 0.75, sz], 9.5, 9.5, MATS.sonarNut, 'S-01');
+    }
+
+    // True 18-Tooth Ø28mm Gear-Knurled Locknuts (ExtrudeGeometry in XZ plane, extruded along Y)
+    function addGearLocknut(yStart, yEnd) {
+      const shape = new THREE.Shape();
+      const teeth = 18;
+      const rRoot = 12.3, rTip = 14.0, rIn = 9.5;
+      for (let i = 0; i < teeth; i++) {
+        const base = (2 * Math.PI * i) / teeth;
+        const step = (2 * Math.PI) / teeth;
+        const pts = [
+          [rRoot * Math.cos(base), rRoot * Math.sin(base)],
+          [rTip * Math.cos(base + 0.26 * step), rTip * Math.sin(base + 0.26 * step)],
+          [rTip * Math.cos(base + 0.46 * step), rTip * Math.sin(base + 0.46 * step)],
+          [rRoot * Math.cos(base + 0.72 * step), rRoot * Math.sin(base + 0.72 * step)]
+        ];
+        pts.forEach((p, idx) => {
+          if (i === 0 && idx === 0) shape.moveTo(p[0], p[1]);
+          else shape.lineTo(p[0], p[1]);
+        });
+      }
+      shape.closePath();
+      const bore = new THREE.Path();
+      bore.absarc(0, 0, rIn, 0, Math.PI * 2, true);
+      shape.holes.push(bore);
+
+      const geo = new THREE.ExtrudeGeometry(shape, { depth: yEnd - yStart, bevelEnabled: false });
+      geo.rotateX(-Math.PI / 2); // local +Z extrude -> +Y world/CAD
+      const mesh = new THREE.Mesh(geo, MATS.sonarNut);
+      mesh.position.set(sx, yStart, sz);
+      registerPartMesh(mesh, 'S-01');
+      zoneSonar.add(mesh);
+    }
+
+    addGearLocknut(126.0, 130.5);
+    addCyl(zoneSonar, [sx, 130.5, sz], [sx, 132.0, sz], 11.5, 11.5, MATS.whiteSilicone, 'S-01');
+    addGearLocknut(137.0, 141.5);
+    addCyl(zoneSonar, [sx, 142.0, sz], [sx, 144.0, sz], 9.0, 9.0, MATS.sonarNut, 'S-01');
+    addCyl(zoneSonar, [sx, 144.0, sz], [sx, 149.0, sz], 8.25, 8.25, MATS.sonarBody, 'S-01');
+    addCyl(zoneSonar, [sx - 4.6, 148.6, sz], [sx - 4.6, 149.3, sz], 1.6, 1.6, MATS.rubberBlack, 'S-01');
+    addCyl(zoneSonar, [sx + 4.6, 148.6, sz], [sx + 4.6, 149.3, sz], 1.6, 1.6, MATS.rubberBlack, 'S-01');
+    addCyl(zoneSonar, [sx, 148.8, sz], [sx, 150.3, sz], 3.2, 3.2, MATS.rubberBlack, 'S-01');
+    // Waterproof umbilical cable routing inside glass (Y=146), over rim around C-01, into E-01 PG7 gland (340, 176, 162)
+    addPipePath(zoneSonar, [
+      [sx, 148.0, sz],
+      [sx - 24, 145.0, 235.0],
+      [340, 145.0, 306.0],
+      [340, 176.0, 306.0],
+      [340, 176.0, 258.0]
+    ], 2.0, MATS.rubberBlack, 'S-01', { bendRadius: 6 });
+
+    // C-01 No-Drill Sonar Glass Rim Bracket with TRUE Ø19.5 mm hole
+    (function buildC01Bracket() {
+      const dropShape = new THREE.Shape();
+      dropShape.moveTo(sx - 36, 158);
+      dropShape.lineTo(sx + 36, 158);
+      dropShape.lineTo(sx + 36, 300);
+      dropShape.lineTo(sx - 36, 300);
+      dropShape.closePath();
+      const hole = new THREE.Path();
+      hole.absarc(sx, sz, 9.75, 0, Math.PI * 2, true);
+      dropShape.holes.push(hole);
+
+      const geo = new THREE.ExtrudeGeometry(dropShape, { depth: 3.5, bevelEnabled: false });
+      geo.rotateX(-Math.PI / 2); // local Y -> CAD Z, extrude Z -> CAD +Y
+      const dropMesh = new THREE.Mesh(geo, MATS.acrylicClear);
+      dropMesh.position.set(0, 133.5, 0);
+      registerPartMesh(dropMesh, 'C-01', 2);
+      addEdgeOutline(dropMesh, 0x93c5fd, 0.55, 3);
+      zoneSonar.add(dropMesh);
+
+      addBox(zoneSonar, sx - 36, 133.5, 300, 72, 28.5, 4, MATS.acrylicClear, 'C-01', { edges: true, renderOrder: 2 });
+      addBox(zoneSonar, sx - 36, 156, 268, 72, 6, 32, MATS.acrylicClear, 'C-01', { edges: true, renderOrder: 2 });
+      addCyl(zoneSonar, [sx, 162, 284], [sx, 169, 284], 5.5, 5.5, MATS.whiteSilicone, 'C-01');
+    })();
+
+    // S-05 Acoustic Stop Baffle (30 PPI Polyurethane Foam + Acrylic Backplate + Rim Clamp)
+    addBox(zoneSonar, sx - 55, -128, 0, 110, 3, 220, MATS.acrylicClear, 'S-05', { edges: true, renderOrder: 2 });
+    addBox(zoneSonar, sx - 55, -125, 0, 110, 18, 215, MATS.foam, 'S-05');
+    // Slim rim suspension bridge for S-05 (clears near wall & R-01)
+    addBox(zoneSonar, sx - 16, -135, 220, 32, 10, 80, MATS.acrylicClear, 'S-05', { edges: true, renderOrder: 2 });
+    addBox(zoneSonar, sx - 16, -159, 300, 32, 34, 4, MATS.acrylicClear, 'S-05', { edges: true, renderOrder: 2 });
+    addBox(zoneSonar, sx - 16, -159, 276, 32, 3, 24, MATS.acrylicClear, 'S-05', { edges: true, renderOrder: 2 });
+
+    // Toggleable Sonar 50° Beam Cone & Blind Zone
+    const sonarBeamGroup = new THREE.Group();
+    zoneSonar.add(sonarBeamGroup);
+    const beamBlindGeo = new THREE.CylinderGeometry(8.6, 46, 80, 32, 1, true);
+    const beamBlindMat = new THREE.MeshBasicMaterial({
+      color: '#f59e0b', transparent: true, opacity: 0.16, depthWrite: false, side: THREE.DoubleSide
+    });
+    const beamBlindMesh = new THREE.Mesh(beamBlindGeo, beamBlindMat);
+    beamBlindMesh.position.set(sx, 75, sz);
+    beamBlindMesh.renderOrder = 4;
+    sonarBeamGroup.add(beamBlindMesh);
+
+    const beamActiveGeo = new THREE.CylinderGeometry(46, 112, 142, 32, 1, true);
+    const beamActiveMat = new THREE.MeshBasicMaterial({
+      color: '#06b6d4', transparent: true, opacity: 0.11, depthWrite: false, side: THREE.DoubleSide
+    });
+    const beamActiveMesh = new THREE.Mesh(beamActiveGeo, beamActiveMat);
+    beamActiveMesh.position.set(sx, -36, sz);
+    beamActiveMesh.renderOrder = 4;
+    sonarBeamGroup.add(beamActiveMesh);
+
+    const sonarPulseRings = [];
+    for (let i = 0; i < 3; i++) {
+      const rGeo = new THREE.RingGeometry(1, 3.2, 32);
+      const rMat = new THREE.MeshBasicMaterial({
+        color: '#22d3ee', transparent: true, opacity: 0.6, depthWrite: false, side: THREE.DoubleSide
+      });
+      const rMesh = new THREE.Mesh(rGeo, rMat);
+      rMesh.rotation.x = Math.PI / 2;
+      rMesh.renderOrder = 4;
+      sonarBeamGroup.add(rMesh);
+      sonarPulseRings.push({ mesh: rMesh, mat: rMat, phase: i / 3 });
+    }
+
+    // --- ZONE 3: 90° Transverse EPDM Bubble Barrier (D-01, D-02, A-01) ---
+    const zoneDiffuser = createZoneGroup('diffuser', [0, 50, 75]);
+    const dx = CFG.diffuserX;
+    // D-01 EPDM Micro-Porous Diffuser Tube (Z=12, Y=-115..+140)
+    addCyl(zoneDiffuser, [dx, -115, 12], [dx, 140, 12], 10, 10, MATS.epdm, 'D-01');
+    addCyl(zoneDiffuser, [dx, -118, 12], [dx, -115, 12], 10.8, 10.8, MATS.rubberBlack, 'D-01');
+    const domeCap = new THREE.Mesh(new THREE.SphereGeometry(10.8, 20, 14), MATS.rubberBlack);
+    domeCap.scale.set(1, 0.28, 1); // dome tip reaches Y = -118 - 3.0 = -121.0 (11.0 mm net air gap to R-01 inner wall at Y=-132)
+    domeCap.position.set(dx, -118, 12);
+    registerPartMesh(domeCap, 'D-01');
+    zoneDiffuser.add(domeCap);
+    // Coupling tee at far end
+    addCyl(zoneDiffuser, [dx, 140, 12], [dx, 146, 12], 11.4, 11.4, MATS.pvcOrange, 'D-01');
+    // Silicone floor saddle feet
+    for (const fy of [-105, 130]) {
+      addBox(zoneDiffuser, dx - 12, fy - 8, 0, 24, 16, 6, MATS.rubberBlack, 'D-01');
+    }
+
+    // D-02 Silicone Airline + Anti-Siphon Loop + 1-Way Check Valve
+    addPipePath(zoneDiffuser, [
+      [dx, 143, 12],
+      [dx, 143, 315],
+      [dx, 185, 315],
+      [dx, 212, 210],
+      [dx, 212, 42]
+    ], 3.4, MATS.siliconeTube, 'D-02', { bendRadius: 10, renderOrder: 2 });
+    // Inline one-way check valve at top of rim (Z=315)
+    addCyl(zoneDiffuser, [dx, 155, 315], [dx, 173, 315], 6.4, 6.4, MATS.ss304Solid, 'D-02');
+    addCyl(zoneDiffuser, [dx, 162, 315], [dx, 166, 315], 7.0, 7.0, MATS.pvcOrange, 'D-02');
+
+    // A-01 Micro Diaphragm Air Compressor (External Bench behind far wall)
+    addBox(zoneDiffuser, dx - 28, 198, -6, 56, 66, 6, MATS.rubberBlack, 'A-01'); // vibration pad
+    addCyl(zoneDiffuser, [dx, 212, 16], [dx, 246, 16], 14, 14, MATS.ss304Solid, 'A-01'); // 370 DC motor body
+    addBox(zoneDiffuser, dx - 15, 200, 2, 30, 14, 30, MATS.rubberBlack, 'A-01'); // diaphragm head
+    addCyl(zoneDiffuser, [dx, 212, 32], [dx, 212, 42], 4.2, 4.2, MATS.whiteSilicone, 'A-01'); // air barb
+    // Power wire from A-01 into E-01 middle PG7 gland (380, 176, 162)
+    addPipePath(zoneDiffuser, [
+      [dx, 246, 16],
+      [dx - 45, 236, 16],
+      [380, 196, 90],
+      [380, 176, 162]
+    ], 1.8, MATS.rubberBlack, 'A-01', { bendRadius: 18 });
+
+    // --- ZONE 4: Option 2A Full-Width 3-Slot Castellated Weir, SS304 Basket & Pump ---
+    const zoneWeir = createZoneGroup('weir', [90, 0, 50]);
+    const wx = CFG.weirX;
+    const wy = CFG.weirY;
+    const wl = CFG.weirL;
+    const ww = CFG.weirW;
+    const cw = CFG.weirInnerW;
+    const tA = CFG.tAcrylic;
+
+    // Sump Housing (W-05 base, W-03 left, W-04 right, W-02 rear)
+    addBox(zoneWeir, wx, wy, 0, wl, ww, tA, MATS.acrylicClear, 'W-01', { edges: true, renderOrder: 2 });
+    addBox(zoneWeir, wx, wy + ww - tA, tA, wl, tA, CFG.sumpWallH, MATS.acrylicClear, 'W-01', { edges: true, renderOrder: 2 });
+    addBox(zoneWeir, wx, wy, tA, wl, tA, CFG.sumpWallH, MATS.acrylicClear, 'W-01', { edges: true, renderOrder: 2 });
+    addBox(zoneWeir, wx + wl - tA, wy + tA, tA, tA, cw, CFG.sumpWallH, MATS.acrylicClear, 'W-01', { edges: true, renderOrder: 2 });
+
+    // W-01 Front Castellated Weir Plate (Cyan Cast Acrylic)
+    addBox(zoneWeir, wx, wy + tA, tA, tA, cw, CFG.weirCrestZ - tA, MATS.acrylicCyan, 'W-01', { edges: true, edgeColor: 0x22d3ee, edgeOpacity: 0.72, renderOrder: 2 });
+    // 4 Castellated Teeth (Z=185..212) creating Right 55mm, Center 54mm, Left 55mm gates
+    addBox(zoneWeir, wx, wy + tA, 185, tA, 24, 27, MATS.acrylicCyan, 'W-01', { edges: true, edgeColor: 0x22d3ee, edgeOpacity: 0.85, renderOrder: 2 });
+    addBox(zoneWeir, wx, wy + tA + 79, 185, tA, 38, 27, MATS.acrylicCyan, 'W-01', { edges: true, edgeColor: 0x22d3ee, edgeOpacity: 0.85, renderOrder: 2 });
+    addBox(zoneWeir, wx, wy + tA + 171, 185, tA, 38, 27, MATS.acrylicCyan, 'W-01', { edges: true, edgeColor: 0x22d3ee, edgeOpacity: 0.85, renderOrder: 2 });
+    addBox(zoneWeir, wx, wy + tA + 264, 185, tA, 24, 27, MATS.acrylicCyan, 'W-01', { edges: true, edgeColor: 0x22d3ee, edgeOpacity: 0.85, renderOrder: 2 });
+
+    // W-06, W-07, W-08 Basket Guide Rails & Center Anti-Sag Rib (Z=120)
+    addBox(zoneWeir, wx + tA, wy + tA, 120, wl - 2 * tA, 8, tA, MATS.acrylicClear, 'W-06', { edges: true, renderOrder: 2 });
+    addBox(zoneWeir, wx + tA, wy + ww - tA - 8, 120, wl - 2 * tA, 8, tA, MATS.acrylicClear, 'W-06', { edges: true, renderOrder: 2 });
+    addBox(zoneWeir, wx + tA, wy + ww * 0.5 - 4, 120, wl - 2 * tA, 8, tA, MATS.acrylicClear, 'W-06', { edges: true, renderOrder: 2 });
+
+    // Removable SS304 Mesh Basket (B-01 & B-02) inside basketGroup
+    const basketGroup = new THREE.Group();
+    zoneWeir.add(basketGroup);
+    const bx = wx + 5.0; // 675
+    const by = wy + 6.0; // -141
+    const bz = 123.0;
+    const bl = CFG.basketL; // 86
+    const bw = CFG.basketW; // 282
+    const bh = CFG.basketH; // 40
+
+    addBox(basketGroup, bx, by, bz, bl, bw, 1.5, MATS.ss304Mesh, 'B-01');
+    addBox(basketGroup, bx, by, bz + 1.5, 1.5, bw, bh - 1.5, MATS.ss304Mesh, 'B-01');
+    addBox(basketGroup, bx + bl - 1.5, by, bz + 1.5, 1.5, bw, bh - 1.5, MATS.ss304Mesh, 'B-01');
+    addBox(basketGroup, bx + 1.5, by, bz + 1.5, bl - 3, 1.5, bh - 1.5, MATS.ss304Mesh, 'B-01');
+    addBox(basketGroup, bx + 1.5, by + bw - 1.5, bz + 1.5, bl - 3, 1.5, bh - 1.5, MATS.ss304Mesh, 'B-01');
+    // Brushed SS304 upper rim frame
+    addBox(basketGroup, bx, by, bz + bh - 2, bl, 3, 2.5, MATS.ss304Solid, 'B-01');
+    addBox(basketGroup, bx, by + bw - 3, bz + bh - 2, bl, 3, 2.5, MATS.ss304Solid, 'B-01');
+    addBox(basketGroup, bx, by, bz + bh - 2, 3, bw, 2.5, MATS.ss304Solid, 'B-01');
+    addBox(basketGroup, bx + bl - 3, by, bz + bh - 2, 3, bw, 2.5, MATS.ss304Solid, 'B-01');
+
+    // Dual Gold-Anodized T-Grip Pull Handles (B-02)
+    for (const hy of [by + 65, by + bw - 65]) {
+      addCyl(basketGroup, [bx + bl * 0.5, hy, bz + bh], [bx + bl * 0.5, hy, 235], 2.5, 2.5, MATS.alumGold, 'B-02');
+      addCyl(basketGroup, [bx + bl * 0.5 - 15, hy, 235], [bx + bl * 0.5 + 15, hy, 235], 3.5, 3.5, MATS.alumGold, 'B-02');
+    }
+
+    // P-01 Submersible Pump + Anti-Vortex Baffle Plate (Z=61 mm)
+    const px = wx + wl * 0.5 - 24; // 694
+    const py = -18;
+    addBox(zoneWeir, px, py, 3, 48, 36, 52, MATS.rubberBlack, 'P-01');
+    addBox(zoneWeir, px - 2, py + 4, 8, 2, 28, 36, MATS.absDark, 'P-01'); // front intake grille
+    addCyl(zoneWeir, [px + 48, 0, 33], [wx + wl - tA, 0, 33], 8, 8, MATS.pvcBlue, 'P-01');
+    // 40 x 40 mm Perforated Anti-Vortex Baffle Plate at Z=61 mm
+    addBox(zoneWeir, px + 4, -20, 61, 40, 40, 2, MATS.ss304Mesh, 'P-01');
+    for (const [sxo, syo] of [[px + 7, -17], [px + 41, -17], [px + 7, 17], [px + 41, 17]]) {
+      addCyl(zoneWeir, [sxo, syo, 55], [sxo, syo, 61], 1.5, 1.5, MATS.ss304Solid, 'P-01');
+    }
+    // Submersible pump power cable routing cleanly over far rim into E-01 PG7 gland (420, 176, 162)
+    addPipePath(zoneWeir, [
+      [px + 20, 18, 45],
+      [px + 20, 138, 45],
+      [px + 20, 138, 306],
+      [px + 20, 174, 306],
+      [485, 176, 130],
+      [420, 176, 162]
+    ], 1.8, MATS.rubberBlack, 'P-01', { bendRadius: 12 });
+
+    // --- ZONE 5: External IP65 Electronics Enclosure (E-01) ---
+    const zoneElec = createZoneGroup('electronics', [0, 110, 80]);
+    // Main ABS IP65 Box (X=300..460, Y=156..216, Z=170..260 -> clears C-01 outer jaw Z=268..300)
+    addBox(zoneElec, 300, 156, 170, 160, 4, 90, MATS.absDark, 'E-01'); // backplate
+    addBox(zoneElec, 300, 156, 170, 160, 60, 4, MATS.absDark, 'E-01'); // floor
+    addBox(zoneElec, 300, 156, 256, 160, 60, 4, MATS.absDark, 'E-01'); // top
+    addBox(zoneElec, 300, 156, 174, 4, 60, 82, MATS.absDark, 'E-01'); // left side
+    addBox(zoneElec, 456, 156, 174, 4, 60, 82, MATS.absDark, 'E-01'); // right side
+    // Dual rim hanger brackets flanking C-01 (X=344..416)
+    for (const hx of [306, 442]) {
+      addBox(zoneElec, hx, 156, 260, 12, 4, 42, MATS.absDark, 'E-01');
+      addBox(zoneElec, hx, 146, 298, 12, 14, 4, MATS.absDark, 'E-01');
+      addBox(zoneElec, hx, 146, 276, 12, 4, 22, MATS.absDark, 'E-01');
+    }
+    // Clear polycarbonate front lid
+    addBox(zoneElec, 298, 216, 168, 164, 3, 94, MATS.acrylicClear, 'E-01', { edges: true, edgeColor: 0x94a3b8, renderOrder: 3 });
+
+    // 3x PG7 Cable Glands on underside/front-bottom
+    for (const gx of [340, 380, 420]) {
+      addCyl(zoneElec, [gx, 176, 162], [gx, 176, 170], 6, 6, MATS.rubberBlack, 'E-01');
+    }
+    // External SW1 Rocker Switch, F1 Fuse, Barrel Jack & GPIO32 Override Button
+    addBox(zoneElec, 458, 178, 224, 6, 14, 22, MATS.redBtn, 'E-01'); // SPST rocker
+    addCyl(zoneElec, [458, 185, 195], [468, 185, 195], 5.5, 5.5, MATS.rubberBlack, 'E-01'); // 12V jack
+    addBox(zoneElec, 316, 217, 232, 12, 6, 12, MATS.redBtn, 'E-01'); // GPIO32 tactile override button
+
+    // Internal PCB & Electronics visible through clear polycarbonate lid
+    addBox(zoneElec, 308, 164, 178, 144, 2, 72, MATS.pcb, 'E-01');
+    // ESP32-WROVER-E CH340 DevKitC
+    addBox(zoneElec, 316, 168, 200, 52, 3, 28, MATS.absDark, 'E-01');
+    addBox(zoneElec, 320, 171, 205, 18, 3, 18, MATS.ss304Solid, 'E-01'); // RF shield can
+    // LM2596 Buck Converter (12V -> 5V)
+    addBox(zoneElec, 378, 168, 222, 42, 2, 22, MATS.pcbBlue, 'E-01');
+    addCyl(zoneElec, [395, 168, 233], [395, 177, 233], 6, 6, MATS.rubberBlack, 'E-01'); // inductor
+    // TXS0108E 8-Ch Level Shifter
+    addBox(zoneElec, 380, 168, 196, 24, 2, 14, MATS.pcbBlue, 'E-01');
+    // 1000 uF / 16V Bulk Capacitor (C1)
+    addCyl(zoneElec, [432, 168, 230], [432, 184, 230], 5.5, 5.5, MATS.absDark, 'E-01');
+    // Dual IRLZ44PBF MOSFETs (Q1, Q2)
+    for (const qx of [418, 438]) {
+      addBox(zoneElec, qx, 168, 186, 10, 5, 14, MATS.rubberBlack, 'E-01');
+      addBox(zoneElec, qx + 1, 168, 200, 8, 2, 8, MATS.ss304Solid, 'E-01');
+    }
+    // Live Animated Status Red LED (GPIO33)
+    const statusLedMesh = new THREE.Mesh(new THREE.SphereGeometry(2.8, 14, 14), MATS.statusLed);
+    statusLedMesh.position.set(342, 215, 240);
+    registerPartMesh(statusLedMesh, 'E-01');
+    zoneElec.add(statusLedMesh);
+
+    // =========================================================================
+    // 6. WATER VOLUME, DYNAMIC WAVE SURFACE, WATERFALL NAPPES, BUBBLES & DEBRIS
+    // =========================================================================
+    const waterGroup = new THREE.Group();
+    cadRoot.add(waterGroup);
+
+    const waterBodyMat = new THREE.MeshPhysicalMaterial({
+      color: '#0ea5e9', roughness: 0.12, metalness: 0.0,
+      transparent: true, opacity: 0.17, depthWrite: false
+    });
+    const waterSurfaceMat = new THREE.MeshPhysicalMaterial({
+      color: '#38bdf8', roughness: 0.08, metalness: 0.05,
+      transparent: true, opacity: 0.36, depthWrite: false,
+      side: THREE.DoubleSide, clearcoat: 0.9
+    });
+
+    // Main Channel Water Body (X=0..670, Y=-150..150, Z=0..200)
+    const mainWaterVol = addBox(waterGroup, 0, -150, 0, 670, 300, 200, waterBodyMat, null, { renderOrder: 5 });
+    // Sump Drawdown Water Body (X=673..763, Y=-144..144, Z=3..165)
+    addBox(waterGroup, 673, -144, 3, 90, 288, 162, waterBodyMat, null, { renderOrder: 5 });
+    // Sump Surface Plane (Z=165)
+    const sumpSurface = new THREE.Mesh(new THREE.PlaneGeometry(90, 288), waterSurfaceMat);
+    sumpSurface.position.set(718, 0, 165);
+    sumpSurface.renderOrder = 5;
+    waterGroup.add(sumpSurface);
+
+    // Animated Rippled Main Water Surface at Z=200
+    const surfGeo = new THREE.PlaneGeometry(670, 300, 68, 28);
+    const surfBasePos = surfGeo.attributes.position.array.slice();
+    const mainWaterSurf = new THREE.Mesh(surfGeo, waterSurfaceMat);
+    mainWaterSurf.position.set(335, 0, 200);
+    mainWaterSurf.renderOrder = 5;
+    waterGroup.add(mainWaterSurf);
+
+    // 3 Parabolic Waterfall Nappe Sheets for Option 2A 3-Slot Castellated Weir
+    const nappeMat = new THREE.MeshPhysicalMaterial({
+      color: '#bae6fd', map: waterfallTex, roughness: 0.15,
+      transparent: true, opacity: 0.78, depthWrite: false, side: THREE.DoubleSide
+    });
+    const nappeMeshes = [];
+    const WEIR_SLOTS = [
+      { yCenter: -92.5, width: 55.0 },
+      { yCenter: 0.0, width: 54.0 },
+      { yCenter: 92.5, width: 55.0 }
+    ];
+    WEIR_SLOTS.forEach((slot) => {
+      const nGeo = new THREE.PlaneGeometry(slot.width - 2, 1, 1, 14);
+      const pos = nGeo.attributes.position;
+      // Map local plane (u = Y width, v = arc progression t in [0,1]) into parabolic cascade
+      for (let i = 0; i < pos.count; i++) {
+        const ly = pos.getX(i);
+        const t = 0.5 - pos.getY(i); // 0 at crest, 1 in basket
+        const x = 670 + t * 29;
+        const z = 197 - t * t * 34;
+        pos.setXYZ(i, x, slot.yCenter + ly, z);
+      }
+      nGeo.computeVertexNormals();
+      const mesh = new THREE.Mesh(nGeo, nappeMat);
+      mesh.renderOrder = 5;
+      waterGroup.add(mesh);
+      nappeMeshes.push(mesh);
+    });
+
+    // InstancedMesh: 450 Rising Micro-Bubbles along D-01 (X=520, Y=-112..136, Z=22..200)
+    const BUBBLE_COUNT = 450;
+    const bubbleGeo = new THREE.SphereGeometry(1.75, 8, 8);
+    const bubbleMat = new THREE.MeshPhysicalMaterial({
+      color: '#e0f7ff', roughness: 0.05, metalness: 0.1,
+      transparent: true, opacity: 0.75, depthWrite: false
+    });
+    const bubbleInst = new THREE.InstancedMesh(bubbleGeo, bubbleMat, BUBBLE_COUNT);
+    bubbleInst.renderOrder = 6;
+    waterGroup.add(bubbleInst);
+    const bubbles = Array.from({ length: BUBBLE_COUNT }, (_, i) => ({
+      x: 520 + (Math.random() - 0.5) * 14,
+      y: -112 + Math.random() * 248,
+      z: 22 + (i / BUBBLE_COUNT) * 178,
+      vz: 95 + Math.random() * 65,
+      scale: 0.55 + Math.random() * 0.95,
+      phase: Math.random() * Math.PI * 2
+    }));
+
+    // InstancedMesh: 140 Flow Tracer Streamlines from R-02 Jets
+    const TRACER_COUNT = 140;
+    const tracerGeo = new THREE.BoxGeometry(10, 1.5, 1.5);
+    const tracerMat = new THREE.MeshBasicMaterial({
+      color: '#7dd3fc', transparent: true, opacity: 0.42, depthWrite: false
+    });
+    const tracerInst = new THREE.InstancedMesh(tracerGeo, tracerMat, TRACER_COUNT);
+    tracerInst.renderOrder = 6;
+    waterGroup.add(tracerInst);
+    const tracers = Array.from({ length: TRACER_COUNT }, (_, i) => ({
+      x: 38 + (i / TRACER_COUNT) * 630,
+      y: -135 + Math.random() * 270,
+      z: 40 + Math.random() * 150
+    }));
+
+    // Dynamic Plastic Debris Simulation (Floating + Neutrally Buoyant Submerged Plastics)
+    const debrisGroup = new THREE.Group();
+    cadRoot.add(debrisGroup);
+    const debrisList = [];
+    const DEBRIS_COLORS = ['#f43f5e', '#fbbf24', '#34d399', '#a78bfa', '#f97316', '#ec4899'];
+    let capturedCount = 0;
+
+    function spawnDebris(count = 2) {
+      for (let i = 0; i < count; i++) {
+        const submerged = Math.random() > 0.45;
+        const size = 9 + Math.random() * 8;
+        const geo = Math.random() > 0.5
+          ? new THREE.BoxGeometry(size * 1.4, size * 0.9, size * 0.45)
+          : new THREE.CylinderGeometry(size * 0.55, size * 0.55, size * 1.2, 12);
+        const mat = new THREE.MeshStandardMaterial({
+          color: DEBRIS_COLORS[Math.floor(Math.random() * DEBRIS_COLORS.length)],
+          roughness: 0.35, metalness: 0.05
+        });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.castShadow = true;
+        mesh.renderOrder = 6;
+
+        const d = {
+          mesh,
+          submerged,
+          x: 42 + Math.random() * 25,
+          y: -120 + Math.random() * 240,
+          z: submerged ? (65 + Math.random() * 75) : 194,
+          targetZ: submerged ? (65 + Math.random() * 75) : 194,
+          rotSpeed: new THREE.Vector3((Math.random() - 0.5) * 1.4, (Math.random() - 0.5) * 1.4, (Math.random() - 0.5) * 1.4),
+          inBasket: false,
+          sonarCounted: false
+        };
+        mesh.position.set(d.x, d.y, d.z);
+        debrisGroup.add(mesh);
+        debrisList.push(d);
+      }
+      // Keep pool bounded for steady 60fps
+      while (debrisList.length > 26) {
+        const oldest = debrisList.shift();
+        if (oldest.mesh.parent) oldest.mesh.parent.remove(oldest.mesh);
+        oldest.mesh.geometry.dispose();
+        oldest.mesh.material.dispose();
+      }
+    }
+
+    // =========================================================================
+    // 7. KEY CAD DIMENSION LINES & OVERLAYS (TOGGLEABLE)
+    // =========================================================================
+    const dimsGroup = new THREE.Group();
+    dimsGroup.visible = false;
+    cadRoot.add(dimsGroup);
+
+    function addDimLine(p1, p2, color = 0xf59e0b) {
+      const geo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...p1), new THREE.Vector3(...p2)]);
+      const line = new THREE.Line(geo, new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.9 }));
+      line.renderOrder = 9;
+      dimsGroup.add(line);
+    }
+
+    // Flume Length 900 mm
+    addDimLine([0, -172, 0], [900, -172, 0]);
+    addDimLine([0, -156, 0], [0, -176, 0]);
+    addDimLine([900, -156, 0], [900, -176, 0]);
+    // Flume Width 300 mm
+    addDimLine([922, -150, 0], [922, 150, 0]);
+    // V-Funnel 140 mm Throat
+    addDimLine([305.5, -70, 224], [305.5, 70, 224], 0x38bdf8);
+    // Waterline Z=200 & Sump Z=165
+    addDimLine([670, -162, 165], [670, -162, 200], 0x22d3ee);
+    // Zero-clash gap at X=520 (R-01 Y=-140, Z=32 vs D-01 Y=-115, Z=12)
+    addDimLine([520, -140, 32], [520, -115, 12], 0x10b981);
+
+    const DIM_LABELS = [
+      { pos: [450, -182, 0], text: 'L = 900.0 mm' },
+      { pos: [945, 0, 0], text: 'W = 300.0 mm' },
+      { pos: [305.5, 0, 238], text: 'Throat = 140.0 mm' },
+      { pos: [670, -175, 185], text: 'ΔH = 35 mm (200→165)' },
+      { pos: [520, -128, 52], text: '11.0 mm Air Gap (25×20 offset)' }
+    ];
+
+    // =========================================================================
+    // 8. 2D PROJECTED CALLOUT BADGES
+    // =========================================================================
+    const labelsLayer = document.getElementById('labels-layer');
+    const CALLOUT_DEFS = [
+      { id: 'T-01', label: 'T-01 Glass Flume', color: '#38bdf8', pos: [140, -152, 290] },
+      { id: 'R-02', label: 'R-02 Sparger', color: '#0284c7', pos: [25, 0, 198] },
+      { id: 'R-01', label: 'R-01 Return (Z=32)', color: '#0ea5e9', pos: [445, -140, 44] },
+      { id: 'F-01', label: 'F-01 V-Funnel', color: '#22d3ee', pos: [195, 112, 225] },
+      { id: 'S-01', label: 'S-01 DYP Sonar', color: '#94a3b8', pos: [380, 130, 210] },
+      { id: 'S-05', label: 'S-05 30 PPI Stop', color: '#cbd5e1', pos: [380, -116, 222] },
+      { id: 'D-01', label: 'D-01 EPDM Barrier', color: '#f97316', pos: [520, 0, 28] },
+      { id: 'A-01', label: 'A-01 Air Pump', color: '#fb923c', pos: [520, 225, 52] },
+      { id: 'W-01', label: 'W-01 3-Slot Weir', color: '#06b6d4', pos: [671, 0, 226] },
+      { id: 'B-01', label: 'B-01 SS304 Basket', color: '#eab308', pos: [718, 76, 245] },
+      { id: 'P-01', label: 'P-01 Pump (800 L/h)', color: '#64748b', pos: [718, 0, 68] },
+      { id: 'E-01', label: 'E-01 ESP32 Box', color: '#10b981', pos: [380, 218, 272] }
+    ];
+
+    const badgeItems = CALLOUT_DEFS.map(def => {
+      const el = document.createElement('button');
+      el.className = 'callout-badge';
+      el.innerHTML = `<span class="callout-dot" style="background:${def.color}"></span><span>${def.label}</span>`;
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        selectPart(def.id);
+      });
+      labelsLayer.appendChild(el);
+      return { ...def, el, vec: new THREE.Vector3() };
+    });
+
+    const dimBadgeItems = DIM_LABELS.map(def => {
+      const el = document.createElement('div');
+      el.className = 'dim-badge';
+      el.textContent = def.text;
+      el.style.display = 'none';
+      labelsLayer.appendChild(el);
+      return { ...def, el, vec: new THREE.Vector3() };
+    });
+
+    // =========================================================================
+    // 9. STATE MACHINE, TELEMETRY, CAMERA PRESETS & INTERACTIVITY
+    // =========================================================================
+    const sim = {
+      mode: 'AUTO',          // DRY_CAD, AUTO, IDLE, SURGE
+      fwState: 'IDLE_MONITORING',
+      override: false,
+      paused: false,
+      surgeTimer: 0,
+      debounceCount: 0,
+      sonarDistMm: 248,
+      pumpPwm: 0.35,
+      airOn: false,
+      autoSpawnTimer: 1.5,
+      explodeFactor: 0,
+      targetExplode: 0,
+      basketLiftMm: 0,
+      targetBasketLiftMm: 0,
+      showWater: true,
+      cutawayFront: false,
+      showBeam: true,
+      showLabels: true,
+      showDims: false
+    };
+
+    // Camera Presets using cadRoot.localToWorld
+    const CAMERA_PRESETS = {
+      hero:        { cam: [480, -760, 520], target: [450, 0, 125] },
+      top:         { cam: [450, -12, 1180], target: [450, 0, 120] },
+      side:        { cam: [450, -980, 165], target: [450, 0, 145] },
+      clearance:   { cam: [645, -365, 130], target: [518, -126, 22] },
+      sonar:       { cam: [220, -255, 290], target: [380, 50, 175] },
+      weir:        { cam: [500, -340, 290], target: [710, 0, 155] },
+      electronics: { cam: [380, 465, 255],  target: [380, 185, 215] }
+    };
+
+    let camTween = null;
+    function goToPreset(key) {
+      const p = CAMERA_PRESETS[key];
+      if (!p) return;
+      document.querySelectorAll('.camera-bar [data-cam]').forEach(b => b.classList.toggle('active', b.dataset.cam === key));
+      camTween = {
+        startPos: camera.position.clone(),
+        startTgt: controls.target.clone(),
+        endPos: cadRoot.localToWorld(new THREE.Vector3(...p.cam)),
+        endTgt: cadRoot.localToWorld(new THREE.Vector3(...p.target)),
+        t: 0
+      };
+    }
+
+    controls.addEventListener('start', () => { camTween = null; });
+
+    // Click-to-inspect Raycasting
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+    let downPos = { x: 0, y: 0 };
+
+    renderer.domElement.addEventListener('pointerdown', (e) => {
+      downPos = { x: e.clientX, y: e.clientY };
+    });
+
+    renderer.domElement.addEventListener('pointerup', (e) => {
+      if (Math.hypot(e.clientX - downPos.x, e.clientY - downPos.y) > 5) return;
+      const rect = renderer.domElement.getBoundingClientRect();
+      pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(pointer, camera);
+      const hits = raycaster.intersectObjects(clickableMeshes, false);
+      if (hits.length > 0) {
+        const hit = hits.find(h => h.object.visible && h.object.parent?.visible !== false);
+        if (hit && hit.object.userData.partId) {
+          selectPart(hit.object.userData.partId);
+          return;
+        }
+      }
+      selectPart(null);
+    });
+
+    const clonedForHighlight = new WeakSet();
+    function selectPart(partId) {
+      // Restore previous highlight
+      clickableMeshes.forEach(m => {
+        if (m !== statusLedMesh && m.material && 'emissive' in m.material && origEmissive.has(m)) {
+          const saved = origEmissive.get(m);
+          m.material.emissive.copy(saved.color);
+          m.material.emissiveIntensity = saved.intensity;
+        }
+      });
+      selectedPartId = partId;
+      badgeItems.forEach(b => b.el.classList.toggle('active', b.id === partId));
+
+      if (!partId || !PART_SPECS[partId]) {
+        document.getElementById('insp-id').textContent = 'SYSTEM • REV 2.2';
+        document.getElementById('insp-name').textContent = 'Click Any Part or Badge to Inspect';
+        document.getElementById('insp-specs').innerHTML = `
+          <div class="spec-row"><span>Flume Envelope</span><span>900 × 300 × 300 mm</span></div>
+          <div class="spec-row"><span>Static Waterline</span><span>Z = 200.0 mm (81 L max)</span></div>
+          <div class="spec-row"><span>Zero-Clash Gap</span><span>11.0 mm net (R-01 / D-01)</span></div>
+          <div class="spec-row"><span>Sonar Gate</span><span>X = 380 mm, Z = 180 mm</span></div>
+        `;
+        document.getElementById('insp-notes').textContent =
+          'Orbit with left-drag, pan with right-drag, scroll to zoom. Click any component mesh or floating BOM badge to inspect exact Rev 2.2 coordinates, materials, and plumbing clearances.';
+        return;
+      }
+
+      // Highlight selected part meshes subtly (preserve statusLedMesh live animation)
+      clickableMeshes.forEach(m => {
+        if (m !== statusLedMesh && m.userData.partId === partId && m.material && 'emissive' in m.material) {
+          if (!clonedForHighlight.has(m)) {
+            origEmissive.set(m, {
+              color: m.material.emissive.clone(),
+              intensity: m.material.emissiveIntensity
+            });
+            m.material = m.material.clone();
+            clonedForHighlight.add(m);
+          }
+          m.material.emissive.set('#0ea5e9');
+          m.material.emissiveIntensity = 0.35;
+        }
+      });
+
+      const info = PART_SPECS[partId];
+      document.getElementById('insp-id').textContent = `BOM ID: ${partId}`;
+      document.getElementById('insp-name').textContent = info.name;
+      document.getElementById('insp-specs').innerHTML = `
+        <div class="spec-row"><span>Material</span><span>${info.material}</span></div>
+        <div class="spec-row"><span>Coordinates</span><span>${info.coords}</span></div>
+        <div class="spec-row"><span>Key Spec</span><span>${info.spec}</span></div>
+      `;
+      document.getElementById('insp-notes').textContent = info.notes;
+    }
+
+    // Wire UI Controls
+    document.querySelectorAll('.camera-bar [data-cam]').forEach(btn => {
+      btn.addEventListener('click', () => goToPreset(btn.dataset.cam));
+    });
+
+    document.querySelectorAll('[data-mode]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-mode]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        sim.mode = btn.dataset.mode;
+        sim.override = false;
+        document.getElementById('btn-override').classList.remove('active');
+
+        if (sim.mode === 'DRY_CAD') {
+          sim.showWater = false;
+          document.getElementById('chk-water').checked = false;
+        } else {
+          sim.showWater = true;
+          document.getElementById('chk-water').checked = true;
+          if (sim.mode === 'SURGE') sim.surgeTimer = 12.0;
+        }
+      });
+    });
+
+    document.getElementById('btn-inject').addEventListener('click', () => {
+      if (sim.mode === 'DRY_CAD') {
+        document.querySelector('[data-mode="AUTO"]').click();
+      }
+      spawnDebris(3);
+    });
+
+    document.getElementById('btn-override').addEventListener('click', (e) => {
+      sim.override = !sim.override;
+      e.currentTarget.classList.toggle('active', sim.override);
+      if (sim.override && sim.mode === 'DRY_CAD') {
+        sim.showWater = true;
+        document.getElementById('chk-water').checked = true;
+      }
+    });
+
+    document.getElementById('slider-explode').addEventListener('input', (e) => {
+      const v = Number(e.target.value);
+      sim.targetExplode = v / 100;
+      document.getElementById('val-explode').textContent = `${v}%`;
+    });
+
+    document.getElementById('slider-lift').addEventListener('input', (e) => {
+      const v = Number(e.target.value);
+      sim.targetBasketLiftMm = v;
+      document.getElementById('val-lift').textContent = `${v} mm`;
+    });
+
+    document.getElementById('chk-water').addEventListener('change', (e) => { sim.showWater = e.target.checked; });
+    document.getElementById('chk-cutaway').addEventListener('change', (e) => { sim.cutawayFront = e.target.checked; });
+    document.getElementById('chk-beam').addEventListener('change', (e) => { sim.showBeam = e.target.checked; });
+    document.getElementById('chk-labels').addEventListener('change', (e) => { sim.showLabels = e.target.checked; });
+    document.getElementById('chk-dims').addEventListener('change', (e) => {
+      sim.showDims = e.target.checked;
+      dimsGroup.visible = sim.showDims;
+    });
+
+    document.querySelectorAll('.zone-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        const z = pill.dataset.zone;
+        const on = !pill.classList.contains('active');
+        pill.classList.toggle('active', on);
+        if (zoneGroups[z]) zoneGroups[z].visible = on;
+      });
+    });
+
+    document.getElementById('btn-clear-insp').addEventListener('click', () => selectPart(null));
+
+    document.getElementById('btn-theme').addEventListener('click', (e) => {
+      const isLight = document.body.classList.toggle('light-theme');
+      e.currentTarget.textContent = isLight ? 'Dark Studio' : 'Light Lab';
+      scene.background.set(isLight ? '#e8eef5' : '#070b12');
+      scene.fog.color.set(isLight ? '#e8eef5' : '#070b12');
+      benchMat.color.set(isLight ? '#cbd5e1' : '#0d1422');
+      rulerMat.map = createBenchRulerTexture(isLight);
+      rulerMat.needsUpdate = true;
+    });
+
+    document.getElementById('btn-pause').addEventListener('click', (e) => {
+      sim.paused = !sim.paused;
+      e.currentTarget.textContent = sim.paused ? 'Resume' : 'Pause';
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && e.target.tagName !== 'INPUT') {
+        e.preventDefault();
+        document.getElementById('btn-pause').click();
+      }
+    });
+
+    // =========================================================================
+    // 10. ANIMATION & PHYSICS LOOP
+    // =========================================================================
+    const dummy = new THREE.Object3D();
+    const clock = new THREE.Clock();
+    let elapsed = 0;
+
+    function updateTelemetryAndState(dt) {
+      // Check Sonar Gate (X=380 ± 28, Y within active gate)
+      let minGateDist = 248;
+      let debrisInGate = false;
+      for (const d of debrisList) {
+        if (!d.inBasket && Math.abs(d.x - 380) < 26 && d.z > 125 && d.z < 210) {
+          const distFromFace = Math.round(115 - d.y);
+          if (distFromFace > 85 && distFromFace < 225) {
+            debrisInGate = true;
+            if (distFromFace < minGateDist) minGateDist = distFromFace;
+          }
+        }
+      }
+      sim.sonarDistMm = debrisInGate ? minGateDist : 248;
+
+      if (sim.mode === 'DRY_CAD') {
+        sim.fwState = 'DRY_CAD_INSPECT';
+        sim.pumpPwm += (0 - sim.pumpPwm) * Math.min(1, dt * 6);
+        sim.airOn = false;
+      } else if (sim.override) {
+        sim.fwState = 'MANUAL_OVERRIDE';
+        sim.pumpPwm += (1.0 - sim.pumpPwm) * Math.min(1, dt * 4);
+        sim.airOn = true;
+      } else if (sim.mode === 'SURGE') {
+        sim.fwState = 'SURGE_INTERCEPT';
+        sim.pumpPwm += (1.0 - sim.pumpPwm) * Math.min(1, dt * 4);
+        sim.airOn = true;
+      } else if (sim.mode === 'IDLE') {
+        sim.fwState = 'IDLE_MONITORING';
+        sim.pumpPwm += (0.35 - sim.pumpPwm) * Math.min(1, dt * 4);
+        sim.airOn = false;
+      } else {
+        // Autonomous State Machine
+        if (debrisInGate) {
+          sim.debounceCount = Math.min(3, sim.debounceCount + 1);
+          if (sim.debounceCount >= 3) {
+            sim.fwState = 'SURGE_INTERCEPT';
+            sim.surgeTimer = 12.0;
+          }
+        } else {
+          sim.debounceCount = 0;
+        }
+
+        if (sim.fwState === 'SURGE_INTERCEPT') {
+          sim.surgeTimer -= dt;
+          sim.pumpPwm += (1.0 - sim.pumpPwm) * Math.min(1, dt * 4);
+          sim.airOn = true;
+          if (sim.surgeTimer <= 0) {
+            sim.fwState = 'COOLDOWN_RETURN';
+            sim.airOn = false;
+          }
+        } else if (sim.fwState === 'COOLDOWN_RETURN') {
+          sim.pumpPwm += (0.35 - sim.pumpPwm) * Math.min(1, dt * 2.2);
+          sim.airOn = false;
+          if (Math.abs(sim.pumpPwm - 0.35) < 0.02) {
+            sim.fwState = 'IDLE_MONITORING';
+          }
+        } else {
+          sim.fwState = 'IDLE_MONITORING';
+          sim.pumpPwm += (0.35 - sim.pumpPwm) * Math.min(1, dt * 3);
+          sim.airOn = false;
+        }
+
+        sim.autoSpawnTimer -= dt;
+        if (sim.autoSpawnTimer <= 0) {
+          spawnDebris(2);
+          sim.autoSpawnTimer = 5.5;
+        }
+      }
+
+      // Compute exact DYP-L08B50TW-V3.0 4-byte Controlled-UART Frame
+      const dMm = sim.sonarDistMm;
+      const dH = (dMm >> 8) & 0xFF;
+      const dL = dMm & 0xFF;
+      const sum = (0xFF + dH + dL) & 0xFF;
+      const hex = (n) => n.toString(16).toUpperCase().padStart(2, '0');
+
+      // Update Telemetry HUD
+      const lph = Math.round(sim.pumpPwm * 800);
+      const cms = (sim.pumpPwm * 22.8).toFixed(1);
+      document.getElementById('tel-pump').textContent = `${Math.round(sim.pumpPwm * 100)}% • ${lph} L/h`;
+      document.getElementById('tel-flow').textContent = `${cms} cm/s`;
+      document.getElementById('tel-air').textContent = sim.airOn ? 'ON (Barrier Active)' : 'OFF (EPDM Shut)';
+      document.getElementById('tel-sonar').textContent = debrisInGate ? `${dMm} mm (OBJECT)` : `${dMm} mm (Clear)`;
+      document.getElementById('tel-captured').textContent = `${capturedCount} pcs`;
+      document.getElementById('tel-uart').textContent = `FF ${hex(dH)} ${hex(dL)} ${hex(sum)} (OK)`;
+      document.getElementById('state-label').textContent = sim.fwState;
+      document.getElementById('surge-timer').textContent =
+        sim.fwState === 'SURGE_INTERCEPT' ? `T_surge: ${Math.max(0, sim.surgeTimer).toFixed(1)}s` : 'T_surge: --';
+
+      const chip = document.getElementById('state-chip');
+      const dot = document.getElementById('state-dot');
+      if (sim.fwState === 'SURGE_INTERCEPT' || sim.fwState === 'MANUAL_OVERRIDE') {
+        chip.style.background = 'rgba(16, 185, 129, 0.2)';
+        chip.style.color = '#34d399';
+        dot.style.background = '#10b981';
+      } else if (sim.fwState === 'DRY_CAD_INSPECT') {
+        chip.style.background = 'rgba(148, 163, 184, 0.2)';
+        chip.style.color = '#cbd5e1';
+        dot.style.background = '#94a3b8';
+      } else {
+        chip.style.background = 'rgba(56, 189, 248, 0.16)';
+        chip.style.color = '#38bdf8';
+        dot.style.background = '#38bdf8';
+      }
+
+      // Status LED (GPIO33) animation
+      if (sim.fwState === 'SURGE_INTERCEPT' || sim.fwState === 'MANUAL_OVERRIDE') {
+        MATS.statusLed.emissiveIntensity = 2.4;
+      } else {
+        MATS.statusLed.emissiveIntensity = 0.2 + 1.1 * (0.5 + 0.5 * Math.sin(elapsed * 3.2));
+      }
+    }
+
+    function updateHydraulicsAndParticles(dt) {
+      waterGroup.visible = sim.showWater;
+      debrisGroup.visible = sim.showWater;
+      nearGlassWall.visible = !sim.cutawayFront && zoneGroups.tank.visible;
+      sonarBeamGroup.visible = sim.showBeam && zoneGroups.sonar.visible;
+
+      // Waterfall nappes respond to pump flow
+      nappeMeshes.forEach(m => { m.visible = sim.pumpPwm > 0.08; });
+      waterfallTex.offset.y -= dt * (0.5 + sim.pumpPwm * 2.2);
+      nappeMat.opacity = 0.35 + sim.pumpPwm * 0.5;
+
+      // Rippled water surface at Z=200
+      const pos = surfGeo.attributes.position;
+      const waveAmp = 0.45 + sim.pumpPwm * 1.4;
+      for (let i = 0; i < pos.count; i++) {
+        const bx = surfBasePos[i * 3];
+        const by = surfBasePos[i * 3 + 1];
+        const worldX = bx + 335;
+        const bubblePlume = sim.airOn ? Math.exp(-Math.pow((worldX - 520) / 36, 2)) * 2.6 * Math.sin(elapsed * 14 + by * 0.15) : 0;
+        const ripple = Math.sin(worldX * 0.045 - elapsed * (2.5 + sim.pumpPwm * 4)) * waveAmp + Math.cos(by * 0.07 + elapsed * 3) * 0.45;
+        pos.setZ(i, ripple + bubblePlume);
+      }
+      pos.needsUpdate = true;
+      surfGeo.computeVertexNormals();
+
+      // Rising micro-bubbles along D-01
+      bubbleInst.visible = sim.airOn || sim.pumpPwm > 0.45;
+      for (let i = 0; i < BUBBLE_COUNT; i++) {
+        const b = bubbles[i];
+        if (sim.airOn) {
+          b.z += b.vz * dt;
+          b.x += (18 + sim.pumpPwm * 42) * dt;
+          if (b.z > 199) {
+            b.z = 22 + Math.random() * 8;
+            b.x = 520 + (Math.random() - 0.5) * 14;
+            b.y = -112 + Math.random() * 248;
+          }
+          const swayY = Math.sin(elapsed * 6 + b.phase) * 2.2;
+          dummy.position.set(b.x, b.y + swayY, b.z);
+          dummy.scale.setScalar(b.scale);
+        } else {
+          dummy.scale.setScalar(0);
+        }
+        dummy.updateMatrix();
+        bubbleInst.setMatrixAt(i, dummy.matrix);
+      }
+      bubbleInst.instanceMatrix.needsUpdate = true;
+
+      // Flow tracer streamlines
+      for (let i = 0; i < TRACER_COUNT; i++) {
+        const tr = tracers[i];
+        const speed = 35 + sim.pumpPwm * 165;
+        tr.x += speed * dt;
+        // Converge into V-funnel throat
+        if (tr.x > 80 && tr.x < 310) {
+          const maxY = 150 - ((tr.x - 80) / 225.5) * 80;
+          if (Math.abs(tr.y) > maxY - 5) tr.y = Math.sign(tr.y) * (maxY - 5);
+        }
+        if (tr.x > 668) {
+          tr.x = 38;
+          tr.y = -132 + Math.random() * 264;
+          tr.z = 40 + Math.random() * 150;
+        }
+        dummy.position.set(tr.x, tr.y, tr.z);
+        dummy.scale.set(0.7 + sim.pumpPwm * 1.1, 1, 1);
+        dummy.updateMatrix();
+        tracerInst.setMatrixAt(i, dummy.matrix);
+      }
+      tracerInst.instanceMatrix.needsUpdate = true;
+
+      // Debris advection, funnel guidance, bubble lift & capture into basketGroup
+      const flowSpeed = 28 + sim.pumpPwm * 135;
+      for (const d of debrisList) {
+        if (d.inBasket) continue;
+        d.x += flowSpeed * dt;
+        d.mesh.rotation.x += d.rotSpeed.x * dt;
+        d.mesh.rotation.y += d.rotSpeed.y * dt;
+
+        // V-Funnel lateral guidance
+        if (d.x >= 80 && d.x <= 305.5) {
+          const halfWidth = 150 - ((d.x - 80) / 225.5) * 80 - 9;
+          if (Math.abs(d.y) > halfWidth) {
+            d.y = Math.sign(d.y) * halfWidth;
+          }
+        }
+
+        // Bubble barrier lift near X=520 when A-01 is ON
+        if (sim.airOn && Math.abs(d.x - 520) < 38) {
+          d.z = Math.min(194, d.z + 110 * dt);
+        } else {
+          d.z += (d.targetZ - d.z) * Math.min(1, dt * 1.2);
+        }
+
+        // Align toward one of the 3 castellated weir intake slots near X=640..670
+        if (d.x > 560 && d.x < 670) {
+          const nearestSlot = WEIR_SLOTS.reduce((best, s) =>
+            Math.abs(d.y - s.yCenter) < Math.abs(d.y - best.yCenter) ? s : best, WEIR_SLOTS[1]);
+          d.y += (nearestSlot.yCenter - d.y) * Math.min(1, dt * 2.5);
+          // Pull up toward crest Z=192 if pump surging
+          if (sim.pumpPwm > 0.55) {
+            d.z += (193 - d.z) * Math.min(1, dt * 3.0);
+          }
+        }
+
+        // Cross over weir crest into SS304 Basket (X=675..761, Z=126..150)
+        if (d.x >= 670) {
+          if (d.z > 183) {
+            d.inBasket = true;
+            capturedCount += 1;
+            const localX = 684 + Math.random() * 64;
+            const localY = Math.max(-130, Math.min(130, d.y));
+            const localZ = 128 + Math.random() * 14;
+            basketGroup.add(d.mesh); // Moves with basket lift slider!
+            d.mesh.position.set(localX, localY, localZ);
+          } else {
+            // Bounce gently below weir wall if submerged & pump didn't lift
+            d.x = 664;
+            d.z += 25 * dt;
+          }
+        }
+        if (!d.inBasket) d.mesh.position.set(d.x, d.y, d.z);
+      }
+
+      // Sonar acoustic pulse ring animation
+      beamActiveMat.color.set(sim.sonarDistMm < 225 ? '#10b981' : '#06b6d4');
+      beamActiveMat.opacity = sim.sonarDistMm < 225 ? 0.22 : 0.11;
+      sonarPulseRings.forEach(p => {
+        p.phase = (p.phase + dt * 0.85) % 1;
+        const y = 115 - p.phase * 218;
+        const r = 8.6 + p.phase * 92;
+        p.mesh.position.set(sx, y, sz);
+        p.mesh.scale.setScalar(r / 3.2);
+        p.mat.opacity = (1 - p.phase) * 0.55;
+        p.mat.color.set(p.phase < 0.36 ? '#f59e0b' : (sim.sonarDistMm < 225 ? '#34d399' : '#22d3ee'));
+      });
+    }
+
+    function updateExplodeAndBasket(dt) {
+      sim.explodeFactor += (sim.targetExplode - sim.explodeFactor) * Math.min(1, dt * 8);
+      explodeSpecs.forEach(spec => {
+        spec.group.position.copy(spec.delta).multiplyScalar(sim.explodeFactor);
+      });
+
+      sim.basketLiftMm += (sim.targetBasketLiftMm - sim.basketLiftMm) * Math.min(1, dt * 10);
+      basketGroup.position.z = sim.basketLiftMm;
+    }
+
+    function updateProjectedLabels() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      labelsLayer.style.display = (sim.showLabels || sim.showDims) ? 'block' : 'none';
+
+      badgeItems.forEach(item => {
+        const zKey = item.id === 'T-01' ? 'tank'
+          : (item.id === 'R-01' || item.id === 'R-02') ? 'plumbing'
+          : item.id === 'F-01' ? 'funnel'
+          : (item.id === 'S-01' || item.id === 'S-05') ? 'sonar'
+          : (item.id === 'D-01' || item.id === 'A-01') ? 'diffuser'
+          : (item.id === 'W-01' || item.id === 'B-01' || item.id === 'P-01') ? 'weir'
+          : 'electronics';
+
+        const visible = sim.showLabels && zoneGroups[zKey] && zoneGroups[zKey].visible;
+        if (!visible) { item.el.style.display = 'none'; return; }
+
+        item.vec.set(...item.pos);
+        if (item.id === 'B-01') item.vec.z += sim.basketLiftMm;
+        zoneGroups[zKey].localToWorld(item.vec);
+        item.vec.project(camera);
+
+        if (item.vec.z > 1 || item.vec.z < -1) {
+          item.el.style.display = 'none';
+        } else {
+          item.el.style.display = 'inline-flex';
+          item.el.style.left = `${(item.vec.x * 0.5 + 0.5) * w}px`;
+          item.el.style.top = `${(-item.vec.y * 0.5 + 0.5) * h}px`;
+        }
+      });
+
+      dimBadgeItems.forEach(item => {
+        if (!sim.showDims) { item.el.style.display = 'none'; return; }
+        item.vec.set(...item.pos);
+        cadRoot.localToWorld(item.vec);
+        item.vec.project(camera);
+        if (item.vec.z > 1 || item.vec.z < -1) {
+          item.el.style.display = 'none';
+        } else {
+          item.el.style.display = 'block';
+          item.el.style.left = `${(item.vec.x * 0.5 + 0.5) * w}px`;
+          item.el.style.top = `${(-item.vec.y * 0.5 + 0.5) * h}px`;
+        }
+      });
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const rawDt = Math.min(0.05, clock.getDelta());
+      const dt = sim.paused ? 0 : rawDt;
+      elapsed += dt;
+
+      if (camTween) {
+        camTween.t = Math.min(1, camTween.t + rawDt * 2.1);
+        const ease = 1 - Math.pow(1 - camTween.t, 3);
+        camera.position.lerpVectors(camTween.startPos, camTween.endPos, ease);
+        controls.target.lerpVectors(camTween.startTgt, camTween.endTgt, ease);
+        if (camTween.t >= 1) camTween = null;
+      }
+
+      controls.update();
+      if (!sim.paused) {
+        updateTelemetryAndState(dt);
+        updateHydraulicsAndParticles(dt);
+      } else {
+        waterGroup.visible = sim.showWater;
+        debrisGroup.visible = sim.showWater;
+        nearGlassWall.visible = !sim.cutawayFront && zoneGroups.tank.visible;
+        sonarBeamGroup.visible = sim.showBeam && zoneGroups.sonar.visible;
+      }
+      updateExplodeAndBasket(rawDt);
+      updateProjectedLabels();
+      renderer.render(scene, camera);
+    }
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Boot cleanly at 3/4 Hero view with initial debris sample
+    goToPreset('hero');
+    spawnDebris(2);
+    animate();
+  </script>
+</body>
+</html>
