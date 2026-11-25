@@ -1,0 +1,156 @@
+# FORGENESIS Material Library
+newmtl Tank_Floor_Glass
+Kd 0.750 0.850 0.900
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl Tank_Right_Wall_Glass
+Kd 0.750 0.880 0.950
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl Tank_Left_Wall_Glass
+Kd 0.750 0.880 0.950
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl R02_Upstream_Flow_Sparger_Bar
+Kd 0.140 0.650 0.900
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl R01_ClosedLoop_Return_Pipe
+Kd 0.200 0.550 0.820
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl C05_Pipe_StandOff_Clip
+Kd 0.350 0.750 0.900
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl F01_Left_Funnel_Vane
+Kd 0.200 0.700 0.920
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl F02_Right_Funnel_Vane
+Kd 0.200 0.700 0.920
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl DYPL08B50TW_V3_Cylindrical_Body_M19
+Kd 0.560 0.600 0.640
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl DYPL08B50TW_V3_Dual_Gear_Locknuts_D28mm
+Kd 0.620 0.660 0.700
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl DYPL08B50TW_V3_White_Silicone_Washer
+Kd 0.950 0.960 0.980
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl DYPL08B50TW_V3_Rear_Indents_And_Cable
+Kd 0.220 0.250 0.290
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl C01_Sonar_Glass_Rim_Bracket
+Kd 0.300 0.750 0.900
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl Acoustic_Reference_Baffle_Stop
+Kd 0.400 0.800 0.880
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl D01_FullWidth_Upwelling_Diffuser
+Kd 0.950 0.450 0.120
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl D01_Sealed_Dome_EndCap
+Kd 0.200 0.220 0.260
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl D01_Inlet_Coupling_Tee
+Kd 0.950 0.450 0.120
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl D01_Floor_Saddle_Foot
+Kd 0.150 0.180 0.220
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl D02_AntiSiphon_Air_Loop
+Kd 0.950 0.550 0.200
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl W05_FullWidth_Sump_Base_Plate
+Kd 0.100 0.650 0.850
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl W03_Left_Side_Wall
+Kd 0.150 0.720 0.920
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl W04_Right_Side_Wall
+Kd 0.150 0.720 0.920
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl W01_Castellated_Weir_Plate_Option2A
+Kd 0.050 0.820 0.650
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl W02_FullWidth_Rear_Sump_Wall
+Kd 0.120 0.680 0.880
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl W06_Basket_Rail_Right
+Kd 0.080 0.550 0.750
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl W07_Basket_Rail_Left
+Kd 0.080 0.550 0.750
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl W08_Center_AntiSag_Support_Rib
+Kd 0.080 0.550 0.750
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl B01_FullWidth_SS304_Mesh_Basket
+Kd 0.820 0.840 0.880
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl B02_Dual_Basket_Pull_Handles
+Kd 0.950 0.780 0.150
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl P01_Submersible_Suction_Pump_800Lh
+Kd 0.140 0.160 0.190
+Ks 0.550 0.550 0.550
+Ns 96.0
+
+newmtl E01_External_Rim_IP65_Electronics_Box
+Kd 0.280 0.320 0.380
+Ks 0.550 0.550 0.550
+Ns 96.0
+

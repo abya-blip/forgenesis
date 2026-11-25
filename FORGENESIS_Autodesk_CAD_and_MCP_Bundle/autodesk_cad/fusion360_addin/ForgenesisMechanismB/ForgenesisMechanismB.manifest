@@ -1,0 +1,13 @@
+{
+  "autodeskProduct": "Fusion360",
+  "type": "addin",
+  "id": "com.forgenesis.mechanismb.cadbuilder",
+  "author": "FORGENESIS Engineering Team",
+  "description": {
+    "": "Generates and hot-reloads the photorealistic 3D assembly of the FORGENESIS Full-Width 3-Slot Castellated Waterfall Weir (7000x300x300 mm Flume) and 1:1 DYP-L08B50TW-V3.0 Underwater Sonar."
+  },
+  "version": "3.0.0",
+  "runOnStartup": false,
+  "supportedOS": "windows|mac",
+  "editEnabled": true
+}

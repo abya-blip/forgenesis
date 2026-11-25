@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FORGENESIS Rev 2.2 — Interactive 3D CAD &amp; Hydraulic Prototype Render</title>
+  <title>FORGENESIS Final Prototype — Interactive 3D CAD &amp; Hydraulic Render</title>
   <style>
     :root {
       --bg-canvas: #070b12;
@@ -619,13 +619,14 @@
     <div class="brand">
       <div class="brand-mark">FG</div>
       <div>
-        <h1>FORGENESIS 3D Prototype <span class="rev-pill">Rev 2.2 • 1:1 CAD</span></h1>
-        <div class="brand-sub">900×300×300 mm Flume • DYP-L08B50TW-V3.0 Sonar • EPDM Bubble Barrier • Option 2A 3-Slot Weir</div>
+        <h1>FORGENESIS 3D Prototype <span class="rev-pill">Final • 1:1 CAD</span></h1>
+        <div class="brand-sub">7000×300×300 mm (700×30×30 cm) Flume • DYP-L08B50TW-V3.0 Sonar • EPDM Bubble Barrier • 3-Slot Castellated Weir</div>
       </div>
     </div>
 
     <div class="camera-bar">
       <button class="btn active" data-cam="hero">3/4 Hero</button>
+      <button class="btn" data-cam="full">Full 7m Flume</button>
       <button class="btn" data-cam="top">Top Plan (XY)</button>
       <button class="btn" data-cam="side">Side Elevation (XZ)</button>
       <button class="btn" data-cam="clearance">Zero-Clash Gap</button>
@@ -763,19 +764,19 @@
     <div id="inspector-card">
       <div class="inspector-head">
         <div>
-          <div class="inspector-id" id="insp-id">SYSTEM • REV 2.2</div>
+          <div class="inspector-id" id="insp-id">SYSTEM • FINAL</div>
           <div class="inspector-title" id="insp-name">Click Any Part or Badge to Inspect</div>
         </div>
         <button class="close-btn" id="btn-clear-insp" title="Reset selection">×</button>
       </div>
       <div class="spec-table" id="insp-specs">
-        <div class="spec-row"><span>Flume Envelope</span><span>900 × 300 × 300 mm</span></div>
-        <div class="spec-row"><span>Static Waterline</span><span>Z = 200.0 mm (81 L max)</span></div>
+        <div class="spec-row"><span>Flume Envelope</span><span>7000 × 300 × 300 mm</span></div>
+        <div class="spec-row"><span>Static Waterline</span><span>Z = 200.0 mm (420 L / 630 L)</span></div>
         <div class="spec-row"><span>Zero-Clash Gap</span><span>11.0 mm net (R-01 / D-01)</span></div>
-        <div class="spec-row"><span>Sonar Gate</span><span>X = 380 mm, Z = 180 mm</span></div>
+        <div class="spec-row"><span>Sonar Gate</span><span>X = 6080 mm, Z = 180 mm</span></div>
       </div>
       <div class="spec-notes" id="insp-notes">
-        Orbit with left-drag, pan with right-drag, scroll to zoom. Click any component mesh or floating BOM badge to inspect exact Rev 2.2 coordinates, materials, and plumbing clearances.
+        Orbit with left-drag, pan with right-drag, scroll to zoom. Click any component mesh or floating BOM badge to inspect exact coordinates, materials, and plumbing clearances.
       </div>
     </div>
   </aside>
@@ -811,27 +812,27 @@
     }
 
     // =========================================================================
-    // 1. EXACT REVISION 2.2 CAD PARAMETERS & BOM METADATA
+    // 1. FINAL CAD PARAMETERS & BOM METADATA (7000 x 300 x 300 mm FLUME)
     // =========================================================================
     const CFG = {
-      L: 900.0,
+      L: 7000.0,
       W: 300.0,
       H: 300.0,
       tGlass: 6.0,
       tAcrylic: 3.0,
       waterZ: 200.0,
       sumpWaterZ: 165.0,
-      spargerX: 25.0,
+      spargerX: 100.0,
       spargerZ: 175.0,
-      funnelStartX: 80.0,
-      funnelEndX: 305.5,
+      funnelStartX: 5680.0,
+      funnelEndX: 5905.5,
       funnelThroatY: 70.0,
       funnelH: 220.0,
-      sonarX: 380.0,
+      sonarX: 6080.0,
       sonarZ: 180.0,
-      diffuserX: 520.0,
+      diffuserX: 6320.0,
       diffuserZ: 12.0,
-      weirX: 670.0,
+      weirX: 6570.0,
       weirY: -147.0,
       weirL: 96.0,
       weirW: 294.0,
@@ -848,120 +849,120 @@
     const PART_SPECS = {
       'T-01': {
         name: 'Rimless Tempered Glass Flume Tank',
-        material: '6.0 mm Low-Iron Float Glass (UNS 90L)',
-        coords: 'X=[0, 900] Y=[-150, 150] Z=[0, 300] mm',
-        spec: '81 L gross volume, zero glass drilling',
-        notes: 'All brackets clip onto the top 6 mm rim. Static waterline Z=200 mm (54 L main operating volume).'
+        material: '6.0 mm Low-Iron Float Glass',
+        coords: 'X=[0, 7000] Y=[-150, 150] Z=[0, 300] mm',
+        spec: '630 L gross volume (700×30×30 cm), zero drilling',
+        notes: 'All brackets clip onto the top 6 mm rim. Static waterline Z=200 mm (420 L operating fill volume).'
       },
       'R-02': {
         name: 'Upstream Flow-Maker Sparger Bar',
         material: 'Ø20 mm Blue Sch-40 PVC + EPDM Caps',
-        coords: 'X=25.0, Y=[-140, 140], Z=175.0 mm',
+        coords: 'X=100.0, Y=[-140, 140], Z=175.0 mm',
         spec: '16 × Ø3.0 mm horizontal forward jets',
-        notes: 'Uniformly distributes recirculated pump return across the channel width to establish ~8.0 cm/s idle flow.'
+        notes: 'Uniformly distributes recirculated pump return across the channel width to establish ~8.0 cm/s idle flow down the 5.58 m reach.'
       },
       'R-01': {
         name: 'Closed-Loop Elevated Return Pipe',
-        material: 'Ø16 mm Blue Sch-40 PVC + 90° Elbows',
-        coords: 'Y=-140.0, Z=32.0 mm (X=25 → 786 mm)',
+        material: 'Ø16 mm Blue Sch-40 PVC (6.8 m) + 90° Elbows',
+        coords: 'Y=-140.0, Z=32.0 mm (X=100 → 6706 mm)',
         spec: '11.0 mm net air gap to D-01 diffuser',
-        notes: 'Elevated along the near wall on C-05/C-06 standoffs so it clears the D-01 diffuser (25 mm lateral / 20 mm vertical offset).'
+        notes: 'Elevated along the near wall on C-05..C-10 standoffs so it clears the D-01 diffuser (25 mm lateral / 20 mm vertical offset).'
       },
       'C-05': {
-        name: 'Return Pipe Standoff Clips (C-05 / C-06)',
+        name: 'Return Pipe Standoff Clips (C-05..C-10)',
         material: '3.0 mm Clear Cast Acrylic',
-        coords: 'X=220 & 620 mm, Y=-140, Z=32 mm',
-        spec: 'Laser-cut snap cradle + floor bond',
-        notes: 'Holds R-01 rigid at Z=32 mm along the near wall.'
+        coords: 'X=600, 1800, 3000, 4200, 5400, 6450 mm',
+        spec: 'Laser-cut snap cradles + floor bond',
+        notes: 'Holds the 6.8 m R-01 return line rigid at Y=-140, Z=32 mm along the near glass wall.'
       },
       'F-01': {
         name: 'V-Funnel Debris Concentrator (F-01 / F-02)',
         material: '3.0 mm Clear Cast Acrylic + C-07/C-08 Clamps',
-        coords: 'X=80.0 → 305.5 mm, Z=[0, 220] mm',
+        coords: 'X=5680.0 → 5905.5 mm, Z=[0, 220] mm',
         spec: '25° convergence → 140.0 mm throat (Y=±70)',
         notes: 'Funnels floating & suspended plastics >80 mm away from the sonar face (outside the DYP-L08B50TW-V3.0 near-field blind zone). Near vane includes notch clearance for R-01.'
       },
       'S-01': {
         name: 'DYP-L08B50TW-V3.0 Underwater Sonar',
         material: 'Gray ASA/PVC Body (IP68), M19×1.5 Thread',
-        coords: 'X=380.0, Y=115..149, Z=180.0 mm',
+        coords: 'X=6080.0, Y=115..149, Z=180.0 mm',
         spec: '9600 bps Controlled-UART (0xFF trigger), 50° beam',
         notes: '8–800 cm water range, 80 mm blind zone, dual Ø28 mm 18-tooth gear locknuts + Ø23×1.5 mm white silicone sealing washer.'
       },
       'C-01': {
         name: 'No-Drill Sonar Rim Drop Bracket',
         material: '3.0 mm Clear Cast Acrylic + M4 Nylon Screw',
-        coords: 'X=[344, 416], Y=133.5..162, Z=[158, 304] mm',
+        coords: 'X=[6044, 6116], Y=133.5..162, Z=[158, 304] mm',
         spec: 'Ø19.5 mm precision M19 bulkhead bore',
         notes: 'Clamps over the 6 mm far glass rim without drilling and holds the sonar submerged 20 mm below the Z=200 mm waterline.'
       },
       'S-05': {
         name: '30 PPI Acoustic Absorber Baffle Stop',
         material: '30 PPI Reticulated PU Foam + 3 mm Acrylic',
-        coords: 'X=380.0 (325..435), Y=-125..-107, Z=[0, 215] mm',
+        coords: 'X=6080.0 (6025..6135), Y=-125..-107, Z=[0, 215] mm',
         spec: '110 × 215 × 18 mm open-cell acoustic pad',
         notes: 'Absorbs acoustic backscatter opposite S-01, locking baseline clear-channel range at ~245–250 mm and clearing R-01.'
       },
       'D-01': {
         name: '90° Transverse EPDM Bubble Diffuser',
         material: 'Ø20 × 250 mm Micro-Slit EPDM + Saddle Feet',
-        coords: 'X=520.0, Y=[-115, 140], Z=12.0 mm',
+        coords: 'X=6320.0, Y=[-115, 140], Z=12.0 mm',
         spec: 'Cracking pressure ~2.0 kPa (1.84 kPa hydrostatic)',
         notes: 'Laser-punched elastic micro-slits snap shut automatically when A-01 turns OFF, preventing water ingress. Zero-clash with R-01.'
       },
       'D-02': {
         name: 'Anti-Siphon Silicone Airline & Check Valve',
         material: 'Ø4–5 mm Silicone Tube + Inline 1-Way Valve',
-        coords: 'X=520.0, Y=142 → 225, Z=12 → 315 mm',
+        coords: 'X=6320.0, Y=142 → 225, Z=12 → 315 mm',
         spec: 'Rim-crested anti-siphon loop at Z=315 mm',
         notes: 'Routes air over the tank rim above water level through a 1-way check valve down to external compressor A-01.'
       },
       'A-01': {
         name: '12V Micro Diaphragm Air Compressor',
         material: '370-Frame 12V DC Diaphragm Pump (≥50 kPa)',
-        coords: 'External Bench: X=520, Y=225, Z=0 mm',
+        coords: 'External Bench: X=6320, Y=225, Z=0 mm',
         spec: 'Switched ON/OFF via IRLZ44PBF MOSFET (GPIO14)',
         notes: 'Drives D-01 bubble curtain during SURGE_INTERCEPT to lift neutrally buoyant submerged plastics toward the weir crest.'
       },
       'W-01': {
-        name: 'Option 2A 3-Slot Castellated Weir & Sump',
+        name: 'Full-Width 3-Slot Castellated Weir & Sump',
         material: '3.0 mm Cyan & Clear Cast Acrylic (Weld-On #4)',
-        coords: 'X=[670, 766], Y=[-147, 147], Z=[0, 223] mm',
+        coords: 'X=[6570, 6666], Y=[-147, 147], Z=[0, 223] mm',
         spec: '3 slots (55 / 54 / 55 mm) @ Z=185 mm, 4 teeth @ Z=212',
         notes: '164 mm total open intake crest. Pulls 45.2 cm/s waterfall nappe velocity at 100% surge into the Z=165 mm drawdown sump.'
       },
       'W-06': {
         name: 'Basket Guide Rails & Center Anti-Sag Rib',
         material: '3.0 mm Clear Cast Acrylic (W-06 / W-07 / W-08)',
-        coords: 'X=[673, 763], Z=120.0..123.0 mm',
+        coords: 'X=[6573, 6663], Z=120.0..123.0 mm',
         spec: '8 mm side rails + center support rib',
         notes: 'Supports the full-width SS304 basket 65 mm above the submersible pump intake and anti-vortex plate.'
       },
       'B-01': {
         name: 'Removable SS304 Mesh Basket',
         material: 'Folded SS304 Perforated/Woven Mesh (2.0 mm)',
-        coords: 'X=[675, 761], Y=[-141, 141], Z=[123, 163] mm',
+        coords: 'X=[6575, 6661], Y=[-141, 141], Z=[123, 163] mm',
         spec: '282 × 86 × 40 mm resting on W-06/W-07/W-08 rails',
         notes: 'Captures intercepted plastics cleanly 60 mm above pump P-01 and its anti-vortex baffle. Use the Basket Lift slider to inspect removal clearance.'
       },
       'B-02': {
         name: 'Dual Anodized Basket Pull Handles',
         material: 'Yellow-Anodized Aluminum T-Grips',
-        coords: 'X=718, Y=±76, Z=163 → 235 mm',
+        coords: 'X=6618, Y=±76, Z=163 → 235 mm',
         spec: '30 mm T-grip crossbars rising above Z=200 waterline',
         notes: 'Allows dry tool-free removal of the SS304 debris basket above the castellated weir teeth.'
       },
       'P-01': {
         name: 'Submersible Brushless Pump + Anti-Vortex Plate',
         material: '12V DC 800 L/h Pump (JT-550) + 40×40 mm Baffle',
-        coords: 'X=[692, 744], Y=[-18, 18], Z=[3, 55] mm (Plate Z=61)',
+        coords: 'X=[6592, 6644], Y=[-18, 18], Z=[3, 55] mm (Plate Z=61)',
         spec: '280 L/h @ 35% PWM (Idle) / 800 L/h @ 100% (Surge)',
         notes: 'Mounted at sump floor under a 40×40 mm perforated anti-vortex baffle at Z=61 mm; discharges through W-02 into R-01.'
       },
       'E-01': {
         name: 'External IP65 Control & Power Electronics Box',
         material: 'ABS IP65 Box + Clear Polycarbonate Lid + 3× PG7',
-        coords: 'X=[300, 460], Y=[156, 220], Z=[170, 260] mm',
+        coords: 'X=[6000, 6160], Y=[156, 220], Z=[170, 260] mm',
         spec: 'ESP32-WROVER-E, LM2596, TXS0108E, 2× IRLZ44PBF',
         notes: 'Safe GPIOs: 25/26 UART (avoids 16/17 PSRAM), 27 Pump PWM (250–500 Hz), 14 Air, 32 Button, 33 Red LED, 1000 µF bulk cap.'
       }
@@ -1105,12 +1106,12 @@
       ctx.font = 'bold 28px ui-monospace, monospace';
       ctx.textAlign = 'center';
 
-      // Map X=0..900 mm across center portion of bench (scale 1100 mm wide bench texture)
-      const xStart = 2048 * (100 / 1100);
-      const xSpan = 2048 * (900 / 1100);
-      for (let mm = 0; mm <= 900; mm += 20) {
-        const px = xStart + (mm / 900) * xSpan;
-        const major = mm % 100 === 0;
+      // Map X=0..7000 mm across center portion of bench (scale 8000 mm wide bench texture)
+      const xStart = 2048 * (500 / 8000);
+      const xSpan = 2048 * (7000 / 8000);
+      for (let mm = 0; mm <= 7000; mm += 100) {
+        const px = xStart + (mm / 7000) * xSpan;
+        const major = mm % 500 === 0;
         ctx.lineWidth = major ? 3 : 1.5;
         ctx.beginPath();
         ctx.moveTo(px, 28);
@@ -1121,7 +1122,7 @@
         }
       }
       ctx.font = '600 22px Inter, sans-serif';
-      ctx.fillText('FORGENESIS REV 2.2  •  FLUME X-AXIS DATUM (mm)', 1024, 185);
+      ctx.fillText('FORGENESIS FINAL PROTOTYPE  •  FLUME X-AXIS DATUM (mm)', 1024, 185);
       const tex = new THREE.CanvasTexture(c);
       tex.colorSpace = THREE.SRGBColorSpace;
       return tex;
@@ -1143,21 +1144,21 @@
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color('#070b12');
-    scene.fog = new THREE.FogExp2('#070b12', 0.018);
+    scene.fog = new THREE.FogExp2('#070b12', 0.0028);
 
     const pmrem = new THREE.PMREMGenerator(renderer);
     scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
 
-    const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.05, 120);
-    camera.position.set(5.6, 5.2, 8.6);
+    const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.05, 260);
+    camera.position.set(27.0, 5.2, 10.6);
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.065;
     controls.minDistance = 1.2;
-    controls.maxDistance = 24;
+    controls.maxDistance = 95;
     controls.maxPolarAngle = Math.PI * 0.495;
-    controls.target.set(0.2, 1.35, 0.0);
+    controls.target.set(26.5, 1.35, 0.0);
     controls.update();
 
     // Studio 3-point lighting
@@ -1165,40 +1166,40 @@
     scene.add(hemiLight);
 
     const keyLight = new THREE.DirectionalLight('#ffffff', 2.1);
-    keyLight.position.set(6.5, 11.0, 8.5);
+    keyLight.position.set(16.0, 22.0, 16.0);
     keyLight.castShadow = true;
     keyLight.shadow.mapSize.set(2048, 2048);
     keyLight.shadow.camera.near = 1;
-    keyLight.shadow.camera.far = 30;
-    keyLight.shadow.camera.left = -7;
-    keyLight.shadow.camera.right = 7;
-    keyLight.shadow.camera.top = 5;
-    keyLight.shadow.camera.bottom = -5;
+    keyLight.shadow.camera.far = 75;
+    keyLight.shadow.camera.left = -42;
+    keyLight.shadow.camera.right = 42;
+    keyLight.shadow.camera.top = 12;
+    keyLight.shadow.camera.bottom = -12;
     keyLight.shadow.bias = -0.0005;
     scene.add(keyLight);
 
     const rimLight = new THREE.DirectionalLight('#7dd3fc', 0.85);
-    rimLight.position.set(-7.5, 5.0, -6.0);
+    rimLight.position.set(-18.0, 8.0, -10.0);
     scene.add(rimLight);
 
     const fillLight = new THREE.DirectionalLight('#fef3c7', 0.45);
-    fillLight.position.set(0.0, 3.5, 9.0);
+    fillLight.position.set(10.0, 4.5, 14.0);
     scene.add(fillLight);
 
-    // Studio Bench & Ruler Strip
-    const benchGeo = new THREE.BoxGeometry(14.5, 0.24, 7.6);
+    // Studio Bench & Ruler Strip (78 m bench for 7000 mm flume)
+    const benchGeo = new THREE.BoxGeometry(78.0, 0.24, 7.6);
     const benchMat = new THREE.MeshStandardMaterial({ color: '#0d1422', roughness: 0.85, metalness: 0.08 });
     const benchMesh = new THREE.Mesh(benchGeo, benchMat);
     benchMesh.position.set(0, -0.18, 0.35);
     benchMesh.receiveShadow = true;
     scene.add(benchMesh);
 
-    const gridHelper = new THREE.GridHelper(14.5, 29, 0x1e293b, 0x151e2e);
+    const gridHelper = new THREE.GridHelper(78.0, 78, 0x1e293b, 0x151e2e);
     gridHelper.position.set(0, -0.059, 0.35);
     scene.add(gridHelper);
 
     const rulerMat = new THREE.MeshStandardMaterial({ map: createBenchRulerTexture(false), roughness: 0.7 });
-    const rulerStrip = new THREE.Mesh(new THREE.PlaneGeometry(11.0, 1.38), rulerMat);
+    const rulerStrip = new THREE.Mesh(new THREE.PlaneGeometry(80.0, 1.38), rulerMat);
     rulerStrip.rotation.x = -Math.PI / 2;
     rulerStrip.position.set(0, -0.058, 2.35);
     rulerStrip.receiveShadow = true;
@@ -1207,12 +1208,12 @@
     // =========================================================================
     // 4. MASTER CAD COORDINATE ROOT (1 mm = 0.01 Three.js units)
     // =========================================================================
-    // Rotation X = -90° maps CAD (X, Y, Z) -> World (0.01*X - 4.5, 0.01*Z, -0.01*Y)
+    // Rotation X = -90° maps CAD (X, Y, Z) -> World (0.01*X - 35.0, 0.01*Z, -0.01*Y)
     // Near glass wall Y=-150 sits at World Z=+1.50 facing the viewer!
     const cadRoot = new THREE.Group();
     cadRoot.scale.setScalar(0.01);
     cadRoot.rotation.x = -Math.PI / 2;
-    cadRoot.position.set(-4.5, 0, 0);
+    cadRoot.position.set(-35.0, 0, 0);
     scene.add(cadRoot);
 
     // Materials Library
@@ -1373,7 +1374,7 @@
     }
 
     // =========================================================================
-    // 5. BUILD ALL 6 PROTOTYPE ZONES (EXACT REV 2.2 GEOMETRY)
+    // 5. BUILD ALL PROTOTYPE ZONES (FINAL 7000 x 300 x 300 mm GEOMETRY)
     // =========================================================================
 
     // --- ZONE 0A: Glass Flume Tank (T-01) ---
@@ -1385,36 +1386,37 @@
     addBox(zoneTank, -tG, -150, 0, tG, CFG.W, CFG.H, MATS.glass, 'T-01', { edges: true, edgeColor: 0x67e8f9, edgeOpacity: 0.55, renderOrder: 8 });
     addBox(zoneTank, CFG.L, -150, 0, tG, CFG.W, CFG.H, MATS.glass, 'T-01', { edges: true, edgeColor: 0x67e8f9, edgeOpacity: 0.55, renderOrder: 8 });
 
-    // --- ZONE 0B: Closed-Loop Recirculation Plumbing (R-01, R-02, C-05, C-06) ---
+    // --- ZONE 0B: Closed-Loop Recirculation Plumbing (R-01, R-02, C-05..C-10) ---
     const zonePlumbing = createZoneGroup('plumbing', [-55, -80, 45]);
+    const spx = CFG.spargerX;
     // R-02 Upstream Flow-Maker Sparger Bar (OD 20 mm)
-    addCyl(zonePlumbing, [25, -140, 175], [25, 140, 175], 10, 10, MATS.pvcBlue, 'R-02');
-    addCyl(zonePlumbing, [25, 140, 175], [25, 146, 175], 11.8, 11.8, MATS.epdm, 'R-02');
-    addCyl(zonePlumbing, [25, -146, 175], [25, -140, 175], 11.8, 11.8, MATS.epdm, 'R-02');
+    addCyl(zonePlumbing, [spx, -140, 175], [spx, 140, 175], 10, 10, MATS.pvcBlue, 'R-02');
+    addCyl(zonePlumbing, [spx, 140, 175], [spx, 146, 175], 11.8, 11.8, MATS.epdm, 'R-02');
+    addCyl(zonePlumbing, [spx, -146, 175], [spx, -140, 175], 11.8, 11.8, MATS.epdm, 'R-02');
     // 16 x Ø3 mm horizontal forward-facing jet nozzles
     for (let i = 0; i < 16; i++) {
       const ny = -120 + (240 / 15) * i;
-      addCyl(zonePlumbing, [25, ny, 175], [39, ny, 175], 1.6, 1.6, MATS.ss304Solid, 'R-02', { segs: 12 });
+      addCyl(zonePlumbing, [spx, ny, 175], [spx + 14, ny, 175], 1.6, 1.6, MATS.ss304Solid, 'R-02', { segs: 12 });
     }
     // Sparger top-rim acrylic hanger clip at far end
-    addBox(zonePlumbing, 15, 134, 165, 20, 6, 137, MATS.acrylicClear, 'R-02', { edges: true, renderOrder: 2 });
-    addBox(zonePlumbing, 15, 134, 300, 20, 26, 4, MATS.acrylicClear, 'R-02', { edges: true, renderOrder: 2 });
-    addBox(zonePlumbing, 15, 156, 274, 20, 5, 28, MATS.acrylicClear, 'R-02', { edges: true, renderOrder: 2 });
+    addBox(zonePlumbing, spx - 10, 134, 165, 20, 6, 137, MATS.acrylicClear, 'R-02', { edges: true, renderOrder: 2 });
+    addBox(zonePlumbing, spx - 10, 134, 300, 20, 26, 4, MATS.acrylicClear, 'R-02', { edges: true, renderOrder: 2 });
+    addBox(zonePlumbing, spx - 10, 156, 274, 20, 5, 28, MATS.acrylicClear, 'R-02', { edges: true, renderOrder: 2 });
 
-    // R-01 Closed-Loop Return Pipe (OD 16 mm) from Pump Outlet (746,0,33) -> (786,0,33) -> (786,-140,32) -> (25,-140,32) -> (25,-140,175)
+    // R-01 Closed-Loop Return Pipe (OD 16 mm) from Pump Outlet (6644,0,33) -> (6706,0,33) -> (6706,-140,32) -> (100,-140,32) -> (100,-140,175)
     addPipePath(zonePlumbing, [
-      [744, 0, 33],
-      [786, 0, 33],
-      [786, -140, 32],
-      [25, -140, 32],
-      [25, -140, 175]
-    ], 8.0, MATS.pvcBlue, 'R-01', { bendRadius: 15, tubularSegs: 96 });
+      [CFG.weirX + 74, 0, 33],
+      [CFG.weirX + 136, 0, 33],
+      [CFG.weirX + 136, -140, 32],
+      [spx, -140, 32],
+      [spx, -140, 175]
+    ], 8.0, MATS.pvcBlue, 'R-01', { bendRadius: 15, tubularSegs: 160 });
     // Elbow fitting collars & bulkhead ring on W-02
-    addCyl(zonePlumbing, [759, 0, 33], [770, 0, 33], 11.5, 11.5, MATS.rubberBlack, 'R-01');
-    addCyl(zonePlumbing, [25, -140, 162], [25, -140, 175], 10.5, 10.5, MATS.pvcBlue, 'R-01');
+    addCyl(zonePlumbing, [CFG.weirX + 89, 0, 33], [CFG.weirX + 100, 0, 33], 11.5, 11.5, MATS.rubberBlack, 'R-01');
+    addCyl(zonePlumbing, [spx, -140, 162], [spx, -140, 175], 10.5, 10.5, MATS.pvcBlue, 'R-01');
 
-    // C-05 (X=220) & C-06 (X=620) Standoff Clips supporting R-01 at Y=-140, Z=32
-    for (const cx of [220, 620]) {
+    // C-05..C-10 Standoff Clips supporting R-01 at Y=-140, Z=32 along the 6.8 m return run
+    for (const cx of [600, 1800, 3000, 4200, 5400, 6450]) {
       addBox(zonePlumbing, cx - 12, -149.5, 0, 24, 18, 25, MATS.acrylicClear, 'C-05', { edges: true, renderOrder: 2 });
       addBox(zonePlumbing, cx - 12, -149.5, 25, 24, 3, 18, MATS.acrylicClear, 'C-05', { edges: true, renderOrder: 2 });
       addBox(zonePlumbing, cx - 12, -134.5, 25, 24, 3, 18, MATS.acrylicClear, 'C-05', { edges: true, renderOrder: 2 });
@@ -1435,9 +1437,9 @@
         addEdgeOutline(mesh, 0x93c5fd, 0.55, 3);
         zoneFunnel.add(mesh);
       } else {
-        // Near vane F-02 split cleanly around R-01 pipe pass-through (Z=18..46 near X=80..145)
+        // Near vane F-02 split cleanly around R-01 pipe pass-through (Z=18..46 near X=5680..5745)
         const [p0, p1, p2, p3] = ptsXY;
-        const tFrac = 0.27; // covers X=80..141 where R-01 crosses Y=-140
+        const tFrac = 0.27;
         const midOuter = [p0[0] + (p1[0] - p0[0]) * tFrac, p0[1] + (p1[1] - p0[1]) * tFrac];
         const midInner = [p3[0] + (p2[0] - p3[0]) * tFrac, p3[1] + (p2[1] - p3[1]) * tFrac];
 
@@ -1453,24 +1455,23 @@
           addEdgeOutline(m, 0x93c5fd, 0.55, 3);
           zoneFunnel.add(m);
         };
-        // Bottom tab (Z=0..18), Top span (Z=46..220), and downstream solid section (Z=0..220)
         makePoly([p0, midOuter, midInner, p3], 0, 18);
         makePoly([p0, midOuter, midInner, p3], 46, z1);
         makePoly([midOuter, p1, p2, midInner], 0, z1);
       }
     }
 
-    createFunnelVane([[80, 150], [305.5, 70], [305.5, 67], [80, 147]], 0, 220, false);
-    createFunnelVane([[80, -147], [305.5, -67], [305.5, -70], [80, -150]], 0, 220, true);
+    createFunnelVane([[CFG.funnelStartX, 150], [CFG.funnelEndX, 70], [CFG.funnelEndX, 67], [CFG.funnelStartX, 147]], 0, 220, false);
+    createFunnelVane([[CFG.funnelStartX, -147], [CFG.funnelEndX, -67], [CFG.funnelEndX, -70], [CFG.funnelStartX, -150]], 0, 220, true);
 
     // Top-rim clamps C-07 (Far) & C-08 (Near) + M4 Nylon Thumbscrews
     for (const sign of [1, -1]) {
       const yInner = sign > 0 ? 146 : -150;
       const yOuter = sign > 0 ? 156 : -160;
-      addBox(zoneFunnel, 70, yInner, 218, 28, 4, 84, MATS.acrylicClear, 'F-01', { edges: true, renderOrder: 2 });
-      addBox(zoneFunnel, 70, sign > 0 ? 146 : -160, 300, 28, 14, 4, MATS.acrylicClear, 'F-01', { edges: true, renderOrder: 2 });
-      addBox(zoneFunnel, 70, yOuter, 272, 28, 4, 28, MATS.acrylicClear, 'F-01', { edges: true, renderOrder: 2 });
-      addCyl(zoneFunnel, [84, sign * 160, 286], [84, sign * 167, 286], 5, 5, MATS.whiteSilicone, 'F-01');
+      addBox(zoneFunnel, CFG.funnelStartX - 10, yInner, 218, 28, 4, 84, MATS.acrylicClear, 'F-01', { edges: true, renderOrder: 2 });
+      addBox(zoneFunnel, CFG.funnelStartX - 10, sign > 0 ? 146 : -160, 300, 28, 14, 4, MATS.acrylicClear, 'F-01', { edges: true, renderOrder: 2 });
+      addBox(zoneFunnel, CFG.funnelStartX - 10, yOuter, 272, 28, 4, 28, MATS.acrylicClear, 'F-01', { edges: true, renderOrder: 2 });
+      addCyl(zoneFunnel, [CFG.funnelStartX + 4, sign * 160, 286], [CFG.funnelStartX + 4, sign * 167, 286], 5, 5, MATS.whiteSilicone, 'F-01');
     }
 
     // --- ZONE 2: Exact 1:1 DYP-L08B50TW-V3.0 Sonar Gate (S-01, C-01, S-05) ---
@@ -1527,13 +1528,13 @@
     addCyl(zoneSonar, [sx - 4.6, 148.6, sz], [sx - 4.6, 149.3, sz], 1.6, 1.6, MATS.rubberBlack, 'S-01');
     addCyl(zoneSonar, [sx + 4.6, 148.6, sz], [sx + 4.6, 149.3, sz], 1.6, 1.6, MATS.rubberBlack, 'S-01');
     addCyl(zoneSonar, [sx, 148.8, sz], [sx, 150.3, sz], 3.2, 3.2, MATS.rubberBlack, 'S-01');
-    // Waterproof umbilical cable routing inside glass (Y=146), over rim around C-01, into E-01 PG7 gland (340, 176, 162)
+    // Waterproof umbilical cable routing inside glass (Y=146), over rim around C-01, into E-01 PG7 gland (6040, 176, 162)
     addPipePath(zoneSonar, [
       [sx, 148.0, sz],
       [sx - 24, 145.0, 235.0],
-      [340, 145.0, 306.0],
-      [340, 176.0, 306.0],
-      [340, 176.0, 258.0]
+      [sx - 40, 145.0, 306.0],
+      [sx - 40, 176.0, 306.0],
+      [sx - 40, 176.0, 258.0]
     ], 2.0, MATS.rubberBlack, 'S-01', { bendRadius: 6 });
 
     // C-01 No-Drill Sonar Glass Rim Bracket with TRUE Ø19.5 mm hole
@@ -1638,15 +1639,15 @@
     addCyl(zoneDiffuser, [dx, 212, 16], [dx, 246, 16], 14, 14, MATS.ss304Solid, 'A-01'); // 370 DC motor body
     addBox(zoneDiffuser, dx - 15, 200, 2, 30, 14, 30, MATS.rubberBlack, 'A-01'); // diaphragm head
     addCyl(zoneDiffuser, [dx, 212, 32], [dx, 212, 42], 4.2, 4.2, MATS.whiteSilicone, 'A-01'); // air barb
-    // Power wire from A-01 into E-01 middle PG7 gland (380, 176, 162)
+    // Power wire from A-01 into E-01 middle PG7 gland (6080, 176, 162)
     addPipePath(zoneDiffuser, [
       [dx, 246, 16],
       [dx - 45, 236, 16],
-      [380, 196, 90],
-      [380, 176, 162]
+      [CFG.sonarX, 196, 90],
+      [CFG.sonarX, 176, 162]
     ], 1.8, MATS.rubberBlack, 'A-01', { bendRadius: 18 });
 
-    // --- ZONE 4: Option 2A Full-Width 3-Slot Castellated Weir, SS304 Basket & Pump ---
+    // --- ZONE 4: Full-Width 3-Slot Castellated Weir, SS304 Basket & Pump ---
     const zoneWeir = createZoneGroup('weir', [90, 0, 50]);
     const wx = CFG.weirX;
     const wy = CFG.weirY;
@@ -1712,62 +1713,63 @@
     for (const [sxo, syo] of [[px + 7, -17], [px + 41, -17], [px + 7, 17], [px + 41, 17]]) {
       addCyl(zoneWeir, [sxo, syo, 55], [sxo, syo, 61], 1.5, 1.5, MATS.ss304Solid, 'P-01');
     }
-    // Submersible pump power cable routing cleanly over far rim into E-01 PG7 gland (420, 176, 162)
+    // Submersible pump power cable routing cleanly over far rim into E-01 PG7 gland (6120, 176, 162)
     addPipePath(zoneWeir, [
       [px + 20, 18, 45],
       [px + 20, 138, 45],
       [px + 20, 138, 306],
       [px + 20, 174, 306],
-      [485, 176, 130],
-      [420, 176, 162]
+      [CFG.sonarX + 105, 176, 130],
+      [CFG.sonarX + 40, 176, 162]
     ], 1.8, MATS.rubberBlack, 'P-01', { bendRadius: 12 });
 
     // --- ZONE 5: External IP65 Electronics Enclosure (E-01) ---
     const zoneElec = createZoneGroup('electronics', [0, 110, 80]);
-    // Main ABS IP65 Box (X=300..460, Y=156..216, Z=170..260 -> clears C-01 outer jaw Z=268..300)
-    addBox(zoneElec, 300, 156, 170, 160, 4, 90, MATS.absDark, 'E-01'); // backplate
-    addBox(zoneElec, 300, 156, 170, 160, 60, 4, MATS.absDark, 'E-01'); // floor
-    addBox(zoneElec, 300, 156, 256, 160, 60, 4, MATS.absDark, 'E-01'); // top
-    addBox(zoneElec, 300, 156, 174, 4, 60, 82, MATS.absDark, 'E-01'); // left side
-    addBox(zoneElec, 456, 156, 174, 4, 60, 82, MATS.absDark, 'E-01'); // right side
-    // Dual rim hanger brackets flanking C-01 (X=344..416)
-    for (const hx of [306, 442]) {
+    const ex = 6000;
+    // Main ABS IP65 Box (X=6000..6160, Y=156..216, Z=170..260 -> clears C-01 outer jaw Z=268..300)
+    addBox(zoneElec, ex, 156, 170, 160, 4, 90, MATS.absDark, 'E-01'); // backplate
+    addBox(zoneElec, ex, 156, 170, 160, 60, 4, MATS.absDark, 'E-01'); // floor
+    addBox(zoneElec, ex, 156, 256, 160, 60, 4, MATS.absDark, 'E-01'); // top
+    addBox(zoneElec, ex, 156, 174, 4, 60, 82, MATS.absDark, 'E-01'); // left side
+    addBox(zoneElec, ex + 156, 156, 174, 4, 60, 82, MATS.absDark, 'E-01'); // right side
+    // Dual rim hanger brackets flanking C-01 (X=6044..6116)
+    for (const hx of [ex + 6, ex + 142]) {
       addBox(zoneElec, hx, 156, 260, 12, 4, 42, MATS.absDark, 'E-01');
       addBox(zoneElec, hx, 146, 298, 12, 14, 4, MATS.absDark, 'E-01');
       addBox(zoneElec, hx, 146, 276, 12, 4, 22, MATS.absDark, 'E-01');
     }
     // Clear polycarbonate front lid
-    addBox(zoneElec, 298, 216, 168, 164, 3, 94, MATS.acrylicClear, 'E-01', { edges: true, edgeColor: 0x94a3b8, renderOrder: 3 });
+    addBox(zoneElec, ex - 2, 216, 168, 164, 3, 94, MATS.acrylicClear, 'E-01', { edges: true, edgeColor: 0x94a3b8, renderOrder: 3 });
 
     // 3x PG7 Cable Glands on underside/front-bottom
-    for (const gx of [340, 380, 420]) {
+    for (const gx of [ex + 40, ex + 80, ex + 120]) {
       addCyl(zoneElec, [gx, 176, 162], [gx, 176, 170], 6, 6, MATS.rubberBlack, 'E-01');
     }
     // External SW1 Rocker Switch, F1 Fuse, Barrel Jack & GPIO32 Override Button
-    addBox(zoneElec, 458, 178, 224, 6, 14, 22, MATS.redBtn, 'E-01'); // SPST rocker
-    addCyl(zoneElec, [458, 185, 195], [468, 185, 195], 5.5, 5.5, MATS.rubberBlack, 'E-01'); // 12V jack
-    addBox(zoneElec, 316, 217, 232, 12, 6, 12, MATS.redBtn, 'E-01'); // GPIO32 tactile override button
+    addBox(zoneElec, ex + 158, 178, 224, 6, 14, 22, MATS.redBtn, 'E-01'); // SPST rocker
+    addCyl(zoneElec, [ex + 158, 185, 195], [ex + 168, 185, 195], 5.5, 5.5, MATS.rubberBlack, 'E-01'); // 12V jack
+    addBox(zoneElec, ex + 16, 217, 232, 12, 6, 12, MATS.redBtn, 'E-01'); // GPIO32 tactile override button
 
     // Internal PCB & Electronics visible through clear polycarbonate lid
-    addBox(zoneElec, 308, 164, 178, 144, 2, 72, MATS.pcb, 'E-01');
+    addBox(zoneElec, ex + 8, 164, 178, 144, 2, 72, MATS.pcb, 'E-01');
     // ESP32-WROVER-E CH340 DevKitC
-    addBox(zoneElec, 316, 168, 200, 52, 3, 28, MATS.absDark, 'E-01');
-    addBox(zoneElec, 320, 171, 205, 18, 3, 18, MATS.ss304Solid, 'E-01'); // RF shield can
+    addBox(zoneElec, ex + 16, 168, 200, 52, 3, 28, MATS.absDark, 'E-01');
+    addBox(zoneElec, ex + 20, 171, 205, 18, 3, 18, MATS.ss304Solid, 'E-01'); // RF shield can
     // LM2596 Buck Converter (12V -> 5V)
-    addBox(zoneElec, 378, 168, 222, 42, 2, 22, MATS.pcbBlue, 'E-01');
-    addCyl(zoneElec, [395, 168, 233], [395, 177, 233], 6, 6, MATS.rubberBlack, 'E-01'); // inductor
+    addBox(zoneElec, ex + 78, 168, 222, 42, 2, 22, MATS.pcbBlue, 'E-01');
+    addCyl(zoneElec, [ex + 95, 168, 233], [ex + 95, 177, 233], 6, 6, MATS.rubberBlack, 'E-01'); // inductor
     // TXS0108E 8-Ch Level Shifter
-    addBox(zoneElec, 380, 168, 196, 24, 2, 14, MATS.pcbBlue, 'E-01');
+    addBox(zoneElec, ex + 80, 168, 196, 24, 2, 14, MATS.pcbBlue, 'E-01');
     // 1000 uF / 16V Bulk Capacitor (C1)
-    addCyl(zoneElec, [432, 168, 230], [432, 184, 230], 5.5, 5.5, MATS.absDark, 'E-01');
+    addCyl(zoneElec, [ex + 132, 168, 230], [ex + 132, 184, 230], 5.5, 5.5, MATS.absDark, 'E-01');
     // Dual IRLZ44PBF MOSFETs (Q1, Q2)
-    for (const qx of [418, 438]) {
+    for (const qx of [ex + 118, ex + 138]) {
       addBox(zoneElec, qx, 168, 186, 10, 5, 14, MATS.rubberBlack, 'E-01');
       addBox(zoneElec, qx + 1, 168, 200, 8, 2, 8, MATS.ss304Solid, 'E-01');
     }
     // Live Animated Status Red LED (GPIO33)
     const statusLedMesh = new THREE.Mesh(new THREE.SphereGeometry(2.8, 14, 14), MATS.statusLed);
-    statusLedMesh.position.set(342, 215, 240);
+    statusLedMesh.position.set(ex + 42, 215, 240);
     registerPartMesh(statusLedMesh, 'E-01');
     zoneElec.add(statusLedMesh);
 
@@ -1787,25 +1789,25 @@
       side: THREE.DoubleSide, clearcoat: 0.9
     });
 
-    // Main Channel Water Body (X=0..670, Y=-150..150, Z=0..200)
-    const mainWaterVol = addBox(waterGroup, 0, -150, 0, 670, 300, 200, waterBodyMat, null, { renderOrder: 5 });
-    // Sump Drawdown Water Body (X=673..763, Y=-144..144, Z=3..165)
-    addBox(waterGroup, 673, -144, 3, 90, 288, 162, waterBodyMat, null, { renderOrder: 5 });
+    // Main Channel Water Body (X=0..6570, Y=-150..150, Z=0..200)
+    const mainWaterVol = addBox(waterGroup, 0, -150, 0, CFG.weirX, 300, 200, waterBodyMat, null, { renderOrder: 5 });
+    // Sump Drawdown Water Body (X=6573..6663, Y=-144..144, Z=3..165)
+    addBox(waterGroup, CFG.weirX + 3, -144, 3, 90, 288, 162, waterBodyMat, null, { renderOrder: 5 });
     // Sump Surface Plane (Z=165)
     const sumpSurface = new THREE.Mesh(new THREE.PlaneGeometry(90, 288), waterSurfaceMat);
-    sumpSurface.position.set(718, 0, 165);
+    sumpSurface.position.set(CFG.weirX + 48, 0, 165);
     sumpSurface.renderOrder = 5;
     waterGroup.add(sumpSurface);
 
     // Animated Rippled Main Water Surface at Z=200
-    const surfGeo = new THREE.PlaneGeometry(670, 300, 68, 28);
+    const surfGeo = new THREE.PlaneGeometry(CFG.weirX, 300, 160, 20);
     const surfBasePos = surfGeo.attributes.position.array.slice();
     const mainWaterSurf = new THREE.Mesh(surfGeo, waterSurfaceMat);
-    mainWaterSurf.position.set(335, 0, 200);
+    mainWaterSurf.position.set(CFG.weirX * 0.5, 0, 200);
     mainWaterSurf.renderOrder = 5;
     waterGroup.add(mainWaterSurf);
 
-    // 3 Parabolic Waterfall Nappe Sheets for Option 2A 3-Slot Castellated Weir
+    // 3 Parabolic Waterfall Nappe Sheets for Full-Width 3-Slot Castellated Weir
     const nappeMat = new THREE.MeshPhysicalMaterial({
       color: '#bae6fd', map: waterfallTex, roughness: 0.15,
       transparent: true, opacity: 0.78, depthWrite: false, side: THREE.DoubleSide
@@ -1823,7 +1825,7 @@
       for (let i = 0; i < pos.count; i++) {
         const ly = pos.getX(i);
         const t = 0.5 - pos.getY(i); // 0 at crest, 1 in basket
-        const x = 670 + t * 29;
+        const x = CFG.weirX + t * 29;
         const z = 197 - t * t * 34;
         pos.setXYZ(i, x, slot.yCenter + ly, z);
       }
@@ -1834,7 +1836,7 @@
       nappeMeshes.push(mesh);
     });
 
-    // InstancedMesh: 450 Rising Micro-Bubbles along D-01 (X=520, Y=-112..136, Z=22..200)
+    // InstancedMesh: 450 Rising Micro-Bubbles along D-01 (X=6320, Y=-112..136, Z=22..200)
     const BUBBLE_COUNT = 450;
     const bubbleGeo = new THREE.SphereGeometry(1.75, 8, 8);
     const bubbleMat = new THREE.MeshPhysicalMaterial({
@@ -1845,7 +1847,7 @@
     bubbleInst.renderOrder = 6;
     waterGroup.add(bubbleInst);
     const bubbles = Array.from({ length: BUBBLE_COUNT }, (_, i) => ({
-      x: 520 + (Math.random() - 0.5) * 14,
+      x: CFG.diffuserX + (Math.random() - 0.5) * 14,
       y: -112 + Math.random() * 248,
       z: 22 + (i / BUBBLE_COUNT) * 178,
       vz: 95 + Math.random() * 65,
@@ -1853,9 +1855,9 @@
       phase: Math.random() * Math.PI * 2
     }));
 
-    // InstancedMesh: 140 Flow Tracer Streamlines from R-02 Jets
-    const TRACER_COUNT = 140;
-    const tracerGeo = new THREE.BoxGeometry(10, 1.5, 1.5);
+    // InstancedMesh: 240 Flow Tracer Streamlines from R-02 Jets across 6.5 m reach
+    const TRACER_COUNT = 240;
+    const tracerGeo = new THREE.BoxGeometry(14, 1.5, 1.5);
     const tracerMat = new THREE.MeshBasicMaterial({
       color: '#7dd3fc', transparent: true, opacity: 0.42, depthWrite: false
     });
@@ -1863,7 +1865,7 @@
     tracerInst.renderOrder = 6;
     waterGroup.add(tracerInst);
     const tracers = Array.from({ length: TRACER_COUNT }, (_, i) => ({
-      x: 38 + (i / TRACER_COUNT) * 630,
+      x: 115 + (i / TRACER_COUNT) * (CFG.weirX - 118),
       y: -135 + Math.random() * 270,
       z: 40 + Math.random() * 150
     }));
@@ -1893,7 +1895,7 @@
         const d = {
           mesh,
           submerged,
-          x: 42 + Math.random() * 25,
+          x: CFG.funnelStartX - 240 + Math.random() * 80,
           y: -120 + Math.random() * 240,
           z: submerged ? (65 + Math.random() * 75) : 194,
           targetZ: submerged ? (65 + Math.random() * 75) : 194,
@@ -1928,25 +1930,25 @@
       dimsGroup.add(line);
     }
 
-    // Flume Length 900 mm
-    addDimLine([0, -172, 0], [900, -172, 0]);
+    // Flume Length 7000 mm
+    addDimLine([0, -172, 0], [CFG.L, -172, 0]);
     addDimLine([0, -156, 0], [0, -176, 0]);
-    addDimLine([900, -156, 0], [900, -176, 0]);
+    addDimLine([CFG.L, -156, 0], [CFG.L, -176, 0]);
     // Flume Width 300 mm
-    addDimLine([922, -150, 0], [922, 150, 0]);
+    addDimLine([CFG.L + 22, -150, 0], [CFG.L + 22, 150, 0]);
     // V-Funnel 140 mm Throat
-    addDimLine([305.5, -70, 224], [305.5, 70, 224], 0x38bdf8);
+    addDimLine([CFG.funnelEndX, -70, 224], [CFG.funnelEndX, 70, 224], 0x38bdf8);
     // Waterline Z=200 & Sump Z=165
-    addDimLine([670, -162, 165], [670, -162, 200], 0x22d3ee);
-    // Zero-clash gap at X=520 (R-01 Y=-140, Z=32 vs D-01 Y=-115, Z=12)
-    addDimLine([520, -140, 32], [520, -115, 12], 0x10b981);
+    addDimLine([CFG.weirX, -162, 165], [CFG.weirX, -162, 200], 0x22d3ee);
+    // Zero-clash gap at X=6320 (R-01 Y=-140, Z=32 vs D-01 Y=-115, Z=12)
+    addDimLine([CFG.diffuserX, -140, 32], [CFG.diffuserX, -115, 12], 0x10b981);
 
     const DIM_LABELS = [
-      { pos: [450, -182, 0], text: 'L = 900.0 mm' },
-      { pos: [945, 0, 0], text: 'W = 300.0 mm' },
-      { pos: [305.5, 0, 238], text: 'Throat = 140.0 mm' },
-      { pos: [670, -175, 185], text: 'ΔH = 35 mm (200→165)' },
-      { pos: [520, -128, 52], text: '11.0 mm Air Gap (25×20 offset)' }
+      { pos: [3500, -182, 0], text: 'L = 7000.0 mm (700 cm)' },
+      { pos: [7045, 0, 0], text: 'W = 300.0 mm' },
+      { pos: [CFG.funnelEndX, 0, 238], text: 'Throat = 140.0 mm' },
+      { pos: [CFG.weirX, -175, 185], text: 'ΔH = 35 mm (200→165)' },
+      { pos: [CFG.diffuserX, -128, 52], text: '11.0 mm Air Gap (25×20 offset)' }
     ];
 
     // =========================================================================
@@ -1954,18 +1956,18 @@
     // =========================================================================
     const labelsLayer = document.getElementById('labels-layer');
     const CALLOUT_DEFS = [
-      { id: 'T-01', label: 'T-01 Glass Flume', color: '#38bdf8', pos: [140, -152, 290] },
-      { id: 'R-02', label: 'R-02 Sparger', color: '#0284c7', pos: [25, 0, 198] },
-      { id: 'R-01', label: 'R-01 Return (Z=32)', color: '#0ea5e9', pos: [445, -140, 44] },
-      { id: 'F-01', label: 'F-01 V-Funnel', color: '#22d3ee', pos: [195, 112, 225] },
-      { id: 'S-01', label: 'S-01 DYP Sonar', color: '#94a3b8', pos: [380, 130, 210] },
-      { id: 'S-05', label: 'S-05 30 PPI Stop', color: '#cbd5e1', pos: [380, -116, 222] },
-      { id: 'D-01', label: 'D-01 EPDM Barrier', color: '#f97316', pos: [520, 0, 28] },
-      { id: 'A-01', label: 'A-01 Air Pump', color: '#fb923c', pos: [520, 225, 52] },
-      { id: 'W-01', label: 'W-01 3-Slot Weir', color: '#06b6d4', pos: [671, 0, 226] },
-      { id: 'B-01', label: 'B-01 SS304 Basket', color: '#eab308', pos: [718, 76, 245] },
-      { id: 'P-01', label: 'P-01 Pump (800 L/h)', color: '#64748b', pos: [718, 0, 68] },
-      { id: 'E-01', label: 'E-01 ESP32 Box', color: '#10b981', pos: [380, 218, 272] }
+      { id: 'T-01', label: 'T-01 Glass Flume (7m)', color: '#38bdf8', pos: [5700, -152, 290] },
+      { id: 'R-02', label: 'R-02 Sparger', color: '#0284c7', pos: [100, 0, 198] },
+      { id: 'R-01', label: 'R-01 Return (Z=32)', color: '#0ea5e9', pos: [6145, -140, 44] },
+      { id: 'F-01', label: 'F-01 V-Funnel', color: '#22d3ee', pos: [5795, 112, 225] },
+      { id: 'S-01', label: 'S-01 DYP Sonar', color: '#94a3b8', pos: [6080, 130, 210] },
+      { id: 'S-05', label: 'S-05 30 PPI Stop', color: '#cbd5e1', pos: [6080, -116, 222] },
+      { id: 'D-01', label: 'D-01 EPDM Barrier', color: '#f97316', pos: [6320, 0, 28] },
+      { id: 'A-01', label: 'A-01 Air Pump', color: '#fb923c', pos: [6320, 225, 52] },
+      { id: 'W-01', label: 'W-01 3-Slot Weir', color: '#06b6d4', pos: [6571, 0, 226] },
+      { id: 'B-01', label: 'B-01 SS304 Basket', color: '#eab308', pos: [6618, 76, 245] },
+      { id: 'P-01', label: 'P-01 Pump (800 L/h)', color: '#64748b', pos: [6618, 0, 68] },
+      { id: 'E-01', label: 'E-01 ESP32 Box', color: '#10b981', pos: [6080, 218, 272] }
     ];
 
     const badgeItems = CALLOUT_DEFS.map(def => {
@@ -2016,13 +2018,14 @@
 
     // Camera Presets using cadRoot.localToWorld
     const CAMERA_PRESETS = {
-      hero:        { cam: [480, -760, 520], target: [450, 0, 125] },
-      top:         { cam: [450, -12, 1180], target: [450, 0, 120] },
-      side:        { cam: [450, -980, 165], target: [450, 0, 145] },
-      clearance:   { cam: [645, -365, 130], target: [518, -126, 22] },
-      sonar:       { cam: [220, -255, 290], target: [380, 50, 175] },
-      weir:        { cam: [500, -340, 290], target: [710, 0, 155] },
-      electronics: { cam: [380, 465, 255],  target: [380, 185, 215] }
+      hero:        { cam: [6150, -900, 560], target: [6160, 0, 125] },
+      full:        { cam: [3500, -4200, 2600], target: [3500, 0, 125] },
+      top:         { cam: [6160, -12, 1350], target: [6160, 0, 120] },
+      side:        { cam: [6160, -1150, 165], target: [6160, 0, 145] },
+      clearance:   { cam: [6445, -365, 130], target: [6318, -126, 22] },
+      sonar:       { cam: [5920, -255, 290], target: [6080, 50, 175] },
+      weir:        { cam: [6400, -340, 290], target: [6610, 0, 155] },
+      electronics: { cam: [6080, 465, 255],  target: [6080, 185, 215] }
     };
 
     let camTween = null;
@@ -2081,16 +2084,16 @@
       badgeItems.forEach(b => b.el.classList.toggle('active', b.id === partId));
 
       if (!partId || !PART_SPECS[partId]) {
-        document.getElementById('insp-id').textContent = 'SYSTEM • REV 2.2';
+        document.getElementById('insp-id').textContent = 'SYSTEM • FINAL';
         document.getElementById('insp-name').textContent = 'Click Any Part or Badge to Inspect';
         document.getElementById('insp-specs').innerHTML = `
-          <div class="spec-row"><span>Flume Envelope</span><span>900 × 300 × 300 mm</span></div>
-          <div class="spec-row"><span>Static Waterline</span><span>Z = 200.0 mm (81 L max)</span></div>
+          <div class="spec-row"><span>Flume Envelope</span><span>7000 × 300 × 300 mm</span></div>
+          <div class="spec-row"><span>Static Waterline</span><span>Z = 200.0 mm (420 L / 630 L)</span></div>
           <div class="spec-row"><span>Zero-Clash Gap</span><span>11.0 mm net (R-01 / D-01)</span></div>
-          <div class="spec-row"><span>Sonar Gate</span><span>X = 380 mm, Z = 180 mm</span></div>
+          <div class="spec-row"><span>Sonar Gate</span><span>X = 6080 mm, Z = 180 mm</span></div>
         `;
         document.getElementById('insp-notes').textContent =
-          'Orbit with left-drag, pan with right-drag, scroll to zoom. Click any component mesh or floating BOM badge to inspect exact Rev 2.2 coordinates, materials, and plumbing clearances.';
+          'Orbit with left-drag, pan with right-drag, scroll to zoom. Click any component mesh or floating BOM badge to inspect exact coordinates, materials, and plumbing clearances.';
         return;
       }
 
@@ -2223,11 +2226,11 @@
     let elapsed = 0;
 
     function updateTelemetryAndState(dt) {
-      // Check Sonar Gate (X=380 ± 28, Y within active gate)
+      // Check Sonar Gate (X=6080 ± 28, Y within active gate)
       let minGateDist = 248;
       let debrisInGate = false;
       for (const d of debrisList) {
-        if (!d.inBasket && Math.abs(d.x - 380) < 26 && d.z > 125 && d.z < 210) {
+        if (!d.inBasket && Math.abs(d.x - CFG.sonarX) < 26 && d.z > 125 && d.z < 210) {
           const distFromFace = Math.round(115 - d.y);
           if (distFromFace > 85 && distFromFace < 225) {
             debrisInGate = true;
@@ -2353,8 +2356,8 @@
       for (let i = 0; i < pos.count; i++) {
         const bx = surfBasePos[i * 3];
         const by = surfBasePos[i * 3 + 1];
-        const worldX = bx + 335;
-        const bubblePlume = sim.airOn ? Math.exp(-Math.pow((worldX - 520) / 36, 2)) * 2.6 * Math.sin(elapsed * 14 + by * 0.15) : 0;
+        const worldX = bx + CFG.weirX * 0.5;
+        const bubblePlume = sim.airOn ? Math.exp(-Math.pow((worldX - CFG.diffuserX) / 36, 2)) * 2.6 * Math.sin(elapsed * 14 + by * 0.15) : 0;
         const ripple = Math.sin(worldX * 0.045 - elapsed * (2.5 + sim.pumpPwm * 4)) * waveAmp + Math.cos(by * 0.07 + elapsed * 3) * 0.45;
         pos.setZ(i, ripple + bubblePlume);
       }
@@ -2370,7 +2373,7 @@
           b.x += (18 + sim.pumpPwm * 42) * dt;
           if (b.z > 199) {
             b.z = 22 + Math.random() * 8;
-            b.x = 520 + (Math.random() - 0.5) * 14;
+            b.x = CFG.diffuserX + (Math.random() - 0.5) * 14;
             b.y = -112 + Math.random() * 248;
           }
           const swayY = Math.sin(elapsed * 6 + b.phase) * 2.2;
@@ -2390,12 +2393,12 @@
         const speed = 35 + sim.pumpPwm * 165;
         tr.x += speed * dt;
         // Converge into V-funnel throat
-        if (tr.x > 80 && tr.x < 310) {
-          const maxY = 150 - ((tr.x - 80) / 225.5) * 80;
+        if (tr.x > CFG.funnelStartX && tr.x < CFG.funnelEndX + 5) {
+          const maxY = 150 - ((tr.x - CFG.funnelStartX) / 225.5) * 80;
           if (Math.abs(tr.y) > maxY - 5) tr.y = Math.sign(tr.y) * (maxY - 5);
         }
-        if (tr.x > 668) {
-          tr.x = 38;
+        if (tr.x > CFG.weirX - 2) {
+          tr.x = CFG.spargerX + 15;
           tr.y = -132 + Math.random() * 264;
           tr.z = 40 + Math.random() * 150;
         }
@@ -2415,22 +2418,22 @@
         d.mesh.rotation.y += d.rotSpeed.y * dt;
 
         // V-Funnel lateral guidance
-        if (d.x >= 80 && d.x <= 305.5) {
-          const halfWidth = 150 - ((d.x - 80) / 225.5) * 80 - 9;
+        if (d.x >= CFG.funnelStartX && d.x <= CFG.funnelEndX) {
+          const halfWidth = 150 - ((d.x - CFG.funnelStartX) / 225.5) * 80 - 9;
           if (Math.abs(d.y) > halfWidth) {
             d.y = Math.sign(d.y) * halfWidth;
           }
         }
 
-        // Bubble barrier lift near X=520 when A-01 is ON
-        if (sim.airOn && Math.abs(d.x - 520) < 38) {
+        // Bubble barrier lift near X=6320 when A-01 is ON
+        if (sim.airOn && Math.abs(d.x - CFG.diffuserX) < 38) {
           d.z = Math.min(194, d.z + 110 * dt);
         } else {
           d.z += (d.targetZ - d.z) * Math.min(1, dt * 1.2);
         }
 
-        // Align toward one of the 3 castellated weir intake slots near X=640..670
-        if (d.x > 560 && d.x < 670) {
+        // Align toward one of the 3 castellated weir intake slots near X=6460..6570
+        if (d.x > CFG.weirX - 110 && d.x < CFG.weirX) {
           const nearestSlot = WEIR_SLOTS.reduce((best, s) =>
             Math.abs(d.y - s.yCenter) < Math.abs(d.y - best.yCenter) ? s : best, WEIR_SLOTS[1]);
           d.y += (nearestSlot.yCenter - d.y) * Math.min(1, dt * 2.5);
@@ -2440,19 +2443,19 @@
           }
         }
 
-        // Cross over weir crest into SS304 Basket (X=675..761, Z=126..150)
-        if (d.x >= 670) {
+        // Cross over weir crest into SS304 Basket (X=6575..6661, Z=126..150)
+        if (d.x >= CFG.weirX) {
           if (d.z > 183) {
             d.inBasket = true;
             capturedCount += 1;
-            const localX = 684 + Math.random() * 64;
+            const localX = CFG.weirX + 14 + Math.random() * 64;
             const localY = Math.max(-130, Math.min(130, d.y));
             const localZ = 128 + Math.random() * 14;
             basketGroup.add(d.mesh); // Moves with basket lift slider!
             d.mesh.position.set(localX, localY, localZ);
           } else {
             // Bounce gently below weir wall if submerged & pump didn't lift
-            d.x = 664;
+            d.x = CFG.weirX - 6;
             d.z += 25 * dt;
           }
         }
