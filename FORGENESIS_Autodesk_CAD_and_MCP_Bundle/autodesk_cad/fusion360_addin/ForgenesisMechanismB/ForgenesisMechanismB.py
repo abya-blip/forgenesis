@@ -1,9 +1,9 @@
 #Author: Antigravity AI (FORGENESIS Engineering Team)
 #Description: FORGENESIS Final Prototype — Full-Width 3-Slot Castellated Weir Assembly
 #             Pure structural and mechanical assembly in Autodesk Fusion 360 (7000 x 300 x 300 mm Flume).
-#             Zero water volumes, zero waterfall cascades, zero bubbles — allowing crystal-clear inspection
-#             of all mechanical parts, 3-slot castellated weir, SS304 mesh basket, exact 1:1 DYP-L08B50TW-V3.0
-#             sonar with 18-tooth gear locknuts, and decoupled closed-loop plumbing.
+#             Except for the glass tank (T-01) and piping/tubing (R-01, R-02, D-01, D-02), the trapping
+#             mechanism (3-slot weir, perforated basket, V-funnel, rim mounts, pump baffle) is 3D-printed in
+#             waterproof PETG / ASA alongside the 1:1 DYP-L08B50TW-V3.0 sonar and decoupled recirculation loop.
 
 import adsk.core
 import adsk.fusion
@@ -14,7 +14,7 @@ CONFIG = {
     "flume_length_mm": 7000.0,
     "flume_width_mm": 300.0,
     "flume_height_mm": 300.0,
-    "acrylic_thickness_mm": 3.0,
+    "acrylic_thickness_mm": 3.0,  # 3.0 mm nominal 3D-printed PETG/ASA wall thickness
 
     # Upstream Closed-Loop Flow-Maker Sparger Bar (0.95m coherent laminar approach)
     "sparger_x_mm": 4900.0,
@@ -287,9 +287,10 @@ def add_gear_locknut_body(target_comp, name, sx, sz, y_start, y_end, r_inner, r_
 def build_dry_model(master_comp, app, design):
     """Builds the complete physical assembly WITHOUT water."""
     app_glass = get_or_create_appearance(app, design, "Engineering_Clear_Float_Glass", ["Clear", "Glass - Clear", "Glass"], (225, 245, 255))
-    app_acrylic_clear = get_or_create_appearance(app, design, "Engineering_Clear_Cast_Acrylic", ["Acrylic - Clear", "Plastic - Transparent", "Clear"], (240, 249, 255))
-    app_acrylic_cyan = get_or_create_appearance(app, design, "Engineering_Cyan_Cast_Acrylic", ["Acrylic - Clear", "Plastic - Transparent", "Clear"], (6, 182, 212))
-    app_ss304 = get_or_create_appearance(app, design, "Engineering_SS304_Satin_Perforated", ["Stainless Steel - Satin", "Steel - Satin", "Metal"], (218, 224, 232))
+    app_acrylic_clear = get_or_create_appearance(app, design, "Engineering_3DPrinted_PETG_Translucent", ["Plastic - Translucent", "Acrylic - Clear", "Clear"], (235, 245, 252))
+    app_acrylic_cyan = get_or_create_appearance(app, design, "Engineering_3DPrinted_PETG_Cyan", ["Plastic - Glossy (Blue)", "Acrylic - Clear", "Clear"], (6, 182, 212))
+    app_petg_gray = get_or_create_appearance(app, design, "Engineering_3DPrinted_PETG_Gray", ["Plastic - Matte (Gray)", "ABS (White)", "Plastic"], (214, 222, 232))
+    app_ss304 = get_or_create_appearance(app, design, "Engineering_Hardware_Metal", ["Stainless Steel - Satin", "Steel - Satin", "Metal"], (218, 224, 232))
     app_alum_gold = get_or_create_appearance(app, design, "Engineering_Yellow_Anodized_Alum", ["Aluminum - Anodized Glossy (Yellow)", "Gold", "Brass"], (234, 179, 8))
     app_sonar_gray_asa = get_or_create_appearance(app, design, "Engineering_Matte_Gray_ASA_PVC", ["Plastic - Matte (Gray)", "ABS (White)", "Plastic"], (148, 156, 168))
     app_sonar_nut_asa = get_or_create_appearance(app, design, "Engineering_Knurled_DarkGray_ASA", ["Plastic - Matte (Dark Gray)", "Nylon 6-6 (White)", "Plastic"], (100, 116, 139))
@@ -336,7 +337,7 @@ def build_dry_model(master_comp, app, design):
     dx_f = 225.5
     ty = CONFIG["funnel_throat_width_mm"] / 2.0
     fh = CONFIG["funnel_height_mm"]
-    create_angled_vane_component(funnel_comp, "F01_Left_Funnel_Vane_3mm_Acrylic", [(fx, W/2), (fx + dx_f, ty), (fx + dx_f, ty - t), (fx, W/2 - t)], 0, fh, app_acrylic_clear, opacity=0.68)
+    create_angled_vane_component(funnel_comp, "F01_Left_Funnel_Vane_3DPrinted_PETG", [(fx, W/2), (fx + dx_f, ty), (fx + dx_f, ty - t), (fx, W/2 - t)], 0, fh, app_acrylic_clear, opacity=0.68)
     # Notched F-02 right vane clearing D20mm R-01 return pipe (Z=17..47 near upstream X=5850..5908)
     f02_mid_x = fx + 58.0
     f02_mid_y_out = -W/2 + (58.0 / dx_f) * (W/2 - ty)
@@ -394,7 +395,7 @@ def build_dry_model(master_comp, app, design):
 
     add_extruded_box_body(sonar_comp, "C01_NoDrill_Glass_Rim_Top_Bridge", sx - 36, 133.5, 300, 72, 28.5, 4, app_acrylic_clear, opacity=0.82)
     add_extruded_box_body(sonar_comp, "C01_NoDrill_Glass_Rim_Outer_Jaw", sx - 36, 156, 268, 72, 6, 32, app_acrylic_clear, opacity=0.82)
-    add_extruded_box_body(sonar_comp, "Acoustic_Stop_Acrylic_Backplate", sx - 55, -128, 0, 110, 3, 220, app_acrylic_clear, opacity=0.78)
+    add_extruded_box_body(sonar_comp, "Acoustic_Stop_3DPrinted_Backplate", sx - 55, -128, 0, 110, 3, 220, app_acrylic_clear, opacity=0.78)
     add_extruded_box_body(sonar_comp, "Acoustic_Stop_30PPI_Polyurethane_Foam", sx - 55, -125, 0, 110, 18, 215, app_foam_baffle, opacity=0.96)
     add_extruded_box_body(sonar_comp, "S05_Rim_Hanger_Drop", sx - 16, -135, 220, 32, 10, 80, app_acrylic_clear, opacity=0.82)
     add_extruded_box_body(sonar_comp, "S05_Rim_Hanger_Top", sx - 16, -159, 300, 32, 34, 4, app_acrylic_clear, opacity=0.82)
@@ -444,11 +445,11 @@ def build_dry_model(master_comp, app, design):
     bl = CONFIG["basket_length_mm"]
     bw = CONFIG["basket_width_mm"]
     bh = CONFIG["basket_height_mm"]
-    add_extruded_box_body(weir_comp, "B01_Basket_Perforated_SS304_Floor", bx, by, bz, bl, bw, 1.5, app_ss304, opacity=0.88)
-    add_extruded_box_body(weir_comp, "B01_Basket_Perforated_Front_Lip", bx, by, bz + 1.5, 1.5, bw, bh - 1.5, app_ss304, opacity=0.88)
-    add_extruded_box_body(weir_comp, "B01_Basket_Perforated_Rear_Wall", bx + bl - 1.5, by, bz + 1.5, 1.5, bw, bh - 1.5, app_ss304, opacity=0.88)
-    add_extruded_box_body(weir_comp, "B01_Basket_Perforated_Right_Wall", bx + 1.5, by, bz + 1.5, bl - 3.0, 1.5, bh - 1.5, app_ss304, opacity=0.88)
-    add_extruded_box_body(weir_comp, "B01_Basket_Perforated_Left_Wall", bx + 1.5, by + bw - 1.5, bz + 1.5, bl - 3.0, 1.5, bh - 1.5, app_ss304, opacity=0.88)
+    add_extruded_box_body(weir_comp, "B01_Basket_3DPrinted_PETG_Floor", bx, by, bz, bl, bw, 1.5, app_petg_gray, opacity=0.92)
+    add_extruded_box_body(weir_comp, "B01_Basket_3DPrinted_PETG_Front_Lip", bx, by, bz + 1.5, 1.5, bw, bh - 1.5, app_petg_gray, opacity=0.92)
+    add_extruded_box_body(weir_comp, "B01_Basket_3DPrinted_PETG_Rear_Wall", bx + bl - 1.5, by, bz + 1.5, 1.5, bw, bh - 1.5, app_petg_gray, opacity=0.92)
+    add_extruded_box_body(weir_comp, "B01_Basket_3DPrinted_PETG_Right_Wall", bx + 1.5, by, bz + 1.5, bl - 3.0, 1.5, bh - 1.5, app_petg_gray, opacity=0.92)
+    add_extruded_box_body(weir_comp, "B01_Basket_3DPrinted_PETG_Left_Wall", bx + 1.5, by + bw - 1.5, bz + 1.5, bl - 3.0, 1.5, bh - 1.5, app_petg_gray, opacity=0.92)
 
     for h_y, h_name in ((by + 65.0, "Right"), (by + bw - 65.0, "Left")):
         add_true_cylinder_body(weir_comp, f"B02_{h_name}_Handle_Stem", (bx + bl/2.0, h_y, bz + bh), (bx + bl/2.0, h_y, 235.0), 2.5, app_alum_gold, opacity=1.0)
@@ -458,7 +459,7 @@ def build_dry_model(master_comp, app, design):
     py = wy + ww/2.0 - 18.0
     add_extruded_box_body(weir_comp, "P01_Submersible_Pump_Body_800Lh", px, py, wz + t, 48.0, 36.0, 52.0, app_epdm_rubber, opacity=0.98)
     add_true_cylinder_body(weir_comp, "P01_Discharge_Nozzle_D20mm", (px + 48.0, py + 18.0, wz + 33.0), (wx + wl - t, py + 18.0, wz + 33.0), 10.0, app_pvc_blue, opacity=1.0)
-    add_extruded_box_body(weir_comp, "P01_AntiVortex_Baffle_Plate_40x40mm", px + 4.0, -20.0, 61.0, 40.0, 40.0, 2.0, app_ss304, opacity=0.88)
+    add_extruded_box_body(weir_comp, "P01_AntiVortex_Baffle_Plate_40x40mm", px + 4.0, -20.0, 61.0, 40.0, 40.0, 2.0, app_petg_gray, opacity=0.92)
 
     # 7. Zone 5: External IP65 Electronics Box
     elec_comp = create_sub_component(master_comp, "Zone5_External_IP65_Electronics_Box")

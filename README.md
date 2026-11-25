@@ -14,9 +14,9 @@
 ├── FORGENESIS_Autodesk_CAD_and_MCP_Bundle.zip
 └── FORGENESIS_Autodesk_CAD_and_MCP_Bundle/
     └── autodesk_cad/
-        ├── dxf/                        # 2D laser-cut acrylic & SS304 mesh DXF sheets
+        ├── dxf/                        # Optional 2D planar reference profiles
         ├── obj/                        # Full assembly .obj / .mtl
-        ├── stl/                        # Individual part & full assembly .stl meshes
+        ├── stl/                        # Primary FDM 3D-printable .stl meshes for trapping mechanism
         ├── fusion360_addin/
         │   └── ForgenesisMechanismB/   # Fusion 360 parametric CAD builder add-in
         └── mcp_server/
@@ -51,7 +51,8 @@ printf '{"jsonrpc":"2.0","id":1,"method":"initialize"}\n{"jsonrpc":"2.0","id":2,
 2. **Passive V-funnel debris concentration** (`F-01`, `F-02`).
 3. **Submerged underwater ultrasonic detection gate** (`DYP-L08B50TW-V3.0` Controlled-UART sonar).
 4. **90° transverse upwelling EPDM micro-porous bubble barrier** (`D-01` + `A-01` compressor) to lift neutrally buoyant submerged plastics.
-5. **Full-Width 3-Slot Castellated Waterfall Weir** (`W-01`–`W-08`) with a removable **SS304 mesh basket** (`B-01`).
+5. **Full-Width 3-Slot Castellated Waterfall Weir** (`W-01`–`W-08`) with a removable **3D-printed `PETG`/`ASA` perforated trapping basket** (`B-01`).
+6. **Hybrid Fabrication Architecture (3D-Printed Trapping Mechanism + COTS Tank & Piping):** Except for the tempered glass flume tank (`T-01`), standard plumbing/pneumatic pipes and tubing (`R-01`, `R-02`, `D-01`, `D-02`), acoustic foam (`S-05`), and COTS electronics/pumps, the **entire custom trapping, concentration, basket, and no-drill rim-mounting mechanism is FDM 3D-printed in waterproof `PETG` / `ASA`** (`3.0 mm` nominal wall thickness, `4` perimeters, `40–100%` gyroid infill) directly from `autodesk_cad/stl/`.
 
 ### Master 3D CAD Coordinate System (Millimeters)
 * **$X$-axis (Flow Direction, $0 \to 7000\,\text{mm}$):** Upstream end wall is $X = 0$; downstream end wall is $X = 7000$.
@@ -66,19 +67,19 @@ printf '{"jsonrpc":"2.0","id":1,"method":"initialize"}\n{"jsonrpc":"2.0","id":2,
 * **Tank (`T-01`):** $7000 \times 300 \times 300\,\text{mm}$ ($700 \times 30 \times 30\,\text{cm}$) internal dimensions, $6.0\,\text{mm}$ tempered rimless float glass. Zero glass drilling—all brackets clip onto the top $6\,\text{mm}$ rim.
 * **Upstream Flow-Maker Sparger (`R-02`):** $\varnothing 20.0\,\text{mm}$ OD Schedule-40 Blue PVC pipe spanning $Y = -140\text{ to }+140\,\text{mm}$ at **$X = 4900.0\,\text{mm}, Z = 175.0\,\text{mm}$**, capped on both ends with EPDM caps, featuring $14\text{--}18\times \varnothing 3.0\,\text{mm}$ horizontal forward-facing jets establishing a coherent $0.95\,\text{m}$ laminar approach reach ($X = 4900.0\text{ to }5850.0\,\text{mm}$) during standalone recirculation (while $X = 0\text{ to }5850.0\,\text{mm}$ serves as the full approach reach under external lab flume flow).
 * **Elevated Return Pipe (`R-01`):** $1.85\,\text{m}$ **$\varnothing 20.0\,\text{mm}$ OD thin-wall Blue UPVC pipe ($16.6\,\text{mm}$ ID)** running from the rear sump pump outlet ($X = 6706\,\text{mm}$) along the near glass wall at **$Y = -139.0\,\text{mm}, Z = 32.0\,\text{mm}$** up to the sparger riser at $X = 4900.0\,\text{mm}$ ($< 0.28\,\text{m}$ Darcy-Weisbach friction loss at $800\,\text{L/h}$).
-  * Supported by three laser-cut $3.0\,\text{mm}$ acrylic standoff clips (`C-05`–`C-07` at $X = 5150, 5750, 6450\,\text{mm}$).
+  * Supported by three 3D-printed `PETG`/`ASA` ($3.0\,\text{mm}$ wall) standoff pipe cradles (`C-05`–`C-07` at $X = 5150, 5750, 6450\,\text{mm}$).
 
 ### Zone 1: V-Funnel Debris Concentrator (`F-01`, `F-02`, `C-08`, `C-09`)
-* Twin $3.0\,\text{mm}$ clear cast acrylic vanes ($240 \times 220\,\text{mm}$) starting at $X = 5850.0\,\text{mm}$ ($Y = \pm 150\,\text{mm}$) and converging at $25^\circ$ to $X = 6075.5\,\text{mm}$ with a **$140.0\,\text{mm}$ throat width** ($Y = \pm 70\,\text{mm}$), height $Z = 0\text{--}220\,\text{mm}$.
-* Near-wall vane `F-02` includes a **$58 \times 30\,\text{mm}$ clearance notch ($Z = 17\text{--}47\,\text{mm}$)** at its upstream edge so `R-01` passes through with zero collision.
-* Locked to the $6\,\text{mm}$ glass rim via top-rim clamps (`C-08`, `C-09` at $X = 5840\text{--}5868\,\text{mm}$) with M4 nylon thumbscrews (`FAST-01`).
+* Twin 3D-printed waterproof `PETG` vanes ($240 \times 220 \times 3.0\,\text{mm}$) starting at $X = 5850.0\,\text{mm}$ ($Y = \pm 150\,\text{mm}$) and converging at $25^\circ$ to $X = 6075.5\,\text{mm}$ with a **$140.0\,\text{mm}$ throat width** ($Y = \pm 70\,\text{mm}$), height $Z = 0\text{--}220\,\text{mm}$.
+* Near-wall vane `F-02` includes a printed **$58 \times 30\,\text{mm}$ clearance notch ($Z = 17\text{--}47\,\text{mm}$)** at its upstream edge so `R-01` passes through with zero collision.
+* Locked to the $6\,\text{mm}$ glass rim via 3D-printed top-rim clamps (`C-08`, `C-09` at $X = 5840\text{--}5868\,\text{mm}$) with M4 nylon thumbscrews (`FAST-01`).
 
 ### Zone 2: Exact 1:1 Underwater Sonar Gate (`S-01`, `S-02`, `C-01`, `S-05`)
 * **Sensor:** Shenzhen Dianyingpu **`DYP-L08B50TW-V3.0`** (DFRobot `SEN0598` form factor) IP68 coaxial cylindrical ultrasonic rangefinder.
   * **Dimensions:** $\varnothing 28.0 \times 34.0\,\text{mm}$ Gray ASA/PVC body, `M19×1.5` external metric thread ($17\,\text{mm}$ span), smooth $\varnothing 18.0\,\text{mm}$ front barrel, two $\varnothing 28.0\,\text{mm}$ 18-tooth gear-knurled locknuts, $\varnothing 23.0 \times 1.5\,\text{mm}$ white silicone sealing gasket, central $\varnothing 4.0\,\text{mm}$ 4-core waterproof cable.
-  * **Mounting:** Clamped through a $\varnothing 19.5\,\text{mm}$ hole in the no-drill acrylic drop plate (`C-01`, $72 \times 142\,\text{mm}$) at **$X = 6200.0\,\text{mm}, Z = 180.0\,\text{mm}$** ($20\,\text{mm}$ submerged below the $200\,\text{mm}$ waterline), firing transversely across the channel toward $Y = -125\,\text{mm}$.
+  * **Mounting:** Clamped through a printed $\varnothing 19.5\,\text{mm}$ hole in the no-drill 3D-printed `PETG`/`ASA` drop plate (`C-01`, $72 \times 142\,\text{mm}$) at **$X = 6200.0\,\text{mm}, Z = 180.0\,\text{mm}$** ($20\,\text{mm}$ submerged below the $200\,\text{mm}$ waterline), firing transversely across the channel toward $Y = -125\,\text{mm}$.
   * **Range & Blind Zone:** $8\text{--}800\,\text{cm}$ in water ($80\,\text{mm}$ near-field blind zone; V-funnel keeps debris $> 80\,\text{mm}$ from the transducer face). $50^\circ$ full beam ($25^\circ$ half-angle).
-* **Acoustic Stop Baffle (`S-05`):** $110 \times 215 \times 18\,\text{mm}$ pad of **30 PPI open-cell reticulated polyurethane foam** mounted on an acrylic backplate at **$X = 6200.0\,\text{mm}, Y = -125\,\text{mm}$** to absorb acoustic backscatter and eliminate false wall echoes.
+* **Acoustic Stop Baffle (`S-05`):** $110 \times 215 \times 18\,\text{mm}$ pad of **30 PPI open-cell reticulated polyurethane foam** mounted on a 3D-printed `PETG` backplate at **$X = 6200.0\,\text{mm}, Y = -125\,\text{mm}$** to absorb acoustic backscatter and eliminate false wall echoes.
 
 ### Zone 3: 90° Transverse EPDM Bubble Barrier (`D-01`, `D-02`, `A-01`)
 * **Position & Orientation:** Placed at **$X = 6380.0\,\text{mm}, Z = 12.0\,\text{mm}$**, oriented **90° transverse** across the channel ($Y = -115.0\text{ to }+140.0\,\text{mm}$, $255\,\text{mm}$ active span) so it aligns parallel with the full-width 3-slot weir.
@@ -93,15 +94,15 @@ printf '{"jsonrpc":"2.0","id":1,"method":"initialize"}\n{"jsonrpc":"2.0","id":2,
   * Far end ($Y = +142\,\text{mm}$) routes up via `D-02` silicone airline over the tank rim ($Z = 315\,\text{mm}$) through an **inline one-way check valve** to air compressor `A-01`.
 
 ### Zone 4: Full-Width 3-Slot Castellated Waterfall Weir & Sump (`W-01`–`W-08`, `B-01`, `P-01`)
-* **Weir Footprint:** $X = 6570.0\text{ to }6666.0\,\text{mm}$ ($96.0\,\text{mm}$ long), $Y = -147.0\text{ to }+147.0\,\text{mm}$ (**$294.0\,\text{mm}$ full-width**), $3.0\,\text{mm}$ clear/cyan cast acrylic bonded with `Weld-On #4` and sealed to glass with aquarium silicone.
+* **Weir Footprint:** $X = 6570.0\text{ to }6666.0\,\text{mm}$ ($96.0\,\text{mm}$ long), $Y = -147.0\text{ to }+147.0\,\text{mm}$ (**$294.0\,\text{mm}$ full-width**), $3.0\,\text{mm}$ nominal wall **FDM 3D-printed waterproof `PETG`/`ASA`** (printed monolithically on a $300\times 300\,\text{mm}$ bed or bonded from dovetailed split halves with waterproof epoxy/CA and sealed to glass with aquarium silicone).
 * **Front Castellated Weir Plate (`W-01`):**
   * **3 Waterfall Intake Gates** at crest **$Z = 190.0\,\text{mm}$** ($10.0\,\text{mm}$ below the $200.0\,\text{mm}$ static waterline, matching the $H_w = 10.4\,\text{mm}$ Poleni overflow equilibrium at $800\,\text{L/h}$ without sump drowning): **Right $55.0\,\text{mm}$**, **Center $54.0\,\text{mm}$**, **Left $55.0\,\text{mm}$** ($164\,\text{mm}$ total open crest).
   * **4 Castellated Baffle Teeth** rising $22.0\,\text{mm}$ to **$Z = 212.0\,\text{mm}$** (widths: $24, 38, 38, 24\,\text{mm}$).
 * **Internal Sump Hydraulics:**
   * Operational drawdown level inside sump: **$Z = 165.0\,\text{mm}$** ($25\,\text{mm}$ free waterfall plunge below the $190.0\,\text{mm}$ crest; $35\,\text{mm}$ total drop from the $200\,\text{mm}$ main channel).
-  * **Basket Guide Rails (`W-06`, `W-07`, `W-08`):** Mounted at $Z = 120.0\,\text{mm}$ (including center anti-sag rib `W-08`).
-* **Removable Debris Basket (`B-01`, `B-02`):** $282.0 \times 86.0 \times 40.0\,\text{mm}$ folded **SS304 perforated/woven mesh** ($2.0\,\text{mm}$ aperture) resting on the rails at $Z = 123.0\,\text{mm}$, with dual yellow-anodized T-grip pull handles (`B-02`).
-* **Submersible Water Pump (`P-01`):** Positioned at the sump floor ($Z = 3\text{--}55\,\text{mm}$) beneath a $40 \times 40\,\text{mm}$ perforated **anti-vortex baffle plate** ($Z = 61\,\text{mm}$).
+  * **Basket Guide Rails (`W-06`, `W-07`, `W-08`):** Integrated/bonded 3D-printed `PETG` rails at $Z = 120.0\,\text{mm}$ (including center anti-sag rib `W-08`).
+* **Removable Debris Basket (`B-01`, `B-02`):** $282.0 \times 86.0 \times 40.0\,\text{mm}$ **3D-printed waterproof `PETG`/`ASA` perforated trapping basket** ($2.0\,\text{mm}$ printed lattice openings) resting on the rails at $Z = 123.0\,\text{mm}$, with dual yellow-anodized/printed T-grip pull handles (`B-02`).
+* **Submersible Water Pump (`P-01`):** Positioned at the sump floor ($Z = 3\text{--}55\,\text{mm}$) beneath a $40 \times 40\,\text{mm}$ 3D-printed perforated **anti-vortex baffle plate** ($Z = 61\,\text{mm}$).
   * **Target Hydraulic Spec:** $12\,\text{V DC}$ brushless submersible pump, **$800\,\text{L/h}$** ($13.3\,\text{L/min}$), $5\,\text{m}$ head:
     * *Idle Mode (35% PWM / $280\,\text{L/h}$):* Maintains steady $\sim 8.0\,\text{cm/s}$ artificial river current.
     * *Surge Mode (100% PWM / $800\,\text{L/h}$):* Pulls $45.2\,\text{cm/s}$ waterfall intake across all 3 slots.
@@ -171,11 +172,12 @@ For **both** `P-01` (Water Pump) and `A-01` (Air Compressor):
 
 ## 5. Complete Final Prototype Bill of Materials (BOM)
 
-### A. 2D Fabricated Parts (From Project DXF Files)
-* `W-01`–`W-08`: $3.0\,\text{mm}$ Clear/Cyan Cast Acrylic Full-Width 3-Slot Weir & Rails (`forgenesis_laser_cut_sheet_3mm_acrylic.dxf`)
-* `F-01`, `F-02`: $3.0\,\text{mm}$ Clear Cast Acrylic V-Funnel Vanes
-* `C-01`–`C-09`: $3.0\,\text{mm}$ Clear Cast Acrylic No-Drill Rim Brackets & Pipe Standoffs
-* `B-01`: $282 \times 86 \times 40\,\text{mm}$ Folded SS304 Mesh Basket, $2.0\,\text{mm}$ aperture (`forgenesis_ss304_mesh_basket_pattern.dxf`)
+### A. 3D-Printed Trapping & Mounting Parts (FDM `PETG` / `ASA` from `autodesk_cad/stl/`)
+*(All custom trapping, flow-concentration, basket, and rim-mounting components are 3D-printed in waterproof `PETG`/`ASA`; `0.20 mm` layer height, `4` wall perimeters, `40–100%` gyroid infill. Only the glass tank `T-01` and pipe/diffuser hardware `R-01`/`R-02`/`D-01`/`D-02` use non-printed tubing & glass. `autodesk_cad/dxf/` is retained for optional 2D planar reference.)*
+* `W-01`–`W-08`: $3.0\,\text{mm}$ wall 3D-Printed Cyan/Gray `PETG` Full-Width 3-Slot Weir, Rear Port (`W-02` $\varnothing 20.0\,\text{mm}$), Rails & Sump Housing (`autodesk_cad/stl/W01..W08*.stl`)
+* `B-01`, `B-02`: $282 \times 86 \times 40\,\text{mm}$ 3D-Printed `PETG` Perforated Trapping Basket (`2.0 mm` printed lattice) + Dual Pull Handles (`B01_FullWidth_3DPrinted_Mesh_Basket.stl`)
+* `F-01`, `F-02`: $3.0\,\text{mm}$ wall 3D-Printed `PETG` V-Funnel Vanes with printed `58 × 30 mm` `R-01` clearance notch (`F01/F02*.stl`)
+* `C-01`–`C-09`, `S-05` & `P-01` Baffle: 3D-Printed `PETG`/`ASA` No-Drill $6\,\text{mm}$ Rim Brackets (`C-01` $142 \times 72\,\text{mm}$ w/ $\varnothing 19.5\,\text{mm}$ bore), $\varnothing 20.2\,\text{mm}$ Pipe Cradles, Foam Backplate & Hangers, and $40 \times 40\,\text{mm}$ 16-Hole Anti-Vortex Baffle (`C01*.stl`, `C05*.stl`, `P01*.stl`)
 
 ### B. Commercial Off-The-Shelf (COTS) Hardware & Electronics
 
@@ -199,4 +201,5 @@ For **both** `P-01` (Water Pump) and `A-01` (Air Compressor):
 | **`C1`** | Bulk Decoupling Capacitor | `1000 µF / 16V` Electrolytic (`E210M016E125HY`) | 1 |
 | **`F1, SW1`** | Fuse & Main Switch | $5\times 20\,\text{mm}$ `2A` (or `3A–4A` for $800\,\text{L/h}$) time-delay fuse + holder + SPST rocker switch | 1 set |
 | **`UI`** | LED, Button & Perfboard | $5\,\text{mm}$ Red LED, $12\times 12\times 12\,\text{mm}$ tactile button, proto PCB, screw terminals, headers, `18–20 AWG` wire | 1 set |
-| **`E-01`–`E-03`** | Enclosure & Sealants | IP65 box (`~158×90×60 mm`), `PG7` glands, `Weld-On #4` acrylic glue, aquarium silicone, zip ties, foam pad | 1 set |
+| **`FIL-01`** | Waterproof 3D-Print Filament | $1.75\,\text{mm}$ `PETG` / `ASA` Filament ($2 \times 1\,\text{kg}$, Cyan & Gray/Translucent) for `W-01`–`W-08`, `B-01`, `F-01`/`F-02`, `C-01`–`C-09` | 2 kg |
+| **`E-01`–`E-03`** | Enclosure & Sealants | IP65 box (`~158×90×60 mm`), `PG7` glands, waterproof epoxy / CA adhesive, aquarium silicone, zip ties, `S-05` foam pad | 1 set |

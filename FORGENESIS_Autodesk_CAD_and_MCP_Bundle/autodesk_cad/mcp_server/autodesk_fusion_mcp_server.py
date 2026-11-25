@@ -6,7 +6,7 @@ instance running the Fusion 360 HTTP Bridge Add-in on localhost:9123, OR directl
 executes FORGENESIS parametric CAD generation tools.
 
 Tools exposed via MCP:
-- build_forgenesis_mechanism_b: Builds the complete FORGENESIS 3-Slot Weir + DYP-08B assembly in Fusion 360.
+- build_forgenesis_mechanism_b: Builds the complete 3D-printed PETG/ASA 3-Slot Weir + DYP-08B assembly in Fusion 360.
 - create_extruded_box: Creates a parametric 3D box component in Fusion 360.
 - create_cylinder: Creates a parametric 3D cylinder in Fusion 360.
 - set_fusion_parameter: Updates a parametric dimension in Fusion 360 and recomputes the timeline.
@@ -44,7 +44,7 @@ def call_fusion_bridge(payload: dict) -> dict:
 TOOLS = [
     {
         "name": "build_forgenesis_mechanism_b",
-        "description": "Constructs the complete FORGENESIS Full-Width 3-Slot Active Suction Waterfall Weir & DYP-08B Underwater Sonar 3D assembly in Autodesk Fusion 360.",
+        "description": "Constructs the complete FORGENESIS 3D-printed PETG/ASA Full-Width 3-Slot Castellated Weir trapping mechanism & DYP-08B Underwater Sonar assembly in Autodesk Fusion 360.",
         "inputSchema": {
             "type": "object",
             "properties": {

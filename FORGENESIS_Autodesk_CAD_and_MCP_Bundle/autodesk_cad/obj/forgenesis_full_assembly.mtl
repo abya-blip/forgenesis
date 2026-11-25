@@ -134,7 +134,7 @@ Kd 0.080 0.550 0.750
 Ks 0.550 0.550 0.550
 Ns 96.0
 
-newmtl B01_FullWidth_SS304_Mesh_Basket
+newmtl B01_FullWidth_3DPrinted_Mesh_Basket
 Kd 0.820 0.840 0.880
 Ks 0.550 0.550 0.550
 Ns 96.0
