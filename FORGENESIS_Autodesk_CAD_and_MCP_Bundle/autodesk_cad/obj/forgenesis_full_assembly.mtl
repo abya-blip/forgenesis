@@ -109,7 +109,7 @@ Kd 0.150 0.720 0.920
 Ks 0.550 0.550 0.550
 Ns 96.0
 
-newmtl W01_Castellated_Weir_Plate_Option2A
+newmtl W01_Castellated_Weir_Plate
 Kd 0.050 0.820 0.650
 Ks 0.550 0.550 0.550
 Ns 96.0

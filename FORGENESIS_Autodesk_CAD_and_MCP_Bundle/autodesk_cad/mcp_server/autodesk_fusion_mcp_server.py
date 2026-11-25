@@ -48,7 +48,7 @@ TOOLS = [
         "inputSchema": {
             "type": "object",
             "properties": {
-                "weir_crest_height_mm": {"type": "number", "default": 185.0},
+                "weir_crest_height_mm": {"type": "number", "default": 190.0},
                 "weir_crest_width_mm": {"type": "number", "default": 90.0},
                 "sump_height_mm": {"type": "number", "default": 220.0},
                 "acrylic_thickness_mm": {"type": "number", "default": 3.0}
@@ -74,7 +74,7 @@ TOOLS = [
     },
     {
         "name": "set_fusion_parameter",
-        "description": "Updates a named UserParameter in Fusion 360 (e.g., Weir_Crest_Height = 185 mm).",
+        "description": "Updates a named UserParameter in Fusion 360 (e.g., Weir_Crest_Height = 190 mm).",
         "inputSchema": {
             "type": "object",
             "properties": {

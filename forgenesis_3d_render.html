@@ -772,8 +772,8 @@
       <div class="spec-table" id="insp-specs">
         <div class="spec-row"><span>Flume Envelope</span><span>7000 × 300 × 300 mm</span></div>
         <div class="spec-row"><span>Static Waterline</span><span>Z = 200.0 mm (420 L / 630 L)</span></div>
-        <div class="spec-row"><span>Zero-Clash Gap</span><span>11.0 mm net (R-01 / D-01)</span></div>
-        <div class="spec-row"><span>Sonar Gate</span><span>X = 6080 mm, Z = 180 mm</span></div>
+        <div class="spec-row"><span>Zero-Clash Gap</span><span>9.0 mm lat / 11.2 mm diag</span></div>
+        <div class="spec-row"><span>Sonar Gate</span><span>X = 6200 mm, Z = 180 mm</span></div>
       </div>
       <div class="spec-notes" id="insp-notes">
         Orbit with left-drag, pan with right-drag, scroll to zoom. Click any component mesh or floating BOM badge to inspect exact coordinates, materials, and plumbing clearances.
@@ -822,22 +822,22 @@
       tAcrylic: 3.0,
       waterZ: 200.0,
       sumpWaterZ: 165.0,
-      spargerX: 100.0,
+      spargerX: 4900.0,
       spargerZ: 175.0,
-      funnelStartX: 5680.0,
-      funnelEndX: 5905.5,
+      funnelStartX: 5850.0,
+      funnelEndX: 6075.5,
       funnelThroatY: 70.0,
       funnelH: 220.0,
-      sonarX: 6080.0,
+      sonarX: 6200.0,
       sonarZ: 180.0,
-      diffuserX: 6320.0,
+      diffuserX: 6380.0,
       diffuserZ: 12.0,
       weirX: 6570.0,
       weirY: -147.0,
       weirL: 96.0,
       weirW: 294.0,
       weirInnerW: 288.0,
-      weirCrestZ: 185.0,
+      weirCrestZ: 190.0,
       weirToothTopZ: 212.0,
       sumpWallH: 220.0,
       railZ: 120.0,
@@ -857,70 +857,70 @@
       'R-02': {
         name: 'Upstream Flow-Maker Sparger Bar',
         material: 'Ø20 mm Blue Sch-40 PVC + EPDM Caps',
-        coords: 'X=100.0, Y=[-140, 140], Z=175.0 mm',
+        coords: 'X=4900.0, Y=[-140, 140], Z=175.0 mm',
         spec: '16 × Ø3.0 mm horizontal forward jets',
-        notes: 'Uniformly distributes recirculated pump return across the channel width to establish ~8.0 cm/s idle flow down the 5.58 m reach.'
+        notes: 'Establishes a coherent 0.95 m laminar approach reach (X=4900→5850) during standalone flume recirculation.'
       },
       'R-01': {
         name: 'Closed-Loop Elevated Return Pipe',
-        material: 'Ø16 mm Blue Sch-40 PVC (6.8 m) + 90° Elbows',
-        coords: 'Y=-140.0, Z=32.0 mm (X=100 → 6706 mm)',
-        spec: '11.0 mm net air gap to D-01 diffuser',
-        notes: 'Elevated along the near wall on C-05..C-10 standoffs so it clears the D-01 diffuser (25 mm lateral / 20 mm vertical offset).'
+        material: 'Ø20 mm Blue UPVC (16.6 mm ID, 1.85 m) + Elbows',
+        coords: 'Y=-139.0, Z=32.0 mm (X=4900 → 6706 mm)',
+        spec: '9.0 mm lat / 11.2 mm diag gap to D-01 (<0.28 m loss)',
+        notes: 'Upgraded Ø20 mm OD thin-wall UPVC avoids hydraulic pump choking and clears D-01 dome cap at Y=-120, Z=12 mm.'
       },
       'C-05': {
-        name: 'Return Pipe Standoff Clips (C-05..C-10)',
+        name: 'Return Pipe Standoff Clips (C-05..C-07)',
         material: '3.0 mm Clear Cast Acrylic',
-        coords: 'X=600, 1800, 3000, 4200, 5400, 6450 mm',
-        spec: 'Laser-cut snap cradles + floor bond',
-        notes: 'Holds the 6.8 m R-01 return line rigid at Y=-140, Z=32 mm along the near glass wall.'
+        coords: 'X=5150, 5750, 6450 mm (Y=-139, Z=32 mm)',
+        spec: 'Laser-cut Ø20.2 mm snap cradles + floor bond',
+        notes: 'Holds the Ø20 mm R-01 return line rigid along the near glass wall.'
       },
       'F-01': {
         name: 'V-Funnel Debris Concentrator (F-01 / F-02)',
-        material: '3.0 mm Clear Cast Acrylic + C-07/C-08 Clamps',
-        coords: 'X=5680.0 → 5905.5 mm, Z=[0, 220] mm',
+        material: '3.0 mm Clear Cast Acrylic + C-08/C-09 Clamps',
+        coords: 'X=5850.0 → 6075.5 mm, Z=[0, 220] mm',
         spec: '25° convergence → 140.0 mm throat (Y=±70)',
-        notes: 'Funnels floating & suspended plastics >80 mm away from the sonar face (outside the DYP-L08B50TW-V3.0 near-field blind zone). Near vane includes notch clearance for R-01.'
+        notes: 'Funnels debris >80 mm away from the sonar face. Near vane F-02 has a 58×30 mm cutout (Z=17..47) clearing R-01.'
       },
       'S-01': {
         name: 'DYP-L08B50TW-V3.0 Underwater Sonar',
         material: 'Gray ASA/PVC Body (IP68), M19×1.5 Thread',
-        coords: 'X=6080.0, Y=115..149, Z=180.0 mm',
+        coords: 'X=6200.0, Y=115..149, Z=180.0 mm',
         spec: '9600 bps Controlled-UART (0xFF trigger), 50° beam',
         notes: '8–800 cm water range, 80 mm blind zone, dual Ø28 mm 18-tooth gear locknuts + Ø23×1.5 mm white silicone sealing washer.'
       },
       'C-01': {
         name: 'No-Drill Sonar Rim Drop Bracket',
         material: '3.0 mm Clear Cast Acrylic + M4 Nylon Screw',
-        coords: 'X=[6044, 6116], Y=133.5..162, Z=[158, 304] mm',
+        coords: 'X=[6164, 6236], Y=133.5..162, Z=[158, 304] mm',
         spec: 'Ø19.5 mm precision M19 bulkhead bore',
         notes: 'Clamps over the 6 mm far glass rim without drilling and holds the sonar submerged 20 mm below the Z=200 mm waterline.'
       },
       'S-05': {
         name: '30 PPI Acoustic Absorber Baffle Stop',
         material: '30 PPI Reticulated PU Foam + 3 mm Acrylic',
-        coords: 'X=6080.0 (6025..6135), Y=-125..-107, Z=[0, 215] mm',
+        coords: 'X=6200.0 (6145..6255), Y=-125..-107, Z=[0, 215] mm',
         spec: '110 × 215 × 18 mm open-cell acoustic pad',
         notes: 'Absorbs acoustic backscatter opposite S-01, locking baseline clear-channel range at ~245–250 mm and clearing R-01.'
       },
       'D-01': {
         name: '90° Transverse EPDM Bubble Diffuser',
         material: 'Ø20 × 250 mm Micro-Slit EPDM + Saddle Feet',
-        coords: 'X=6320.0, Y=[-115, 140], Z=12.0 mm',
+        coords: 'X=6380.0, Y=[-115, 140], Z=12.0 mm',
         spec: 'Cracking pressure ~2.0 kPa (1.84 kPa hydrostatic)',
         notes: 'Laser-punched elastic micro-slits snap shut automatically when A-01 turns OFF, preventing water ingress. Zero-clash with R-01.'
       },
       'D-02': {
         name: 'Anti-Siphon Silicone Airline & Check Valve',
         material: 'Ø4–5 mm Silicone Tube + Inline 1-Way Valve',
-        coords: 'X=6320.0, Y=142 → 225, Z=12 → 315 mm',
+        coords: 'X=6380.0, Y=142 → 225, Z=12 → 315 mm',
         spec: 'Rim-crested anti-siphon loop at Z=315 mm',
         notes: 'Routes air over the tank rim above water level through a 1-way check valve down to external compressor A-01.'
       },
       'A-01': {
         name: '12V Micro Diaphragm Air Compressor',
         material: '370-Frame 12V DC Diaphragm Pump (≥50 kPa)',
-        coords: 'External Bench: X=6320, Y=225, Z=0 mm',
+        coords: 'External Bench: X=6380, Y=225, Z=0 mm',
         spec: 'Switched ON/OFF via IRLZ44PBF MOSFET (GPIO14)',
         notes: 'Drives D-01 bubble curtain during SURGE_INTERCEPT to lift neutrally buoyant submerged plastics toward the weir crest.'
       },
@@ -928,8 +928,8 @@
         name: 'Full-Width 3-Slot Castellated Weir & Sump',
         material: '3.0 mm Cyan & Clear Cast Acrylic (Weld-On #4)',
         coords: 'X=[6570, 6666], Y=[-147, 147], Z=[0, 223] mm',
-        spec: '3 slots (55 / 54 / 55 mm) @ Z=185 mm, 4 teeth @ Z=212',
-        notes: '164 mm total open intake crest. Pulls 45.2 cm/s waterfall nappe velocity at 100% surge into the Z=165 mm drawdown sump.'
+        spec: '3 slots (55 / 54 / 55 mm) @ Z=190 mm, 4 teeth @ Z=212',
+        notes: 'Crest Z=190 mm matches H_w=10.4 mm Poleni equilibrium at 800 L/h without sump drowning, pulling 45.2 cm/s into the Z=165 mm sump.'
       },
       'W-06': {
         name: 'Basket Guide Rails & Center Anti-Sag Rib',
@@ -957,14 +957,14 @@
         material: '12V DC 800 L/h Pump (JT-550) + 40×40 mm Baffle',
         coords: 'X=[6592, 6644], Y=[-18, 18], Z=[3, 55] mm (Plate Z=61)',
         spec: '280 L/h @ 35% PWM (Idle) / 800 L/h @ 100% (Surge)',
-        notes: 'Mounted at sump floor under a 40×40 mm perforated anti-vortex baffle at Z=61 mm; discharges through W-02 into R-01.'
+        notes: 'Driven via 300 Hz LEDC PWM (GPIO27) under a 40×40 mm perforated baffle at Z=61 mm; discharges through W-02 into Ø20 mm R-01.'
       },
       'E-01': {
         name: 'External IP65 Control & Power Electronics Box',
         material: 'ABS IP65 Box + Clear Polycarbonate Lid + 3× PG7',
-        coords: 'X=[6000, 6160], Y=[156, 220], Z=[170, 260] mm',
+        coords: 'X=[6120, 6280], Y=[156, 220], Z=[170, 260] mm',
         spec: 'ESP32-WROVER-E, LM2596, TXS0108E, 2× IRLZ44PBF',
-        notes: 'Safe GPIOs: 25/26 UART (avoids 16/17 PSRAM), 27 Pump PWM (250–500 Hz), 14 Air, 32 Button, 33 Red LED, 1000 µF bulk cap.'
+        notes: 'Safe GPIOs: 25/26 UART (avoids 16/17 PSRAM), 27 Pump PWM (300 Hz), 14 Air, 32 Button, 33 Red LED, 1000 µF bulk cap.'
       }
     };
 
@@ -1386,10 +1386,10 @@
     addBox(zoneTank, -tG, -150, 0, tG, CFG.W, CFG.H, MATS.glass, 'T-01', { edges: true, edgeColor: 0x67e8f9, edgeOpacity: 0.55, renderOrder: 8 });
     addBox(zoneTank, CFG.L, -150, 0, tG, CFG.W, CFG.H, MATS.glass, 'T-01', { edges: true, edgeColor: 0x67e8f9, edgeOpacity: 0.55, renderOrder: 8 });
 
-    // --- ZONE 0B: Closed-Loop Recirculation Plumbing (R-01, R-02, C-05..C-10) ---
+    // --- ZONE 0B: Closed-Loop Recirculation Plumbing (R-01 D20mm OD UPVC, R-02, C-05..C-07) ---
     const zonePlumbing = createZoneGroup('plumbing', [-55, -80, 45]);
     const spx = CFG.spargerX;
-    // R-02 Upstream Flow-Maker Sparger Bar (OD 20 mm)
+    // R-02 Upstream Flow-Maker Sparger Bar (OD 20 mm @ X=4900)
     addCyl(zonePlumbing, [spx, -140, 175], [spx, 140, 175], 10, 10, MATS.pvcBlue, 'R-02');
     addCyl(zonePlumbing, [spx, 140, 175], [spx, 146, 175], 11.8, 11.8, MATS.epdm, 'R-02');
     addCyl(zonePlumbing, [spx, -146, 175], [spx, -140, 175], 11.8, 11.8, MATS.epdm, 'R-02');
@@ -1403,26 +1403,26 @@
     addBox(zonePlumbing, spx - 10, 134, 300, 20, 26, 4, MATS.acrylicClear, 'R-02', { edges: true, renderOrder: 2 });
     addBox(zonePlumbing, spx - 10, 156, 274, 20, 5, 28, MATS.acrylicClear, 'R-02', { edges: true, renderOrder: 2 });
 
-    // R-01 Closed-Loop Return Pipe (OD 16 mm) from Pump Outlet (6644,0,33) -> (6706,0,33) -> (6706,-140,32) -> (100,-140,32) -> (100,-140,175)
+    // R-01 Closed-Loop Return Pipe (OD 20 mm UPVC) from Pump Outlet (6644,0,33) -> (6706,0,33) -> (6706,-139,32) -> (4900,-139,32) -> (4900,-139,175)
     addPipePath(zonePlumbing, [
       [CFG.weirX + 74, 0, 33],
       [CFG.weirX + 136, 0, 33],
-      [CFG.weirX + 136, -140, 32],
-      [spx, -140, 32],
-      [spx, -140, 175]
-    ], 8.0, MATS.pvcBlue, 'R-01', { bendRadius: 15, tubularSegs: 160 });
+      [CFG.weirX + 136, -139, 32],
+      [spx, -139, 32],
+      [spx, -139, 175]
+    ], 10.0, MATS.pvcBlue, 'R-01', { bendRadius: 18, tubularSegs: 140 });
     // Elbow fitting collars & bulkhead ring on W-02
-    addCyl(zonePlumbing, [CFG.weirX + 89, 0, 33], [CFG.weirX + 100, 0, 33], 11.5, 11.5, MATS.rubberBlack, 'R-01');
-    addCyl(zonePlumbing, [spx, -140, 162], [spx, -140, 175], 10.5, 10.5, MATS.pvcBlue, 'R-01');
+    addCyl(zonePlumbing, [CFG.weirX + 89, 0, 33], [CFG.weirX + 100, 0, 33], 13.0, 13.0, MATS.rubberBlack, 'R-01');
+    addCyl(zonePlumbing, [spx, -139, 162], [spx, -139, 175], 12.0, 12.0, MATS.pvcBlue, 'R-01');
 
-    // C-05..C-10 Standoff Clips supporting R-01 at Y=-140, Z=32 along the 6.8 m return run
-    for (const cx of [600, 1800, 3000, 4200, 5400, 6450]) {
-      addBox(zonePlumbing, cx - 12, -149.5, 0, 24, 18, 25, MATS.acrylicClear, 'C-05', { edges: true, renderOrder: 2 });
-      addBox(zonePlumbing, cx - 12, -149.5, 25, 24, 3, 18, MATS.acrylicClear, 'C-05', { edges: true, renderOrder: 2 });
-      addBox(zonePlumbing, cx - 12, -134.5, 25, 24, 3, 18, MATS.acrylicClear, 'C-05', { edges: true, renderOrder: 2 });
+    // C-05..C-07 Standoff Clips supporting Ø20 mm R-01 at Y=-139, Z=32
+    for (const cx of [5150, 5750, 6450]) {
+      addBox(zonePlumbing, cx - 12, -149.5, 0, 24, 21, 22, MATS.acrylicClear, 'C-05', { edges: true, renderOrder: 2 });
+      addBox(zonePlumbing, cx - 12, -149.5, 22, 24, 3, 22, MATS.acrylicClear, 'C-05', { edges: true, renderOrder: 2 });
+      addBox(zonePlumbing, cx - 12, -131.5, 22, 24, 3, 22, MATS.acrylicClear, 'C-05', { edges: true, renderOrder: 2 });
     }
 
-    // --- ZONE 1: V-Funnel Debris Concentrator (F-01, F-02, C-07, C-08) ---
+    // --- ZONE 1: V-Funnel Debris Concentrator (F-01, F-02, C-08, C-09) ---
     const zoneFunnel = createZoneGroup('funnel', [-45, 0, 95]);
     function createFunnelVane(ptsXY, z0, z1, hasPipeNotch = false) {
       if (!hasPipeNotch) {
@@ -1437,9 +1437,9 @@
         addEdgeOutline(mesh, 0x93c5fd, 0.55, 3);
         zoneFunnel.add(mesh);
       } else {
-        // Near vane F-02 split cleanly around R-01 pipe pass-through (Z=18..46 near X=5680..5745)
+        // Near vane F-02 split cleanly around D20mm R-01 pipe pass-through (Z=17..47 near X=5850..5908)
         const [p0, p1, p2, p3] = ptsXY;
-        const tFrac = 0.27;
+        const tFrac = 0.257; // 58 mm / 225.5 mm
         const midOuter = [p0[0] + (p1[0] - p0[0]) * tFrac, p0[1] + (p1[1] - p0[1]) * tFrac];
         const midInner = [p3[0] + (p2[0] - p3[0]) * tFrac, p3[1] + (p2[1] - p3[1]) * tFrac];
 
@@ -1455,8 +1455,8 @@
           addEdgeOutline(m, 0x93c5fd, 0.55, 3);
           zoneFunnel.add(m);
         };
-        makePoly([p0, midOuter, midInner, p3], 0, 18);
-        makePoly([p0, midOuter, midInner, p3], 46, z1);
+        makePoly([p0, midOuter, midInner, p3], 0, 17);
+        makePoly([p0, midOuter, midInner, p3], 47, z1);
         makePoly([midOuter, p1, p2, midInner], 0, z1);
       }
     }
@@ -1662,13 +1662,14 @@
     addBox(zoneWeir, wx, wy, tA, wl, tA, CFG.sumpWallH, MATS.acrylicClear, 'W-01', { edges: true, renderOrder: 2 });
     addBox(zoneWeir, wx + wl - tA, wy + tA, tA, tA, cw, CFG.sumpWallH, MATS.acrylicClear, 'W-01', { edges: true, renderOrder: 2 });
 
-    // W-01 Front Castellated Weir Plate (Cyan Cast Acrylic)
+    // W-01 Front Castellated Weir Plate (Cyan Cast Acrylic, Crest Z=190 mm, 22 mm teeth to Z=212 mm)
     addBox(zoneWeir, wx, wy + tA, tA, tA, cw, CFG.weirCrestZ - tA, MATS.acrylicCyan, 'W-01', { edges: true, edgeColor: 0x22d3ee, edgeOpacity: 0.72, renderOrder: 2 });
-    // 4 Castellated Teeth (Z=185..212) creating Right 55mm, Center 54mm, Left 55mm gates
-    addBox(zoneWeir, wx, wy + tA, 185, tA, 24, 27, MATS.acrylicCyan, 'W-01', { edges: true, edgeColor: 0x22d3ee, edgeOpacity: 0.85, renderOrder: 2 });
-    addBox(zoneWeir, wx, wy + tA + 79, 185, tA, 38, 27, MATS.acrylicCyan, 'W-01', { edges: true, edgeColor: 0x22d3ee, edgeOpacity: 0.85, renderOrder: 2 });
-    addBox(zoneWeir, wx, wy + tA + 171, 185, tA, 38, 27, MATS.acrylicCyan, 'W-01', { edges: true, edgeColor: 0x22d3ee, edgeOpacity: 0.85, renderOrder: 2 });
-    addBox(zoneWeir, wx, wy + tA + 264, 185, tA, 24, 27, MATS.acrylicCyan, 'W-01', { edges: true, edgeColor: 0x22d3ee, edgeOpacity: 0.85, renderOrder: 2 });
+    const toothH = CFG.weirToothTopZ - CFG.weirCrestZ;
+    // 4 Castellated Teeth (Z=190..212) creating Right 55mm, Center 54mm, Left 55mm gates
+    addBox(zoneWeir, wx, wy + tA, CFG.weirCrestZ, tA, 24, toothH, MATS.acrylicCyan, 'W-01', { edges: true, edgeColor: 0x22d3ee, edgeOpacity: 0.85, renderOrder: 2 });
+    addBox(zoneWeir, wx, wy + tA + 79, CFG.weirCrestZ, tA, 38, toothH, MATS.acrylicCyan, 'W-01', { edges: true, edgeColor: 0x22d3ee, edgeOpacity: 0.85, renderOrder: 2 });
+    addBox(zoneWeir, wx, wy + tA + 171, CFG.weirCrestZ, tA, 38, toothH, MATS.acrylicCyan, 'W-01', { edges: true, edgeColor: 0x22d3ee, edgeOpacity: 0.85, renderOrder: 2 });
+    addBox(zoneWeir, wx, wy + tA + 264, CFG.weirCrestZ, tA, 24, toothH, MATS.acrylicCyan, 'W-01', { edges: true, edgeColor: 0x22d3ee, edgeOpacity: 0.85, renderOrder: 2 });
 
     // W-06, W-07, W-08 Basket Guide Rails & Center Anti-Sag Rib (Z=120)
     addBox(zoneWeir, wx + tA, wy + tA, 120, wl - 2 * tA, 8, tA, MATS.acrylicClear, 'W-06', { edges: true, renderOrder: 2 });
@@ -1703,17 +1704,17 @@
     }
 
     // P-01 Submersible Pump + Anti-Vortex Baffle Plate (Z=61 mm)
-    const px = wx + wl * 0.5 - 24; // 694
+    const px = wx + wl * 0.5 - 24; // 6594
     const py = -18;
     addBox(zoneWeir, px, py, 3, 48, 36, 52, MATS.rubberBlack, 'P-01');
     addBox(zoneWeir, px - 2, py + 4, 8, 2, 28, 36, MATS.absDark, 'P-01'); // front intake grille
-    addCyl(zoneWeir, [px + 48, 0, 33], [wx + wl - tA, 0, 33], 8, 8, MATS.pvcBlue, 'P-01');
+    addCyl(zoneWeir, [px + 48, 0, 33], [wx + wl - tA, 0, 33], 10, 10, MATS.pvcBlue, 'P-01');
     // 40 x 40 mm Perforated Anti-Vortex Baffle Plate at Z=61 mm
     addBox(zoneWeir, px + 4, -20, 61, 40, 40, 2, MATS.ss304Mesh, 'P-01');
     for (const [sxo, syo] of [[px + 7, -17], [px + 41, -17], [px + 7, 17], [px + 41, 17]]) {
       addCyl(zoneWeir, [sxo, syo, 55], [sxo, syo, 61], 1.5, 1.5, MATS.ss304Solid, 'P-01');
     }
-    // Submersible pump power cable routing cleanly over far rim into E-01 PG7 gland (6120, 176, 162)
+    // Submersible pump power cable routing cleanly over far rim into E-01 PG7 gland (6240, 176, 162)
     addPipePath(zoneWeir, [
       [px + 20, 18, 45],
       [px + 20, 138, 45],
@@ -1725,8 +1726,8 @@
 
     // --- ZONE 5: External IP65 Electronics Enclosure (E-01) ---
     const zoneElec = createZoneGroup('electronics', [0, 110, 80]);
-    const ex = 6000;
-    // Main ABS IP65 Box (X=6000..6160, Y=156..216, Z=170..260 -> clears C-01 outer jaw Z=268..300)
+    const ex = 6120;
+    // Main ABS IP65 Box (X=6120..6280, Y=156..216, Z=170..260 -> clears C-01 outer jaw Z=268..300)
     addBox(zoneElec, ex, 156, 170, 160, 4, 90, MATS.absDark, 'E-01'); // backplate
     addBox(zoneElec, ex, 156, 170, 160, 60, 4, MATS.absDark, 'E-01'); // floor
     addBox(zoneElec, ex, 156, 256, 160, 60, 4, MATS.absDark, 'E-01'); // top
@@ -1824,9 +1825,9 @@
       // Map local plane (u = Y width, v = arc progression t in [0,1]) into parabolic cascade
       for (let i = 0; i < pos.count; i++) {
         const ly = pos.getX(i);
-        const t = 0.5 - pos.getY(i); // 0 at crest, 1 in basket
+        const t = 0.5 - pos.getY(i); // 0 at crest Z=190, 1 in basket
         const x = CFG.weirX + t * 29;
-        const z = 197 - t * t * 34;
+        const z = 199 - t * t * 36;
         pos.setXYZ(i, x, slot.yCenter + ly, z);
       }
       nGeo.computeVertexNormals();
@@ -1836,7 +1837,7 @@
       nappeMeshes.push(mesh);
     });
 
-    // InstancedMesh: 450 Rising Micro-Bubbles along D-01 (X=6320, Y=-112..136, Z=22..200)
+    // InstancedMesh: 450 Rising Micro-Bubbles along D-01 (X=6380, Y=-112..136, Z=22..200)
     const BUBBLE_COUNT = 450;
     const bubbleGeo = new THREE.SphereGeometry(1.75, 8, 8);
     const bubbleMat = new THREE.MeshPhysicalMaterial({
@@ -1855,9 +1856,9 @@
       phase: Math.random() * Math.PI * 2
     }));
 
-    // InstancedMesh: 240 Flow Tracer Streamlines from R-02 Jets across 6.5 m reach
-    const TRACER_COUNT = 240;
-    const tracerGeo = new THREE.BoxGeometry(14, 1.5, 1.5);
+    // InstancedMesh: 180 Flow Tracer Streamlines from R-02 Jets (X=4915..6568)
+    const TRACER_COUNT = 180;
+    const tracerGeo = new THREE.BoxGeometry(12, 1.5, 1.5);
     const tracerMat = new THREE.MeshBasicMaterial({
       color: '#7dd3fc', transparent: true, opacity: 0.42, depthWrite: false
     });
@@ -1865,7 +1866,7 @@
     tracerInst.renderOrder = 6;
     waterGroup.add(tracerInst);
     const tracers = Array.from({ length: TRACER_COUNT }, (_, i) => ({
-      x: 115 + (i / TRACER_COUNT) * (CFG.weirX - 118),
+      x: CFG.spargerX + 15 + (i / TRACER_COUNT) * (CFG.weirX - CFG.spargerX - 18),
       y: -135 + Math.random() * 270,
       z: 40 + Math.random() * 150
     }));
@@ -1895,7 +1896,7 @@
         const d = {
           mesh,
           submerged,
-          x: CFG.funnelStartX - 240 + Math.random() * 80,
+          x: CFG.spargerX + 60 + Math.random() * 120,
           y: -120 + Math.random() * 240,
           z: submerged ? (65 + Math.random() * 75) : 194,
           targetZ: submerged ? (65 + Math.random() * 75) : 194,
@@ -1940,15 +1941,15 @@
     addDimLine([CFG.funnelEndX, -70, 224], [CFG.funnelEndX, 70, 224], 0x38bdf8);
     // Waterline Z=200 & Sump Z=165
     addDimLine([CFG.weirX, -162, 165], [CFG.weirX, -162, 200], 0x22d3ee);
-    // Zero-clash gap at X=6320 (R-01 Y=-140, Z=32 vs D-01 Y=-115, Z=12)
-    addDimLine([CFG.diffuserX, -140, 32], [CFG.diffuserX, -115, 12], 0x10b981);
+    // Zero-clash gap at X=6380 (R-01 Y=-139, Z=32 vs D-01 Y=-115, Z=12)
+    addDimLine([CFG.diffuserX, -139, 32], [CFG.diffuserX, -115, 12], 0x10b981);
 
     const DIM_LABELS = [
       { pos: [3500, -182, 0], text: 'L = 7000.0 mm (700 cm)' },
       { pos: [7045, 0, 0], text: 'W = 300.0 mm' },
       { pos: [CFG.funnelEndX, 0, 238], text: 'Throat = 140.0 mm' },
-      { pos: [CFG.weirX, -175, 185], text: 'ΔH = 35 mm (200→165)' },
-      { pos: [CFG.diffuserX, -128, 52], text: '11.0 mm Air Gap (25×20 offset)' }
+      { pos: [CFG.weirX, -175, 185], text: 'Crest Z=190 | Sump Z=165' },
+      { pos: [CFG.diffuserX, -128, 52], text: '9.0mm lat / 11.2mm diag Gap' }
     ];
 
     // =========================================================================
@@ -1956,18 +1957,18 @@
     // =========================================================================
     const labelsLayer = document.getElementById('labels-layer');
     const CALLOUT_DEFS = [
-      { id: 'T-01', label: 'T-01 Glass Flume (7m)', color: '#38bdf8', pos: [5700, -152, 290] },
-      { id: 'R-02', label: 'R-02 Sparger', color: '#0284c7', pos: [100, 0, 198] },
-      { id: 'R-01', label: 'R-01 Return (Z=32)', color: '#0ea5e9', pos: [6145, -140, 44] },
-      { id: 'F-01', label: 'F-01 V-Funnel', color: '#22d3ee', pos: [5795, 112, 225] },
-      { id: 'S-01', label: 'S-01 DYP Sonar', color: '#94a3b8', pos: [6080, 130, 210] },
-      { id: 'S-05', label: 'S-05 30 PPI Stop', color: '#cbd5e1', pos: [6080, -116, 222] },
-      { id: 'D-01', label: 'D-01 EPDM Barrier', color: '#f97316', pos: [6320, 0, 28] },
-      { id: 'A-01', label: 'A-01 Air Pump', color: '#fb923c', pos: [6320, 225, 52] },
-      { id: 'W-01', label: 'W-01 3-Slot Weir', color: '#06b6d4', pos: [6571, 0, 226] },
+      { id: 'T-01', label: 'T-01 Glass Flume (7m)', color: '#38bdf8', pos: [5400, -152, 290] },
+      { id: 'R-02', label: 'R-02 Sparger (X=4900)', color: '#0284c7', pos: [4900, 0, 198] },
+      { id: 'R-01', label: 'R-01 Ø20mm UPVC (Z=32)', color: '#0ea5e9', pos: [5700, -139, 44] },
+      { id: 'F-01', label: 'F-01 V-Funnel', color: '#22d3ee', pos: [5965, 112, 225] },
+      { id: 'S-01', label: 'S-01 DYP Sonar', color: '#94a3b8', pos: [6200, 130, 210] },
+      { id: 'S-05', label: 'S-05 30 PPI Stop', color: '#cbd5e1', pos: [6200, -116, 222] },
+      { id: 'D-01', label: 'D-01 EPDM Barrier', color: '#f97316', pos: [6380, 0, 28] },
+      { id: 'A-01', label: 'A-01 Air Pump', color: '#fb923c', pos: [6380, 225, 52] },
+      { id: 'W-01', label: 'W-01 3-Slot Weir (Z=190)', color: '#06b6d4', pos: [6571, 0, 226] },
       { id: 'B-01', label: 'B-01 SS304 Basket', color: '#eab308', pos: [6618, 76, 245] },
       { id: 'P-01', label: 'P-01 Pump (800 L/h)', color: '#64748b', pos: [6618, 0, 68] },
-      { id: 'E-01', label: 'E-01 ESP32 Box', color: '#10b981', pos: [6080, 218, 272] }
+      { id: 'E-01', label: 'E-01 ESP32 Box', color: '#10b981', pos: [6200, 218, 272] }
     ];
 
     const badgeItems = CALLOUT_DEFS.map(def => {
@@ -2018,14 +2019,14 @@
 
     // Camera Presets using cadRoot.localToWorld
     const CAMERA_PRESETS = {
-      hero:        { cam: [6150, -900, 560], target: [6160, 0, 125] },
+      hero:        { cam: [5950, -1050, 620], target: [6000, 0, 125] },
       full:        { cam: [3500, -4200, 2600], target: [3500, 0, 125] },
-      top:         { cam: [6160, -12, 1350], target: [6160, 0, 120] },
-      side:        { cam: [6160, -1150, 165], target: [6160, 0, 145] },
-      clearance:   { cam: [6445, -365, 130], target: [6318, -126, 22] },
-      sonar:       { cam: [5920, -255, 290], target: [6080, 50, 175] },
+      top:         { cam: [5950, -12, 1650], target: [5950, 0, 120] },
+      side:        { cam: [5950, -1350, 165], target: [5950, 0, 145] },
+      clearance:   { cam: [6505, -365, 130], target: [6378, -126, 22] },
+      sonar:       { cam: [6040, -255, 290], target: [6200, 50, 175] },
       weir:        { cam: [6400, -340, 290], target: [6610, 0, 155] },
-      electronics: { cam: [6080, 465, 255],  target: [6080, 185, 215] }
+      electronics: { cam: [6200, 465, 255],  target: [6200, 185, 215] }
     };
 
     let camTween = null;
@@ -2089,8 +2090,8 @@
         document.getElementById('insp-specs').innerHTML = `
           <div class="spec-row"><span>Flume Envelope</span><span>7000 × 300 × 300 mm</span></div>
           <div class="spec-row"><span>Static Waterline</span><span>Z = 200.0 mm (420 L / 630 L)</span></div>
-          <div class="spec-row"><span>Zero-Clash Gap</span><span>11.0 mm net (R-01 / D-01)</span></div>
-          <div class="spec-row"><span>Sonar Gate</span><span>X = 6080 mm, Z = 180 mm</span></div>
+          <div class="spec-row"><span>Zero-Clash Gap</span><span>9.0 mm lat / 11.2 mm diag</span></div>
+          <div class="spec-row"><span>Sonar Gate</span><span>X = 6200 mm, Z = 180 mm</span></div>
         `;
         document.getElementById('insp-notes').textContent =
           'Orbit with left-drag, pan with right-drag, scroll to zoom. Click any component mesh or floating BOM badge to inspect exact coordinates, materials, and plumbing clearances.';
@@ -2443,9 +2444,9 @@
           }
         }
 
-        // Cross over weir crest into SS304 Basket (X=6575..6661, Z=126..150)
+        // Cross over weir crest (Z=190) into SS304 Basket (X=6575..6661, Z=126..150)
         if (d.x >= CFG.weirX) {
-          if (d.z > 183) {
+          if (d.z > 188) {
             d.inBasket = true;
             capturedCount += 1;
             const localX = CFG.weirX + 14 + Math.random() * 64;

@@ -16,23 +16,23 @@ CONFIG = {
     "flume_height_mm": 300.0,
     "acrylic_thickness_mm": 3.0,
 
-    # Upstream Closed-Loop Flow-Maker Sparger Bar
-    "sparger_x_mm": 100.0,
+    # Upstream Closed-Loop Flow-Maker Sparger Bar (0.95m coherent laminar approach)
+    "sparger_x_mm": 4900.0,
     "sparger_z_mm": 175.0,
     "sparger_width_mm": 280.0,
 
     # Zone 1: V-Funnel Concentrator
-    "funnel_start_x_mm": 5680.0,
+    "funnel_start_x_mm": 5850.0,
     "funnel_vane_length_mm": 240.0,
     "funnel_throat_width_mm": 140.0,
     "funnel_height_mm": 220.0,
 
     # Zone 2: Exact 1:1 DYP-L08B50TW-V3.0 (Cylindrical Gray ASA/PVC M19x1.5 body, L=34mm, 2x D28mm 18-Tooth Gear Locknuts)
-    "sonar_x_mm": 6080.0,
+    "sonar_x_mm": 6200.0,
     "sonar_submerged_z_mm": 180.0,
 
-    # Zone 3: Full-Width Upwelling & Forward-Sweep Bubble Diffuser Manifold
-    "diffuser_x_mm": 6320.0,
+    # Zone 3: Full-Width Upwelling & Forward-Sweep EPDM Bubble Diffuser Manifold
+    "diffuser_x_mm": 6380.0,
     "diffuser_width_mm": 284.0,
     "diffuser_od_mm": 20.0,
 
@@ -42,7 +42,7 @@ CONFIG = {
     "weir_outer_length_mm": 96.0,
     "weir_outer_width_mm": 294.0,
     "weir_inner_width_mm": 288.0,
-    "weir_crest_height_mm": 185.0,
+    "weir_crest_height_mm": 190.0,
     "weir_tooth_top_mm": 212.0,
     "sump_wall_height_mm": 220.0,
     "basket_rail_z_mm": 120.0,
@@ -313,7 +313,7 @@ def build_dry_model(master_comp, app, design):
     add_extruded_box_body(tank_comp, "Tank_Upstream_EndWall_6mm", -t_glass, -W/2, 0, t_glass, W, H, app_glass, opacity=0.35)
     add_extruded_box_body(tank_comp, "Tank_Downstream_EndWall_6mm", L, -W/2, 0, t_glass, W, H, app_glass, opacity=0.35)
 
-    # 2. Closed-Loop Recirculation Pipe (R-01 Elevated at Z=32mm) & Sparger Bar (R-02)
+    # 2. Closed-Loop Recirculation Pipe (R-01 D20mm OD UPVC Elevated at Y=-139, Z=32mm) & Sparger Bar (R-02)
     recirc_comp = create_sub_component(master_comp, "Zone0_ClosedLoop_Recirculation_Sparger")
     spx = CONFIG["sparger_x_mm"]
     add_true_cylinder_body(recirc_comp, "R02_Upstream_FlowMaker_Sparger_Bar_D20mm", (spx, -140, 175), (spx, 140, 175), 10.0, app_pvc_blue, opacity=1.0)
@@ -323,21 +323,27 @@ def build_dry_model(master_comp, app, design):
         add_true_cylinder_body(recirc_comp, f"R02_Jet_Nozzle_Y{ny}", (spx, ny, 175), (spx + 13, ny, 175), 2.5, app_ss304, opacity=1.0)
     
     wx_r = CONFIG["weir_box_x_mm"] + CONFIG["weir_outer_length_mm"]
-    add_true_cylinder_body(recirc_comp, "R01_Rear_Pump_Outlet_Stub", (wx_r - 20, 0, 33), (wx_r + 40, 0, 33), 8.0, app_pvc_blue, opacity=1.0)
-    add_true_cylinder_body(recirc_comp, "R01_Rear_Transverse_Header", (wx_r + 40, 0, 33), (wx_r + 40, -140, 32), 8.0, app_pvc_blue, opacity=1.0)
-    add_true_cylinder_body(recirc_comp, "R01_Elevated_Return_Pipe_D16mm", (wx_r + 40, -140, 32), (spx, -140, 32), 8.0, app_pvc_blue, opacity=1.0)
-    add_true_cylinder_body(recirc_comp, "R01_Upstream_Vertical_Riser", (spx, -140, 32), (spx, -140, 175), 8.0, app_pvc_blue, opacity=1.0)
-    for clip_x in (600, 1800, 3000, 4200, 5400, 6450):
-        add_extruded_box_body(recirc_comp, f"C05_Pipe_StandOff_Clip_X{clip_x}", clip_x - 12, -148, 12, 24, 16, 28, app_acrylic_clear, opacity=0.75)
+    add_true_cylinder_body(recirc_comp, "R01_Rear_Pump_Outlet_Stub_D20mm", (wx_r - 20, 0, 33), (wx_r + 40, 0, 33), 10.0, app_pvc_blue, opacity=1.0)
+    add_true_cylinder_body(recirc_comp, "R01_Rear_Transverse_Header_D20mm", (wx_r + 40, 0, 33), (wx_r + 40, -139, 32), 10.0, app_pvc_blue, opacity=1.0)
+    add_true_cylinder_body(recirc_comp, "R01_Elevated_Return_Pipe_D20mm", (wx_r + 40, -139, 32), (spx, -139, 32), 10.0, app_pvc_blue, opacity=1.0)
+    add_true_cylinder_body(recirc_comp, "R01_Upstream_Vertical_Riser_D20mm", (spx, -139, 32), (spx, -139, 175), 10.0, app_pvc_blue, opacity=1.0)
+    for clip_x in (5150, 5750, 6450):
+        add_extruded_box_body(recirc_comp, f"C05_Pipe_StandOff_Clip_X{clip_x}", clip_x - 12, -149, 0, 24, 20, 44, app_acrylic_clear, opacity=0.75)
 
-    # 3. Zone 1: V-Funnel Concentrator (F-01 & F-02)
+    # 3. Zone 1: V-Funnel Concentrator (F-01 & F-02 with R-01 clearance notch)
     funnel_comp = create_sub_component(master_comp, "Zone1_VFunnel_Concentrator")
     fx = CONFIG["funnel_start_x_mm"]
     dx_f = 225.5
     ty = CONFIG["funnel_throat_width_mm"] / 2.0
     fh = CONFIG["funnel_height_mm"]
     create_angled_vane_component(funnel_comp, "F01_Left_Funnel_Vane_3mm_Acrylic", [(fx, W/2), (fx + dx_f, ty), (fx + dx_f, ty - t), (fx, W/2 - t)], 0, fh, app_acrylic_clear, opacity=0.68)
-    create_angled_vane_component(funnel_comp, "F02_Right_Funnel_Vane_3mm_Acrylic", [(fx, -W/2 + t), (fx + dx_f, -ty + t), (fx + dx_f, -ty), (fx, -W/2)], 0, fh, app_acrylic_clear, opacity=0.68)
+    # Notched F-02 right vane clearing D20mm R-01 return pipe (Z=17..47 near upstream X=5850..5908)
+    f02_mid_x = fx + 58.0
+    f02_mid_y_out = -W/2 + (58.0 / dx_f) * (W/2 - ty)
+    f02_mid_y_in = f02_mid_y_out + t
+    create_angled_vane_component(funnel_comp, "F02_Right_Funnel_Vane_LowerTab", [(fx, -W/2 + t), (f02_mid_x, f02_mid_y_in), (f02_mid_x, f02_mid_y_out), (fx, -W/2)], 0, 17.0, app_acrylic_clear, opacity=0.68)
+    create_angled_vane_component(funnel_comp, "F02_Right_Funnel_Vane_UpperSpan", [(fx, -W/2 + t), (f02_mid_x, f02_mid_y_in), (f02_mid_x, f02_mid_y_out), (fx, -W/2)], 47.0, fh - 47.0, app_acrylic_clear, opacity=0.68)
+    create_angled_vane_component(funnel_comp, "F02_Right_Funnel_Vane_Downstream", [(f02_mid_x, f02_mid_y_in), (fx + dx_f, -ty + t), (fx + dx_f, -ty), (f02_mid_x, f02_mid_y_out)], 0, fh, app_acrylic_clear, opacity=0.68)
 
     # 4. Zone 2: Exact 1:1 DYP-L08B50TW-V3.0 Sonar & Gate
     sonar_comp = create_sub_component(master_comp, "Zone2_DYPL08B50TW_V3_1to1_Cylindrical_Sonar")
@@ -360,25 +366,54 @@ def build_dry_model(master_comp, app, design):
     add_true_cylinder_body(sonar_comp, "DYPL08B50TW_V3_Axial_Cable_Exit_D4mm", (sx, 150.0, sz), (sx, 154.5, sz), 2.0, app_epdm_rubber, opacity=1.0)
     add_true_cylinder_body(sonar_comp, "DYPL08B50TW_V3_Vertical_UART_Umbilical_D4mm", (sx, 154.5, sz), (sx, 154.5, 302.0), 2.0, app_epdm_rubber, opacity=1.0)
 
-    # C-01 Suspension Bracket & Acoustic Stop
-    add_extruded_box_body(sonar_comp, "C01_NoDrill_Glass_Rim_Drop_Plate", sx - 36, 133.5, 158, 72, 3.5, 142, app_acrylic_clear, opacity=0.65)
+    # C-01 Suspension Bracket (with TRUE D19.5 mm hole in XZ sketch) & Acoustic Stop
+    c01_sketch = sonar_comp.sketches.add(sonar_comp.xZConstructionPlane)
+    c01_lines = c01_sketch.sketchCurves.sketchLines
+    cp0 = adsk.core.Point3D.create((sx - 36)/10.0, 15.8, 0)
+    cp1 = adsk.core.Point3D.create((sx + 36)/10.0, 15.8, 0)
+    cp2 = adsk.core.Point3D.create((sx + 36)/10.0, 30.0, 0)
+    cp3 = adsk.core.Point3D.create((sx - 36)/10.0, 30.0, 0)
+    c01_lines.addByTwoPoints(cp0, cp1)
+    c01_lines.addByTwoPoints(cp1, cp2)
+    c01_lines.addByTwoPoints(cp2, cp3)
+    c01_lines.addByTwoPoints(cp3, cp0)
+    c01_sketch.sketchCurves.sketchCircles.addByCenterRadius(adsk.core.Point3D.create(sx/10.0, sz/10.0, 0), 0.975)
+    c01_prof = None
+    for p in c01_sketch.profiles:
+        if p.profileLoops.count >= 2:
+            c01_prof = p
+            break
+    if not c01_prof:
+        c01_prof = c01_sketch.profiles.item(0)
+    c01_ext = sonar_comp.features.extrudeFeatures.createInput(c01_prof, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
+    c01_ext.setOneSideExtent(adsk.fusion.DistanceExtentDefinition.create(adsk.core.ValueInput.createByReal(0.35)), adsk.fusion.ExtentDirections.PositiveExtentDirection)
+    c01_ext.startExtent = adsk.fusion.OffsetStartDefinition.create(adsk.core.ValueInput.createByReal(13.35))
+    c01_body = sonar_comp.features.extrudeFeatures.add(c01_ext).bodies.item(0)
+    c01_body.name = "C01_NoDrill_Glass_Rim_Drop_Plate_D19_5mm"
+    apply_appearance_and_opacity(c01_body, app_acrylic_clear, 0.65)
+
     add_extruded_box_body(sonar_comp, "C01_NoDrill_Glass_Rim_Top_Bridge", sx - 36, 133.5, 300, 72, 28.5, 4, app_acrylic_clear, opacity=0.82)
     add_extruded_box_body(sonar_comp, "C01_NoDrill_Glass_Rim_Outer_Jaw", sx - 36, 156, 268, 72, 6, 32, app_acrylic_clear, opacity=0.82)
     add_extruded_box_body(sonar_comp, "Acoustic_Stop_Acrylic_Backplate", sx - 55, -128, 0, 110, 3, 220, app_acrylic_clear, opacity=0.78)
     add_extruded_box_body(sonar_comp, "Acoustic_Stop_30PPI_Polyurethane_Foam", sx - 55, -125, 0, 110, 18, 215, app_foam_baffle, opacity=0.96)
+    add_extruded_box_body(sonar_comp, "S05_Rim_Hanger_Drop", sx - 16, -135, 220, 32, 10, 80, app_acrylic_clear, opacity=0.82)
+    add_extruded_box_body(sonar_comp, "S05_Rim_Hanger_Top", sx - 16, -159, 300, 32, 34, 4, app_acrylic_clear, opacity=0.82)
+    add_extruded_box_body(sonar_comp, "S05_Rim_Hanger_OuterJaw", sx - 16, -159, 276, 32, 3, 24, app_acrylic_clear, opacity=0.82)
 
-    # 5. Zone 3: Diffuser Manifold (D-01 Decoupled, Z=12mm)
+    # 5. Zone 3: EPDM Diffuser Manifold (D-01 Decoupled, Z=12mm) + A-01 Air Compressor
     diff_comp = create_sub_component(master_comp, "Zone3_FullWidth_Upwelling_Bubble_Diffuser")
     dx_m = CONFIG["diffuser_x_mm"]
-    add_true_cylinder_body(diff_comp, "D01_PVC_Diffuser_Manifold_D20mm", (dx_m, -115, 12), (dx_m, 140, 12), 10.0, app_pvc_orange, opacity=1.0)
+    add_true_cylinder_body(diff_comp, "D01_EPDM_MicroPorous_Diffuser_D20mm", (dx_m, -115, 12), (dx_m, 140, 12), 10.0, app_epdm_rubber, opacity=1.0)
     add_true_cylinder_body(diff_comp, "D01_Near_Sealed_Dome_EndCap", (dx_m, -120, 12), (dx_m, -115, 12), 10.8, app_epdm_rubber, opacity=1.0)
     add_true_cylinder_body(diff_comp, "D01_Far_Inlet_Coupling_Tee", (dx_m, 140, 12), (dx_m, 145, 12), 11.2, app_pvc_orange, opacity=1.0)
     for foot_y in (-105, 130):
         add_extruded_box_body(diff_comp, f"D01_Floor_Saddle_Foot_Y{foot_y}", dx_m - 12, foot_y - 8, 0, 24, 16, 6, app_epdm_rubber, opacity=0.95)
     add_true_cylinder_body(diff_comp, "D02_AntiSiphon_Air_Riser_Tube", (dx_m, 142, 12), (dx_m, 142, 315), 4.0, app_pvc_orange, opacity=0.95)
     add_true_cylinder_body(diff_comp, "D02_TopRim_OneWay_Check_Valve", (dx_m, 142, 315), (dx_m, 168, 315), 6.5, app_ss304, opacity=1.0)
+    add_extruded_box_body(diff_comp, "A01_Air_Compressor_Head", dx_m - 15, 200, 2, 30, 14, 30, app_epdm_rubber, opacity=0.98)
+    add_true_cylinder_body(diff_comp, "A01_370_Motor_Body", (dx_m, 212, 16), (dx_m, 246, 16), 14.0, app_ss304, opacity=1.0)
 
-    # 6. Zone 4: Full-Width 3-Slot Castellated Waterfall Weir
+    # 6. Zone 4: Full-Width 3-Slot Castellated Waterfall Weir (Crest Z=190mm, Teeth Z=212mm)
     weir_comp = create_sub_component(master_comp, "Zone4_FullWidth_3Slot_Castellated_Weir")
     wx = CONFIG["weir_box_x_mm"]
     wy = CONFIG["weir_box_y_mm"]
@@ -386,17 +421,18 @@ def build_dry_model(master_comp, app, design):
     wl = CONFIG["weir_outer_length_mm"]
     ww = CONFIG["weir_outer_width_mm"]
     cw = CONFIG["weir_inner_width_mm"]
+    tooth_h = CONFIG["weir_tooth_top_mm"] - CONFIG["weir_crest_height_mm"]
 
     add_extruded_box_body(weir_comp, "W05_FullWidth_Sump_Base_Plate", wx, wy, wz, wl, ww, t, app_acrylic_clear, opacity=0.85)
     add_extruded_box_body(weir_comp, "W03_Sump_Left_Side_Wall", wx, wy + ww - t, wz + t, wl, t, CONFIG["sump_wall_height_mm"], app_acrylic_clear, opacity=0.45)
     add_extruded_box_body(weir_comp, "W04_Sump_Right_Side_Wall", wx, wy, wz + t, wl, t, CONFIG["sump_wall_height_mm"], app_acrylic_clear, opacity=0.45)
     add_extruded_box_body(weir_comp, "W02_FullWidth_Rear_Sump_Wall", wx + wl - t, wy + t, wz + t, t, cw, CONFIG["sump_wall_height_mm"], app_acrylic_clear, opacity=0.62)
 
-    add_extruded_box_body(weir_comp, "W01_FullWidth_Base_Weir_Wall_Z185", wx, wy + t, wz + t, t, cw, CONFIG["weir_crest_height_mm"] - t, app_acrylic_cyan, opacity=0.82)
-    add_extruded_box_body(weir_comp, "W01_Tooth1_Right_Shoulder_24mm", wx, wy + t, CONFIG["weir_crest_height_mm"], t, 24, 27, app_acrylic_cyan, opacity=0.92)
-    add_extruded_box_body(weir_comp, "W01_Tooth2_MidRight_Baffle_38mm", wx, wy + t + 79, CONFIG["weir_crest_height_mm"], t, 38, 27, app_acrylic_cyan, opacity=0.92)
-    add_extruded_box_body(weir_comp, "W01_Tooth3_MidLeft_Baffle_38mm", wx, wy + t + 171, CONFIG["weir_crest_height_mm"], t, 38, 27, app_acrylic_cyan, opacity=0.92)
-    add_extruded_box_body(weir_comp, "W01_Tooth4_Left_Shoulder_24mm", wx, wy + t + 264, CONFIG["weir_crest_height_mm"], t, 24, 27, app_acrylic_cyan, opacity=0.92)
+    add_extruded_box_body(weir_comp, "W01_FullWidth_Base_Weir_Wall_Z190", wx, wy + t, wz + t, t, cw, CONFIG["weir_crest_height_mm"] - t, app_acrylic_cyan, opacity=0.82)
+    add_extruded_box_body(weir_comp, "W01_Tooth1_Right_Shoulder_24mm", wx, wy + t, CONFIG["weir_crest_height_mm"], t, 24, tooth_h, app_acrylic_cyan, opacity=0.92)
+    add_extruded_box_body(weir_comp, "W01_Tooth2_MidRight_Baffle_38mm", wx, wy + t + 79, CONFIG["weir_crest_height_mm"], t, 38, tooth_h, app_acrylic_cyan, opacity=0.92)
+    add_extruded_box_body(weir_comp, "W01_Tooth3_MidLeft_Baffle_38mm", wx, wy + t + 171, CONFIG["weir_crest_height_mm"], t, 38, tooth_h, app_acrylic_cyan, opacity=0.92)
+    add_extruded_box_body(weir_comp, "W01_Tooth4_Left_Shoulder_24mm", wx, wy + t + 264, CONFIG["weir_crest_height_mm"], t, 24, tooth_h, app_acrylic_cyan, opacity=0.92)
 
     add_extruded_box_body(weir_comp, "W06_Basket_Rail_Right", wx + t, wy + t, CONFIG["basket_rail_z_mm"], wl - 2*t, 8, t, app_acrylic_clear, opacity=0.95)
     add_extruded_box_body(weir_comp, "W07_Basket_Rail_Left", wx + t, wy + ww - t - 8, CONFIG["basket_rail_z_mm"], wl - 2*t, 8, t, app_acrylic_clear, opacity=0.95)
@@ -421,13 +457,14 @@ def build_dry_model(master_comp, app, design):
     px = wx + wl/2.0 - 24.0
     py = wy + ww/2.0 - 18.0
     add_extruded_box_body(weir_comp, "P01_Submersible_Pump_Body_800Lh", px, py, wz + t, 48.0, 36.0, 52.0, app_epdm_rubber, opacity=0.98)
-    add_true_cylinder_body(weir_comp, "P01_Discharge_Nozzle_D16mm", (px + 48.0, py + 18.0, wz + 33.0), (wx + wl - t, py + 18.0, wz + 33.0), 8.0, app_pvc_blue, opacity=1.0)
+    add_true_cylinder_body(weir_comp, "P01_Discharge_Nozzle_D20mm", (px + 48.0, py + 18.0, wz + 33.0), (wx + wl - t, py + 18.0, wz + 33.0), 10.0, app_pvc_blue, opacity=1.0)
+    add_extruded_box_body(weir_comp, "P01_AntiVortex_Baffle_Plate_40x40mm", px + 4.0, -20.0, 61.0, 40.0, 40.0, 2.0, app_ss304, opacity=0.88)
 
     # 7. Zone 5: External IP65 Electronics Box
     elec_comp = create_sub_component(master_comp, "Zone5_External_IP65_Electronics_Box")
-    add_extruded_box_body(elec_comp, "E01_Enclosure_ABS_Base", 6000, 156, 170, 160, 60, 90, app_sonar_nut_asa, opacity=0.98)
-    add_extruded_box_body(elec_comp, "E01_Clear_Polycarbonate_Lid", 5998, 216, 168, 164, 4, 94, app_acrylic_clear, opacity=0.75)
-    for pg_x in (6040, 6080, 6120):
+    add_extruded_box_body(elec_comp, "E01_Enclosure_ABS_Base", 6120, 156, 170, 160, 60, 90, app_sonar_nut_asa, opacity=0.98)
+    add_extruded_box_body(elec_comp, "E01_Clear_Polycarbonate_Lid", 6118, 216, 168, 164, 4, 94, app_acrylic_clear, opacity=0.75)
+    for pg_x in (6160, 6200, 6240):
         add_true_cylinder_body(elec_comp, f"E01_PG7_Gland_X{pg_x}", (pg_x, 156, 185), (pg_x, 146, 185), 6.0, app_epdm_rubber, opacity=1.0)
 
 def run(context):
@@ -458,9 +495,10 @@ def run(context):
 
         ui.messageBox(
             "FORGENESIS Final Prototype (7000x300x300 mm Flume) Built!\n\n"
-            "• Clean inspection view of all mechanical & plumbing components\n"
-            "• Decoupled R-01 return pipe (Z=32mm) & D-01 air manifold (X=6320mm, Y=-115mm)\n"
-            "• 1:1 DYP-L08B50TW-V3.0 M19x1.5 Sonar (X=6080mm) & Full-Width 3-Slot Castellated Weir (X=6570mm)"
+            "• Zero-clash R-01 D20mm return pipe (Y=-139, Z=32mm) & notched F-02 V-funnel\n"
+            "• D-01 EPDM micro-porous diffuser (X=6380mm) & A-01 compressor\n"
+            "• 1:1 DYP-L08B50TW-V3.0 M19x1.5 Sonar (X=6200mm, bored C-01 D19.5mm)\n"
+            "• Full-Width 3-Slot Castellated Weir (X=6570mm, Crest Z=190mm)"
         )
     except:
         if ui:
